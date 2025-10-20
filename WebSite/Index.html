@@ -3,8 +3,86 @@
 <head>
     <meta charset="utf-8" />
     <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/engine.js"></script>
+    <link href="assets/css/style.css" rel="stylesheet" media="all" />
 </head>
 <body>
+    <div class="page-wrapper container">
+        <div class="row header-wrapper">
+            <div class="col-12 text-center">
+                <img src="assets/img/logo_loginet.png" class="header-logo" />
+            </div>
+
+        </div>
+        <div class="row views">
+            <div class="col-md-4 nav-wrapper">
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#main-menu-accordion" aria-expanded="true" aria-controls="main-menu-accordion">
+                                Azioni disponibili
+                            </button>
+                        </h2>
+                        <div class="accordion-collapse collapse show" id="main-menu-accordion">
+                            <nav class="navbar">
+                                <div class="container-fluid">
+                                    <ul class="navbar-nav">
+                                        <li class="nav-item" id="nav-login">
+                                            <a href="javascript:void(0)" class="nav-link">Login</a>
+                                        </li>
+                                        <li class="nav-item guest-hidden">
+                                            <a href="javascript:void(0)" class="nav-link">Calendario</a>
+                                        </li>
+                                        <li class="nav-item guest-hidden">
+                                            <a href="javascript:void(0)" class="nav-link">Elenco fatture</a>
+                                        </li>
+                                        <li class="nav-item guest-hidden">
+                                            <a href="javascript:void(0)" class="nav-link">Crea fattura</a>
+                                        </li>
+                                        <li class="nav-item guest-hidden">
+                                            <a href="javascript:void(0)" class="nav-link">Dettaglio / Modifica fattura</a>
+                                        </li>
+                                        <li class="nav-item guest-hidden">
+                                            <a href="javascript:void(0)" class="nav-link">Elenco clienti</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="col-md-8 view-wrapper">
+                <div class="view login-view">
+                    <div class="container-xl">
+                        <div class="row">
+                            <form action="#" method="post" onsubmit="doLogin()">
+                                <div class="col-12">
+                                    <input type="text" value="" minlength="6" maxlength="20" name="username" id="username" placeholder="Nome utente" />
+                                </div>
+                                <div class="col-12">
+                                    <input type="password" value="" minlength="8" maxlength="20" placeholder="*******" class="password" id="password" />
+                                </div>
+                                <div class="col-12">
+                                    <input type="submit" value="Login" class="button" id="send-data" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+        <div class="row footer-wrapper">
+            <footer>
+                Copyright bla bla bla
+            </footer>
+        </div>
+    </div>
+    
 
 </body>
 </html>
