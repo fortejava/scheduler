@@ -23,10 +23,10 @@ function doLogin()
             switch (this.status)
             {
                 case 200:
-                    //TODO: Risposta arrivata correttamente dal server
-
                     //Prima fase: convertire il JSON in un oggetto Javascript
                     const res = JSON.parse(this.responseText);
+                    //Seconda fase: modificare aspetto GUI
+                    console.log(res);
                     loginWorker(res);
                 break;
 
@@ -54,7 +54,7 @@ function loginWorker(res)
 {
     switch (res.Code)
     {
-        case "ok":
+        case "Ok":
         {
                 //Nome utente e password sono corretti, per cui dobbiamo:
                 //1: inserire username e password in localStorage
@@ -67,7 +67,7 @@ function loginWorker(res)
 
         } break;
 
-        case "ko":
+        case "Ko":
         {
         } break;
     }
@@ -83,12 +83,14 @@ function showView(viewToShow)
     //Cicliamo su tutte le viste
     const viewsList = document.querySelectorAll(".view");
 
-    for (el of [...viewsList])
+    for (el of viewsList)
     {
         el.classList.add("view-hidden");
     }
 
     const visibleElement = document.querySelector(`#${viewToShow}`);
     visibleElement.classList.remove("view-hidden");
+    visibleElement.classList.add("view-visible");
+
 
 }

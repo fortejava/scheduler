@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="DBEngine.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DBEngine.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Customers">
           <Key>
             <PropertyRef Name="CustomerID" />
@@ -29,21 +29,13 @@
           <Property Name="InvoiceDueDate" Type="date" Nullable="false" />
           <Property Name="InvoiceActive" Type="nchar" MaxLength="1" Nullable="false" />
         </EntityType>
-        <EntityType Name="Logins">
-          <Key>
-            <PropertyRef Name="LoginID" />
-          </Key>
-          <Property Name="LoginID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="token" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="UserID" Type="int" Nullable="false" />
-        </EntityType>
         <EntityType Name="Sessions">
           <Key>
             <PropertyRef Name="SessionID" />
           </Key>
           <Property Name="SessionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserID" Type="int" Nullable="false" />
-          <Property Name="SessionToken" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SessionToken" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="SessionExpire" Type="date" Nullable="false" />
         </EntityType>
         <EntityType Name="Status">
@@ -95,18 +87,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Logins_Users">
-          <End Role="Users" Type="Self.Users" Multiplicity="1" />
-          <End Role="Logins" Type="Self.Logins" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="UserID" />
-            </Principal>
-            <Dependent Role="Logins">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Sessions_Users">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
           <End Role="Sessions" Type="Self.Sessions" Multiplicity="*" />
@@ -122,7 +102,6 @@
         <EntityContainer Name="DBEngineStoreContainer">
           <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Invoices" EntityType="Self.Invoices" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Logins" EntityType="Self.Logins" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Sessions" EntityType="Self.Sessions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Status" EntityType="Self.Status" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
@@ -135,17 +114,12 @@
             <End Role="Status" EntitySet="Status" />
             <End Role="Invoices" EntitySet="Invoices" />
           </AssociationSet>
-          <AssociationSet Name="FK_Logins_Users" Association="Self.FK_Logins_Users">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Logins" EntitySet="Logins" />
-          </AssociationSet>
           <AssociationSet Name="FK_Sessions_Users" Association="Self.FK_Sessions_Users">
             <End Role="Users" EntitySet="Users" />
             <End Role="Sessions" EntitySet="Sessions" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DBEngine" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -176,22 +150,13 @@
           <NavigationProperty Name="Customer" Relationship="Self.FK_Invoices_Customers" FromRole="Invoices" ToRole="Customers" />
           <NavigationProperty Name="Status" Relationship="Self.FK_Invoices_Status" FromRole="Invoices" ToRole="Status" />
         </EntityType>
-        <EntityType Name="Login">
-          <Key>
-            <PropertyRef Name="LoginID" />
-          </Key>
-          <Property Name="LoginID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="token" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="UserID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="User" Relationship="Self.FK_Logins_Users" FromRole="Logins" ToRole="Users" />
-        </EntityType>
         <EntityType Name="Session">
           <Key>
             <PropertyRef Name="SessionID" />
           </Key>
           <Property Name="SessionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserID" Type="Int32" Nullable="false" />
-          <Property Name="SessionToken" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SessionToken" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="SessionExpire" Type="DateTime" Nullable="false" Precision="0" />
           <NavigationProperty Name="User" Relationship="Self.FK_Sessions_Users" FromRole="Sessions" ToRole="Users" />
         </EntityType>
@@ -220,7 +185,6 @@
           <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Username" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Password" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Logins" Relationship="Self.FK_Logins_Users" FromRole="Users" ToRole="Logins" />
           <NavigationProperty Name="Sessions" Relationship="Self.FK_Sessions_Users" FromRole="Users" ToRole="Sessions" />
         </EntityType>
         <Association Name="FK_Invoices_Customers">
@@ -247,18 +211,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Logins_Users">
-          <End Role="Users" Type="Self.User" Multiplicity="1" />
-          <End Role="Logins" Type="Self.Login" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="UserID" />
-            </Principal>
-            <Dependent Role="Logins">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Sessions_Users">
           <End Role="Users" Type="Self.User" Multiplicity="1" />
           <End Role="Sessions" Type="Self.Session" Multiplicity="*" />
@@ -274,7 +226,6 @@
         <EntityContainer Name="schedulerEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Customers" EntityType="Self.Customer" />
           <EntitySet Name="Invoices" EntityType="Self.Invoice" />
-          <EntitySet Name="Logins" EntityType="Self.Login" />
           <EntitySet Name="Sessions" EntityType="Self.Session" />
           <EntitySet Name="Status" EntityType="Self.Status" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
@@ -286,10 +237,6 @@
           <AssociationSet Name="FK_Invoices_Status" Association="Self.FK_Invoices_Status">
             <End Role="Status" EntitySet="Status" />
             <End Role="Invoices" EntitySet="Invoices" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Logins_Users" Association="Self.FK_Logins_Users">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Logins" EntitySet="Logins" />
           </AssociationSet>
           <AssociationSet Name="FK_Sessions_Users" Association="Self.FK_Sessions_Users">
             <End Role="Users" EntitySet="Users" />
@@ -325,15 +272,6 @@
                 <ScalarProperty Name="InvoiceCreationDate" ColumnName="InvoiceCreationDate" />
                 <ScalarProperty Name="InvoiceDueDate" ColumnName="InvoiceDueDate" />
                 <ScalarProperty Name="InvoiceActive" ColumnName="InvoiceActive" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Logins">
-            <EntityTypeMapping TypeName="DBEngine.Login">
-              <MappingFragment StoreEntitySet="Logins">
-                <ScalarProperty Name="LoginID" ColumnName="LoginID" />
-                <ScalarProperty Name="token" ColumnName="token" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

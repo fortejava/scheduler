@@ -23,17 +23,17 @@ body
     display: none;
 }
 
-.view.login-view
+.login-view 
 {
     display: block;
 }
 
-.view-hidden
+.view.view-hidden
 {
     display: none;
 }
 
-.view-visible
+.view.view-visible
 {
     display: block;
 }

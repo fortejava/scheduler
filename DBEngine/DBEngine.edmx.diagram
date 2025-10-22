@@ -7,14 +7,12 @@
       <Diagram DiagramId="56590cce6f1e4e02becb55b397a0cb1a" Name="Diagram1">
         <EntityTypeShape EntityType="DBEngine.Customer" Width="1.5" PointX="5.75" PointY="2.125" IsExpanded="true" />
         <EntityTypeShape EntityType="DBEngine.Invoice" Width="1.5" PointX="8" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="DBEngine.Login" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="DBEngine.Session" Width="1.5" PointX="3" PointY="3.625" IsExpanded="true" />
         <EntityTypeShape EntityType="DBEngine.Status" Width="1.5" PointX="5.75" PointY="6.125" IsExpanded="true" />
         <EntityTypeShape EntityType="DBEngine.sysdiagram" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="DBEngine.User" Width="1.5" PointX="0.75" PointY="2.375" IsExpanded="true" />
         <AssociationConnector Association="DBEngine.FK_Invoices_Customers" ManuallyRouted="false" />
         <AssociationConnector Association="DBEngine.FK_Invoices_Status" ManuallyRouted="false" />
-        <AssociationConnector Association="DBEngine.FK_Logins_Users" ManuallyRouted="false" />
         <AssociationConnector Association="DBEngine.FK_Sessions_Users" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
