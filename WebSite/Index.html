@@ -60,12 +60,12 @@
                 <div class="view login-view">
                     <div class="container-xl">
                         <div class="row">
-                            <form action="#" method="post" onsubmit="doLogin()">
+                            <form action="#" method="post" onsubmit="doLogin()" name="loginForm">
                                 <div class="col-12">
-                                    <input type="text" value="" minlength="6" maxlength="20" name="username" id="username" placeholder="Nome utente" />
+                                    <input type="text" value="" minlength="5" maxlength="20" name="username" id="username" placeholder="Nome utente" />
                                 </div>
                                 <div class="col-12">
-                                    <input type="password" value="" minlength="8" maxlength="20" placeholder="*******" class="password" id="password" />
+                                    <input type="password" value="" minlength="5" maxlength="20" placeholder="*******" class="password" id="password" />
                                 </div>
                                 <div class="col-12">
                                     <input type="submit" value="Login" class="button" id="send-data" />
@@ -73,7 +73,10 @@
                             </form>
                         </div>
                     </div>
-                </div> 
+                </div>
+                <div id="calendar-view" class="view">
+                    <!-- TODO: Mostare vista calendario -->
+                </div>
             </div>
         </div>
         <div class="row footer-wrapper">

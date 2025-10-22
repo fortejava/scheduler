@@ -17,3 +17,23 @@ body
 {
     display: none;
 }
+
+.view
+{
+    display: none;
+}
+
+.view.login-view
+{
+    display: block;
+}
+
+.view-hidden
+{
+    display: none;
+}
+
+.view-visible
+{
+    display: block;
+}
