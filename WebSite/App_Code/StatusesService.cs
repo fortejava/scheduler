@@ -20,9 +20,3 @@ public class StatusesService
         return statusesFound;
     }
 }
-
-
-//if (lazyLoading)
-//{
-//    db.Configuration.LazyLoadingEnabled = lazyLoading;
-//}

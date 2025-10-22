@@ -13,16 +13,15 @@ public class InvoicesService
 {
     public static List<int> GetAllInvoiceYears()
     {
-        using (var db = new schedulerEntities())
-        {
-            var invoicesDates = db.Invoices
+
+        var db = new schedulerEntities();
+        var invoicesDates = db.Invoices
             .Select(p => p.InvoiceDueDate.Year)
             .Distinct()
             .OrderByDescending(p => p)
             .ToList();
 
-            return invoicesDates;
-        }
+        return invoicesDates;
     }
 
     public static List<Invoice> GetAllInvoices(bool lazyLoading)

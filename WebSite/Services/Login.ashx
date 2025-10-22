@@ -26,17 +26,17 @@ public class Login : IHttpHandler {
         string username = context.Request.Form["username"];
         string password = context.Request.Form["password"];
         string token = context.Request.Form["token"];
-        Response r = new Response("ko",null);
+        Response r = new Response("Ko",null);
 
 
         // token string or "" (or null need to clarify con Botta)
         if (token == "null" || string.IsNullOrEmpty(token))
         {
-            User user;
+            User user = null;
             if(LoginService.LoginPasswordVerify(username, password, out user))
             {
                 token = LoginService.CreateToken(user);
-                r.Code = "ok";
+                r.Code = "Ok";
                 r.Message = new
                 {
                     Token = token
@@ -44,17 +44,16 @@ public class Login : IHttpHandler {
             }
             else
             {
-                r.Code = "ko";
+                r.Code = "Ko";
                 r.Message = null;
             }
         }
         else
         {
             //OK - valid session; OUT - invalid session 
-            // condition ? true : false
-            SimpleTokenManager.TokenInfo info; // Do I need to return 
-            r.Code = SimpleTokenManager.ValidateToken(token, out info) ? "ok" : "OUT";
-            r.Message = info == null ? null : new { UserID = info.UserId, Username = info.Username };
+            // condition ? true : false   
+            r.Code = SimpleTokenManager.ValidateToken(token) ? "Ok" : "OUT";
+            r.Message = new { Token = "" }; //o null
         }
         context.Response.ContentType = "application/json";
         context.Response.Write(JsonConvert.SerializeObject(r));
