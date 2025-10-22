@@ -65,6 +65,9 @@ function loginWorker(res)
                 //2: Mostare la vista calendario
                 showView("calendar-view");
 
+                //3: mostrare tutte le voci di menu nascoste e nascondere il login
+                showMenu();
+
         } break;
 
         case "Ko":
@@ -92,5 +95,23 @@ function showView(viewToShow)
     visibleElement.classList.remove("view-hidden");
     visibleElement.classList.add("view-visible");
 
+    
 
+}
+
+function showMenu()
+{
+    /* 
+    Rimuoviamo la classe guest-hidden dalle voci di menu e nascondiamo la login (se necessario)
+    */
+    const menuItems = document.querySelectorAll(".guest-hidden");
+
+    for (el of menuItems)
+    {
+        el.classList.remove("guest-hidden");
+    }
+
+    //Nascondiamo la voce di login
+    const element = document.querySelector("#nav-login");
+    element.style.display = "none"
 }
