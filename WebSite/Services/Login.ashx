@@ -2,10 +2,12 @@
 
 using System;
 using System.Web;
+using Newtonsoft.Json;
+using DBEngine;
 
 public class Login : IHttpHandler {
-    
-    public void ProcessRequest (HttpContext context) 
+
+    public void ProcessRequest (HttpContext context)
     {
         /**
             username
@@ -19,10 +21,45 @@ public class Login : IHttpHandler {
                 status: OK o KO
                 Token: valorizzato se primo login, oppure vuoto se la login è stata basata sul token
         */
-        context.Response.ContentType = "text/plain";
-        context.Response.Write("Hello World");
+
+
+        string username = context.Request.Form["username"];
+        string password = context.Request.Form["password"];
+        string token = context.Request.Form["token"];
+        Response r = new Response("ko",null);
+
+
+        // token string or "" (or null need to clarify con Botta)
+        if (token == "null" || string.IsNullOrEmpty(token))
+        {
+            User user;
+            if(LoginService.LoginPasswordVerify(username, password, out user))
+            {
+                token = LoginService.CreateToken(user);
+                r.Code = "ok";
+                r.Message = new
+                {
+                    Token = token
+                };
+            }
+            else
+            {
+                r.Code = "ko";
+                r.Message = null;
+            }
+        }
+        else
+        {
+            //OK - valid session; OUT - invalid session 
+            // condition ? true : false
+            SimpleTokenManager.TokenInfo info; // Do I need to return 
+            r.Code = SimpleTokenManager.ValidateToken(token, out info) ? "ok" : "OUT";
+            r.Message = info == null ? null : new { UserID = info.UserId, Username = info.Username };
+        }
+        context.Response.ContentType = "application/json";
+        context.Response.Write(JsonConvert.SerializeObject(r));
     }
- 
+
     public bool IsReusable {
         get {
             return false;
@@ -30,3 +67,8 @@ public class Login : IHttpHandler {
     }
 
 }
+
+//public sealed class LoginResponse {
+//    public string Status { get; set; }  // "Ok", "Ko", "OUT"
+//    public string Token  { get; set; }  // token string or "" (or null need to clarify con Botta)
+//}

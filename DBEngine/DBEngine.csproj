@@ -54,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
-    <Compile Include="Customers.cs">
+    <Compile Include="Customer.cs">
       <DependentUpon>DBEngine.tt</DependentUpon>
     </Compile>
     <Compile Include="DBEngine.Context.cs">
@@ -72,20 +72,23 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DBEngine.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Invoices.cs">
+    <Compile Include="Invoice.cs">
+      <DependentUpon>DBEngine.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Login.cs">
       <DependentUpon>DBEngine.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sessions.cs">
+    <Compile Include="Session.cs">
       <DependentUpon>DBEngine.tt</DependentUpon>
     </Compile>
     <Compile Include="Status.cs">
       <DependentUpon>DBEngine.tt</DependentUpon>
     </Compile>
-    <Compile Include="sysdiagrams.cs">
+    <Compile Include="sysdiagram.cs">
       <DependentUpon>DBEngine.tt</DependentUpon>
     </Compile>
-    <Compile Include="Users.cs">
+    <Compile Include="User.cs">
       <DependentUpon>DBEngine.tt</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -101,19 +104,19 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="DBEngine.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>DBEngine.Context.cs</LastGenOutput>
       <DependentUpon>DBEngine.edmx</DependentUpon>
+      <LastGenOutput>DBEngine.Context.cs</LastGenOutput>
     </Content>
     <Content Include="DBEngine.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>DBEngine.edmx</DependentUpon>
       <LastGenOutput>DBEngine.cs</LastGenOutput>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

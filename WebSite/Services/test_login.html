@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Handler Test</title>
+    <meta charset="utf-8" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .test-section {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 300px;
+            padding: 8px;
+            margin-top: 5px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+            button:hover {
+                background-color: #0056b3;
+            }
+
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .status-ok {
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-ko, .status-out {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Login Handler Test Tool</h1>
+    <p>Assuming your handler URL is <code>Login.ashx</code>.</p>
+
+    <div class="test-section">
+        <h2>1. Initial Login (Get Token)</h2>
+        <form id="loginForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" value="testuser">
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" value="testpass">
+
+            <label for="token1">Token (Leave Empty):</label>
+            <input type="text" id="token1" name="token" value="">
+
+            <button type="submit">LOGIN (Submit Form)</button>
+        </form>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Validate Session (Use Token)</h2>
+        <form id="validateForm">
+            <p>Use the token copied from the section above, or paste a known valid/invalid token here.</p>
+            <label for="token2">Token to Validate:</label>
+            <input type="text" id="token2" name="token" placeholder="Paste token here">
+
+            <label for="username2">Username (Leave Empty):</label>
+            <input type="text" id="username2" name="username" value="" readonly>
+
+            <label for="password2">Password (Leave Empty):</label>
+            <input type="password" id="password2" name="password" value="" readonly>
+
+            <button type="submit">VALIDATE (Submit Form)</button>
+        </form>
+    </div>
+
+    <hr>
+
+    <h2>Response Output</h2>
+    <p>Status: <span id="responseStatus">Awaiting Test...</span></p>
+    <p>Raw JSON:</p>
+    <pre id="responseOutput">JSON response will appear here.</pre>
+
+    <script>
+        // --- Configuration ---
+        const HANDLER_URL = 'Login.ashx'; // Change this if your handler file name is different
+
+        // --- Utility Function to Handle Form Submission ---
+        function handleFormSubmit(event, formId) {
+            event.preventDefault(); // Stop the default form submission
+
+            const form = document.getElementById(formId);
+            const formData = new FormData(form);
+            const output = document.getElementById('responseOutput');
+            const statusSpan = document.getElementById('responseStatus');
+
+            statusSpan.className = '';
+            statusSpan.textContent = 'Sending request...';
+            output.textContent = 'Loading...';
+
+            // Send the data using Fetch API
+            fetch(HANDLER_URL, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json()) // Parse the JSON response
+            .then(data => {
+                // Display the raw JSON response
+                output.textContent = JSON.stringify(data, null, 2);
+
+                // Update the status
+                statusSpan.textContent = data.Code;
+                statusSpan.className = `status-${data.Code.toLowerCase()}`;
+
+                // If it was a successful login, auto-fill the token for the next test
+                if (formId === 'loginForm' && data.Code === 'ok' && data.Message && data.Message.Token) {
+                    document.getElementById('token2').value = data.Message.Token;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                output.textContent = 'ERROR: Could not connect to handler or invalid response format.';
+                statusSpan.textContent = 'ERROR';
+                statusSpan.className = 'status-ko';
+            });
+        }
+
+        // --- Event Listeners ---
+        document.getElementById('loginForm').addEventListener('submit', (e) => handleFormSubmit(e, 'loginForm'));
+        document.getElementById('validateForm').addEventListener('submit', (e) => handleFormSubmit(e, 'validateForm'));
+    </script>
+
+</body>
+</html>

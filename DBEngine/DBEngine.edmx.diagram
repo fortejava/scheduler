@@ -4,16 +4,18 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="d6b6260b72e34feb8816937226ef1ef6" Name="Diagram1">
-        <EntityTypeShape EntityType="schedulerModel.Customers" Width="1.5" PointX="0.75" PointY="2.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="schedulerModel.Invoices" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="schedulerModel.Status" Width="1.5" PointX="0.75" PointY="6.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="schedulerModel.sysdiagrams" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="schedulerModel.Users" Width="1.5" PointX="2.75" PointY="5.75" IsExpanded="true" />
-        <AssociationConnector Association="schedulerModel.FK_Invoices_Customers" ManuallyRouted="false" />
-        <AssociationConnector Association="schedulerModel.FK_Invoices_Status" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="schedulerModel.Sessions" Width="1.5" PointX="5" PointY="5.625" />
-        <AssociationConnector Association="schedulerModel.FK_Sessions_Users" />
+      <Diagram DiagramId="56590cce6f1e4e02becb55b397a0cb1a" Name="Diagram1">
+        <EntityTypeShape EntityType="DBEngine.Customer" Width="1.5" PointX="5.75" PointY="2.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBEngine.Invoice" Width="1.5" PointX="8" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBEngine.Login" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBEngine.Session" Width="1.5" PointX="3" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBEngine.Status" Width="1.5" PointX="5.75" PointY="6.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBEngine.sysdiagram" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DBEngine.User" Width="1.5" PointX="0.75" PointY="2.375" IsExpanded="true" />
+        <AssociationConnector Association="DBEngine.FK_Invoices_Customers" ManuallyRouted="false" />
+        <AssociationConnector Association="DBEngine.FK_Invoices_Status" ManuallyRouted="false" />
+        <AssociationConnector Association="DBEngine.FK_Logins_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="DBEngine.FK_Sessions_Users" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
