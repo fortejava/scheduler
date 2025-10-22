@@ -23,7 +23,7 @@ public class LoginService
                 user = db.Users
                     .Where(p=>p.Username == username && p.Password == password)
                     .FirstOrDefault();
-                result = user != null ? true : false;
+                result = (user != null);
             }
         }
         return result;
