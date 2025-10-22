@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 public class GetAllStatuses : IHttpHandler {
     
     public void ProcessRequest (HttpContext context) {
-            Response r = new Response("", "");
+            Response r = new Response("Ko", "");
             List<Status> statusesFound = StatusesService.GetAllStatuses(false);
             if (statusesFound.Count > 0)
             {

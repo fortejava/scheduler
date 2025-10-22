@@ -16,7 +16,6 @@ public class SimpleTokenManager
     private static Dictionary<string, TokenInfo> tokens = new Dictionary<string, TokenInfo>();
 
     public class TokenInfo
-
     {
 
         public int UserId { get; set; }
@@ -30,21 +29,12 @@ public class SimpleTokenManager
     // Create token
 
     public static string CreateToken(int userId, string username, DateTime expiredAt)
-
     {
-        string token = Guid.NewGuid().ToString();
+        string token = null ;
         using (schedulerEntities db = new schedulerEntities())
         {
-
-            //while(db.Sessions.Where(p=>p.SessionToken == token).Any())
-            //{
-            //    token = Guid.NewGuid().ToString();
-            //} 
-            List<string> sessions = db.Sessions.Select(p=>p.SessionToken).ToList();
-            while (tokens.ContainsKey(token) || sessions.Contains(token))
-            {
-                token = Guid.NewGuid().ToString();
-            }
+            string uniqueString = username + expiredAt + "_";
+            token = uniqueString + Guid.NewGuid().ToString();
 
             var session = new Session()
             {
@@ -57,71 +47,24 @@ public class SimpleTokenManager
             db.SaveChanges(); //should try to save can be exceptions
         }
 
-
-
-
-
-        //if the db fails we create the token any way!!! wrong!!! 
-        tokens[token] = new TokenInfo
-
-        {
-
-            UserId = userId,
-
-            Username = username,
-
-            //ExpiresAt = DateTime.UtcNow.AddHours(24)
-            ExpiresAt = expiredAt
-
-        };
-
         return token;
 
     }
 
     // Validate token
-    public static bool ValidateToken(string token, out TokenInfo info)
-
+    public static bool ValidateToken(string token)
     {
-
-        info = null;
         bool valid = false;
 
-        if (!String.IsNullOrEmpty(token) && tokens.ContainsKey(token))
-
+        if (!String.IsNullOrEmpty(token))
         {
-
-            info = tokens[token];
-
-            if (info.ExpiresAt > DateTime.UtcNow)
-
+            using (schedulerEntities db = new schedulerEntities())
             {
-                using (schedulerEntities db = new schedulerEntities())
-                {
-                    int userId = info.UserId;
-                    Session session = db.Sessions.Where(p => p.UserID == userId && p.SessionToken == token && p.SessionExpire > DateTime.UtcNow).FirstOrDefault();
-                    valid = (session != null);
-                }
-
-            }
-
-            else
-
-            {
-
-                tokens.Remove(token); // Remove expired
-                using (schedulerEntities db = new schedulerEntities())
-                {
-                    Session sessionToDelete = db.Sessions.Where(p=>p.SessionToken == token).FirstOrDefault();
-                    if (sessionToDelete != null)
-                    {
-                        db.Sessions.Remove(sessionToDelete);
-                        db.SaveChanges();
-                    }
-
-                }
-            }
-
+                Session session = db.Sessions
+                    .Where(p => p.SessionToken == token && p.SessionExpire > DateTime.UtcNow)
+                    .FirstOrDefault();
+                valid = (session != null);
+            }          
         }
 
         return valid;
