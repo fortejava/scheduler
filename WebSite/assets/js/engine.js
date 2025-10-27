@@ -64,6 +64,16 @@ function loginWorker(res)
 
                 //2: Mostare la vista calendario
                 showView("calendar-view");
+                //2b: Inizializzare il calendario
+                
+
+                //Estraiamo anno e mese corrente
+                const today = new Date();
+
+                //TODO: estrarre l'elenco delle fatture del mese/anno attuale
+                const invoicesList = invoicesSearch(today.getMonth(), today.getFullYear());
+
+                calendarHandler(today.getMonth(), today.getFullYear(), invoicesList);
 
                 //3: mostrare tutte le voci di menu nascoste e nascondere il login
                 showMenu();
@@ -114,4 +124,42 @@ function showMenu()
     //Nascondiamo la voce di login
     const element = document.querySelector("#nav-login");
     element.style.display = "none"
+}
+const invoicesSearch = (month, year) => {
+    const retvalue = [
+        {
+            status: "pagata",
+            customer: "pippo",
+            amount: 100,
+            dueDate: "2025-10-28",
+            invoiceId: "1",
+            invoiceCode: "1 / 2025"
+        },
+        {
+            status: "da pagare",
+            customer: "pluto",
+            amount: 100,
+            dueDate: "2025-10-29",
+            invoiceId: "2",
+            invoiceCode: "2 / 2025"
+        },
+        {
+            status: "pagata",
+            customer: "pippo",
+            amount: 100,
+            dueDate: "2025-11-03",
+            invoiceId: "1",
+            invoiceCode: "3 / 2025"
+        },
+        {
+            status: "da pagare",
+            customer: "pluto",
+            amount: 100,
+            dueDate: "2025-11-04",
+            invoiceId: "2",
+            invoiceCode: "4 / 2025"
+        }
+    ];
+
+    return retvalue;
 }
