@@ -276,7 +276,14 @@ public class InvoicesService
         {
             using (var db = new schedulerEntities())
             {
-
+                var invoiceToDelete = db.Invoices
+                    .SingleOrDefault(i => i.InvoiceID == invoiceId);
+                if (invoiceToDelete != null)
+                {
+                    invoiceToDelete.InvoiceActive = "N";
+                    db.Invoices.AddOrUpdate(invoiceToDelete);
+                    result = (db.SaveChanges() == 1);
+                }
             }
         }
         return result;
