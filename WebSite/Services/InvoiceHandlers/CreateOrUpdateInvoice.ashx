@@ -57,7 +57,7 @@ public class CreateOrUpdateInvoice : IHttpHandler {
         invoice.CustomerID = customerID;
         invoice.StatusID = statusID;
         invoice.InvoiceTaxable = invoiceTaxable;
-        invoice.InvoiceTax = invoiceTax;
+        invoice.InvoiceTax = invoiceTax/100m;
         invoice.InvoiceDue = invoiceDue;
         invoice.InvoiceCreationDate = creationDate;
         invoice.InvoiceDueDate = dueDate;
