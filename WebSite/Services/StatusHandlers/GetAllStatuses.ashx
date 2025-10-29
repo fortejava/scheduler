@@ -9,9 +9,10 @@ using Newtonsoft.Json;
 
 public class GetAllStatuses : IHttpHandler {
     
-    public void ProcessRequest (HttpContext context) {
+    public void ProcessRequest (HttpContext context) 
+    {
             Response r = new Response("Ko", "");
-            List<Status> statusesFound = StatusesService.GetAllStatuses(false);
+            List<Status> statusesFound = StatusesService.GetAllStatuses();
             if (statusesFound.Count > 0)
             {
                 r.Code = "Ok";

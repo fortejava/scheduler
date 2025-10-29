@@ -1,5 +1,6 @@
 ﻿using DBEngine;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,33 +11,30 @@ using System.Web;
 /// </summary>
 public class LoginService
 {
-    public static bool LoginPasswordVerify (string username, string password, out User user)
+    public static bool PasswordVerify (string username, string password, out string newToken)
     {
         bool result = false;
-        user = null;
+        User user = null;
+        newToken = null;
 
-        if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+        if (Helpers.AreNotEmpty(username,password))
         {
             using(var db = new schedulerEntities())
             {
                 // TODO: replace with hashed password verification
                 user = db.Users
-                    .Where(p=>p.Username == username && p.Password == password)
-                    .FirstOrDefault();
-                result = (user != null);
+                        .Where(p => p.Username == username && p.Password == password)
+                        .FirstOrDefault();
+                if (user != null)
+                {
+                    DateTime expiredAt = DateTime.UtcNow.AddHours(24);
+                    newToken = SimpleTokenManager.CreateToken(user.UserID, user.Username, expiredAt);
+                }
             }
         }
-        return result;
+        return newToken !=null;
     }
 
-    public static string CreateToken (User user)
-    {
-        DateTime expiredAt = DateTime.UtcNow.AddHours(24);
-        string token = SimpleTokenManager.CreateToken(user.UserID, user.Username, expiredAt);
-
-        return token;
-
-    }
 
 
     // Check: valid token AND not expired AND exists in DB
@@ -59,4 +57,26 @@ public class LoginService
 
 //    db.Sessions.Add(session);
 //    db.SaveChanges();
+//}
+
+
+
+//public static bool PasswordVerify(string username, string password, out User user)
+//{
+//    bool result = false;
+//    user = null;
+//    string newToken;
+
+//    if (Helpers.AreNotEmpty(username, password))
+//    {
+//        using (var db = new schedulerEntities())
+//        {
+//            // TODO: replace with hashed password verification
+//            user = db.Users
+//                    .Where(p => p.Username == username && p.Password == password)
+//                    .FirstOrDefault();
+//            result = (user != null);
+//        }
+//    }
+//    return result;
 //}

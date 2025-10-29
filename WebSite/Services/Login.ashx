@@ -30,16 +30,15 @@ public class Login : IHttpHandler {
 
 
         // token string or "" (or null need to clarify con Botta)
-        if (token == "null" || string.IsNullOrEmpty(token))
+        if (!Helpers.IsNotEmpty(token))
         {
-            User user = null;
-            if(LoginService.LoginPasswordVerify(username, password, out user))
+            string newToken;
+            if(LoginService.PasswordVerify(username, password, out newToken))
             {
-                token = LoginService.CreateToken(user);
                 r.Code = "Ok";
                 r.Message = new
                 {
-                    Token = token
+                    Token = newToken
                 };
             }
             else
@@ -69,5 +68,5 @@ public class Login : IHttpHandler {
 
 //public sealed class LoginResponse {
 //    public string Status { get; set; }  // "Ok", "Ko", "OUT"
-//    public string Token  { get; set; }  // token string or "" (or null need to clarify con Botta)
+//    public string Token  { get; set; }  // token string or "" or "null" or null
 //}

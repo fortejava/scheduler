@@ -1,8 +1,10 @@
 ﻿using DBEngine;
+using Newtonsoft.Json.Linq;
 using System;
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Security.Cryptography;
 
 using System.Text;
@@ -10,32 +12,15 @@ using System.Text;
 public class SimpleTokenManager
 
 {
-
-    // Store tokens in memory (use database in production)
-
-    private static Dictionary<string, TokenInfo> tokens = new Dictionary<string, TokenInfo>();
-
-    public class TokenInfo
-    {
-
-        public int UserId { get; set; }
-
-        public string Username { get; set; }
-
-        public DateTime ExpiresAt { get; set; }
-
-    }
-
-    // Create token
-
     public static string CreateToken(int userId, string username, DateTime expiredAt)
     {
-        string token = null ;
-        using (schedulerEntities db = new schedulerEntities())
-        {
-            string uniqueString = username + expiredAt + "_";
-            token = uniqueString + Guid.NewGuid().ToString();
 
+        string uniqueString = Helpers.HashString(username + expiredAt);
+        string token = uniqueString + Guid.NewGuid().ToString();
+
+        //Works as try catch Exceptions + final DB.Dispose()
+        using (var db = new schedulerEntities())
+        {
             var session = new Session()
             {
                 UserID = userId,
@@ -44,9 +29,8 @@ public class SimpleTokenManager
             };
 
             db.Sessions.Add(session);
-            db.SaveChanges(); //should try to save can be exceptions
+            db.SaveChanges(); //should try to save can be exceptions - using prevents shutdown from Exc.
         }
-
         return token;
 
     }
@@ -58,7 +42,7 @@ public class SimpleTokenManager
 
         if (!String.IsNullOrEmpty(token))
         {
-            using (schedulerEntities db = new schedulerEntities())
+            using (var db = new schedulerEntities())
             {
                 Session session = db.Sessions
                     .Where(p => p.SessionToken == token && p.SessionExpire > DateTime.UtcNow)

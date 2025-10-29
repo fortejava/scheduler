@@ -1,21 +1,21 @@
-﻿<%@ WebHandler Language="C#" Class="GetAllInvoices" %>
+﻿<%@ WebHandler Language="C#" Class="GetStatusByName" %>
 
 using System;
 using System.Web;
-using System.Collections.Generic;
 using DBEngine;
 using System.Diagnostics;
 using Newtonsoft.Json;
 
-public class GetAllInvoices : IHttpHandler {
+public class GetStatusByName : IHttpHandler {
     
     public void ProcessRequest (HttpContext context) {
-            Response r = new Response("", "");
-            List<Invoice> invoicesFound = InvoicesService.GetAllInvoices(false);
-            if (invoicesFound.Count > 0)
+            string statusLabel = context.Request.Form["statusLabel"];
+            Response r = new Response("Ko", null);
+            Status statusesFound = StatusesService.GetStatusByName(statusLabel);
+            if (statusesFound!= null)
             {
                 r.Code = "Ok";
-                r.Message = invoicesFound;
+                r.Message = statusesFound;
             }
             context.Response.ContentType = "application/json";
             context.Response.Write(JsonConvert.SerializeObject(r));
