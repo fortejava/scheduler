@@ -47,7 +47,7 @@
                                         </li>
                                         
                                         <li class="nav-item guest-hidden">
-                                            <a href="javascript:void(0)" class="nav-link">Elenco clienti</a>
+                                            <a href="javascript:showCustomersView()" class="nav-link">Elenco clienti</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -142,6 +142,18 @@
                 <div id="calendar-view" class="view">
                     <div id="calendar">
                         
+                    </div>
+                </div>
+                <div id="customers-view" class="view">
+                    <div class="row">
+                        <form id="addCustomer" name="addCustomer" onsubmit="addCustomer()">
+                            <div class="col-12 col-md-9">
+                                <input id="addCustomerName" name="addCustomerName" type="text" value="" placeholder="Nome cliente" required="" />
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <input type="submit" value="Aggiungi cliente" />
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

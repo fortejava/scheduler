@@ -450,6 +450,15 @@ const updateInvoiceCreation = () => {
     }
 }
 
+const addCustomer = () => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    //TODO: aggiungere il codice per l'aggiunta del cliente
+
+    return false;
+}
+
 //Autologin
 window.onload = function ()
 {
