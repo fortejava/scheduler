@@ -19,7 +19,7 @@ public class GetInvoices : IHttpHandler {
         filters.Year = context.Request.Form["Year"];
         filters.Month = context.Request.Form["Month"];
         //statusId = "1";
-        filters.Month = "2";
+        //filters.Month = "2";
         //year = "2025";
         //invoiceNumber = "3"; 
         //invoiceOrderNumber = "3";

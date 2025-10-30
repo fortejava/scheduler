@@ -7,6 +7,7 @@ const calendarHandler = (month, year, invoicesList) => {
     eventsList = Array();
 
     //inseriamo le fatture negli eventi
+    /*
     for (el of invoicesList)
     {
         eventsList.push(
@@ -16,27 +17,22 @@ const calendarHandler = (month, year, invoicesList) => {
             }
         );
     }
-
-        var calendar = new FullCalendar.Calendar(calendarEl, {
+    */
+        calendar = new FullCalendar.Calendar(calendarEl, {
             headerToolbar: {
                 left: 'prevYear,prev,next,nextYear today',
                 center: 'title',
                 right: 'dayGridMonth,dayGridWeek,dayGridDay'
             },
-            initialDate: '2025-10-01',
-            //initialDate: `${year}-${month}-01`,
+            initialDate: new Date().getFullYear() + '-10-01',
             navLinks: true, // can click day/week names to navigate views
             editable: true,
             dayMaxEvents: true, // allow "more" link when too many events
             datesSet: function (newDate) {
-                //const dataCorrente = calendar.getDate();
+                
                 const month = calendar.getDate().getMonth() + 1;
                 const year = calendar.getDate().getFullYear();
-                //console.log(`${mese}/${anno}`);
-
-                invoicesSearch(month, year);
-                //console.log(newDate.start.toISOString().getMonth());
-                //console.log(newDate.start.toISOString().getFullYear());
+                
 
             },
             events: eventsList,

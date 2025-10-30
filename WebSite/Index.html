@@ -86,10 +86,10 @@
                                                 </select>
                                             </div>
                                             <div class="col-12 col-md-6">
-                                                <input type="number" id="InvoiceTaxable" name="InvoiceTaxable" placeholder="Imponibile" maxlength="10" value="" required />
+                                                <input type="number" id="InvoiceTaxable" name="InvoiceTaxable" placeholder="Imponibile" maxlength="10" value="" required onchange="updateInvoiceCreation()" />
                                             </div>
                                             <div class="col-12 col-md-6">
-                                                <input type="number" id="InvoiceTax" name="InvoiceTax" placeholder="Percentuale IVA" maxlength="2" value="" required />
+                                                <input type="number" id="InvoiceTax" name="InvoiceTax" placeholder="Percentuale IVA" maxlength="2" value="" required onchange="updateInvoiceCreation()" />
                                             </div>
                                             <div class="col-12 col-md-6">
                                                 <input type="number" id="InvoiceDue" name="InvoiceDue" placeholder="Netto a pagare" maxlength="10" value="" required />
@@ -167,7 +167,6 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>

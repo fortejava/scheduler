@@ -33,7 +33,7 @@ function doLogin(sessionUsername, sessionToken)
                     //Prima fase: convertire il JSON in un oggetto Javascript
                     const res = JSON.parse(this.responseText);
                     //Seconda fase: modificare aspetto GUI
-                    console.log(res);
+                    //console.log(res);
                     loginWorker(res);
                 break;
 
@@ -77,10 +77,15 @@ function loginWorker(res)
                 //Estraiamo anno e mese corrente
                 const today = new Date();
 
-                //TODO: estrarre l'elenco delle fatture del mese/anno attuale
-                const invoicesList = invoicesSearch(today.getMonth(), today.getFullYear());
+                console.log(today.getMonth() + " " + today.getFullYear());
 
-                calendarHandler(today.getMonth(), today.getFullYear(), invoicesList);
+                //TODO: estrarre l'elenco delle fatture del mese/anno attuale
+                //const invoicesList = invoicesSearch(today.getMonth(), today.getFullYear());
+
+                invoicesSearch(today.getMonth(), today.getFullYear());
+
+
+                
 
                 //3: mostrare tutte le voci di menu nascoste e nascondere il login
                 showMenu();
@@ -134,42 +139,96 @@ function showMenu()
     element.style.display = "none"
 }
 const invoicesSearch = (month, year) => {
-    const retvalue = [
+    event.preventDefault();
+    event.stopPropagation();
+    //Estraiamo tutte le fatture del mese e dell'anno corrente
+    const xhr = new XMLHttpRequest();
+    const fd = new FormData();
+    fd.append("Year", year);
+    //fd.append("Month", month+1);
+
+    xhr.onreadystatechange = function () {
+        if (this.readyState === 4) {
+            switch (this.status) {
+                case 200:
+                    {
+                        //Prima fase: convertire il JSON in un oggetto Javascript
+                        const res = JSON.parse(this.responseText);
+                        let today = new Date();
+                        calendarHandler(today.getMonth(), today.getFullYear(),[]);
+                        //console.log(`${year} - ${month}`);
+                        reloadCalendar(res);
+                        //Carichiamo il calendario
+                        //console.log(res);
+                        //loginWorker(res);
+                    }break;
+
+                default:
+                    {
+                       // const res = JSON.parse(this.responseText);
+                        console.log(this.responseText);
+                        console.log("Si è verificato un errore, riprova più tardi");
+                    }break;
+
+
+            }
+        }
+    }
+
+    xhr.open("POST", "/Services/InvoiceHandlers/GetInvoices.ashx", true);
+    xhr.send(fd);
+
+    retvalue = [];
+
+   
+
+    return retvalue;
+}
+
+/**
+ * funzione che ricarica gli eventi del calendario
+ */
+const reloadCalendar = (events) => {
+    //Costruiamo la lista dei nuovi eventi in calendare
+    newEventsList = Array();
+
+    const statusesArray = [
         {
-            status: "pagata",
-            customer: "pippo",
-            amount: 100,
-            dueDate: "2025-10-28",
-            invoiceId: "1",
-            invoiceCode: "1 / 2025"
+            backgroundColor: "green",
+            textColor: "white"
         },
         {
-            status: "da pagare",
-            customer: "pluto",
-            amount: 100,
-            dueDate: "2025-10-29",
-            invoiceId: "2",
-            invoiceCode: "2 / 2025"
+            backgroundColor: "yellow",
+            textColor: "black"
         },
         {
-            status: "pagata",
-            customer: "pippo",
-            amount: 100,
-            dueDate: "2025-11-03",
-            invoiceId: "1",
-            invoiceCode: "3 / 2025"
-        },
-        {
-            status: "da pagare",
-            customer: "pluto",
-            amount: 100,
-            dueDate: "2025-11-04",
-            invoiceId: "2",
-            invoiceCode: "4 / 2025"
+            backgroundColor: "red",
+            textColor: "white"
         }
     ];
 
-    return retvalue;
+    //Cicliamo sulle fatture per aggiungerle al calendario
+    for (el of events.Message)
+    {
+
+        newEventsList.push(
+            {
+                
+                title: el.Invoice.Customer.CustomerName + " - " + el.Invoice.InvoiceDue,
+                start: el.Invoice.InvoiceDueDate.split("T")[0],
+                backgroundColor: statusesArray[parseInt(el.StatusCode)].backgroundColor,
+                textColor: statusesArray[parseInt(el.StatusCode)].textColor,
+                borderColor: "transparent"
+            }
+        );
+    }
+
+    //Azzeriamo l'elenco precedente degli eventi
+    calendar.removeAllEvents();
+    calendar.addEventSource(newEventsList);
+    // oppure
+    //calendar.refetchEvents(); // se usi una funzione come source
+
 }
 
 const showCreateInvoice = () => {
@@ -287,9 +346,26 @@ const fillCustomers = (res, idToFill) => {
  */
 
 function createInvoiceFunction() {
-    let fd = new FormData();
 
+    event.preventDefault();
+    event.stopPropagation();
+
+    //Verifichiamo che il netto a pagare non sia maggiore del totale della fattura
+    if (parseFloat(document.querySelector("#InvoiceDue").value) > parseFloat(document.querySelector("#InvoiceTotal").value))
+    {
+        //Mostriamo la popup con l'errore
+        showPopup("Errore di compilazione", "Il netto a pagare non può essere maggiore del totale della fattura.");
+        return false;
+    }
+
+    let fd = new FormData();
     const frontendForm = document.forms["createInvoice"];
+
+    if (frontendForm.CreationDate.value > frontendForm.DueDate.value)
+    {
+        showPopup("Errore di compilazione", "La data di emissione della fattura non può essere successiva alla data di scadenza.");
+        return false;
+    }
 
     console.log(parseFloat(frontendForm.InvoiceTax.value) / 100);
 
@@ -320,7 +396,9 @@ function createInvoiceFunction() {
                     switch (res.Code)
                     {
                         case "Ok":
-                            showPopup("Fattura creata correttamente!","complimenti, sei un eroe!!!");
+                            showPopup("Fattura creata correttamente!", "complimenti, sei un eroe!!!");
+                            //Mostriamo la vista calendario
+                            showView("calendar-view");
                             break;
                         default:
                             showPopup("Si è verificato un errore", res.Message);
@@ -343,8 +421,7 @@ function createInvoiceFunction() {
     xhr.open("POST", "/services/InvoiceHandlers/CreateOrUpdateInvoice.ashx", true);
     xhr.send(fd);
 
-    event.preventDefault();
-    event.stopPropagation();
+    
     return false;
 
 }
@@ -355,9 +432,27 @@ const showPopup = (title, message) => {
     const myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
     myModal.show();
 }
-/*
+
+/**
+ * Funzione che aggiorna il totale fattura e il totale tasse
+ */
+const updateInvoiceCreation = () => {
+    let taxableAmount = parseFloat(document.querySelector("#InvoiceTaxable").value);
+    let taxRate = parseFloat(document.querySelector("#InvoiceTax").value) / 100;
+
+    //cole.log(`${taxableAmount} - ${taxRate}`);
+    if (!isNaN(taxableAmount) && !isNaN(taxRate))
+    {
+        //Aggiorniamo la form
+        document.querySelector("#TaxTotal").value = taxableAmount * taxRate;
+        document.querySelector("#InvoiceTotal").value = taxableAmount + (taxableAmount * taxRate);
+
+    }
+}
+
 //Autologin
-window.onload = function () {
+window.onload = function ()
+{
 
     if (localStorage.getItem("username") != null && localStorage.getItem("token") != null)
     {
@@ -365,5 +460,5 @@ window.onload = function () {
     }
     
 }
-*/
+
 
