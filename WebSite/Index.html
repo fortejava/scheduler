@@ -10,7 +10,8 @@
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/index.global.min.js"></script>
     <script src="assets/js/calendar.js"></script>
-    <script src="assets/js/engine.js"></script>
+    <script defer src="assets/js/engine.js"></script>
+    <!--<script defer src="assets/js/engine-backup.js"></script>-->
 </head>
 <body>
     <div class="page-wrapper container">
@@ -125,7 +126,7 @@
                 <div class="view login-view">
                     <div class="container-xl">
                         <div class="row">
-                            <form action="#" method="post" onsubmit="doLogin()" name="loginForm">
+                            <form action="#" method="post" onsubmit="doLogin(null, null, event); return false;" name="loginForm">
                                 <div class="col-12">
                                     <input type="text" value="" minlength="5" maxlength="20" name="username" id="username" placeholder="Nome utente" />
                                 </div>

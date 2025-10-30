@@ -1,56 +1,42 @@
 ﻿/**
  * Metodo che gestisce la login dell'utente
  */
-function doLogin(sessionUsername, sessionToken, event)
-{
+function doLogin(sessionUsername, sessionToken) {
     //TODO: Gestire il login
-    console.log("doLogin called - preventing default!");
-    if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        console.log("doLogin called - prevented default!");
-    }
-
-    let usernameToSave;
 
     //Creiamo l'oggetto form che invierà i dati effettivamente al server
     const dataContainer = new FormData();
 
     if (sessionUsername == undefined && sessionToken == undefined) {
         //Popoliamo la form
-        usernameToSave = document.forms.loginForm.username.value;
-        dataContainer.append("username", usernameToSave);
+        dataContainer.append("username", document.forms.loginForm.username.value);
         dataContainer.append("password", document.forms.loginForm.password.value);
         dataContainer.append("token", "");
     }
-    else
-    {
-        dataContainer.append("username", sessionUsername);     
+    else {
+        dataContainer.append("username", sessionUsername);
         dataContainer.append("token", sessionToken);
     }
 
     //Creiamo l'oggetto XMLHttpRequest che invii i dati al server
     const xhr = new XMLHttpRequest();
 
-    xhr.onreadystatechange = function ()
-    {
-        if (this.readyState === 4)
-        {
-            switch (this.status)
-            {
+    xhr.onreadystatechange = function () {
+        if (this.readyState === 4) {
+            switch (this.status) {
                 case 200:
                     //Prima fase: convertire il JSON in un oggetto Javascript
                     const res = JSON.parse(this.responseText);
                     //Seconda fase: modificare aspetto GUI
                     console.log(res);
-                    loginWorker(res, usernameToSave);
-                break;
+                    loginWorker(res);
+                    break;
 
                 default:
                     console.log("Si è verificato un errore, riprova più tardi");
-                break;
+                    break;
 
-                
+
             }
         }
     }
@@ -58,31 +44,28 @@ function doLogin(sessionUsername, sessionToken, event)
     xhr.open("POST", "/services/Login.ashx", true);
     xhr.send(dataContainer);
 
+    event.preventDefault();
+    event.stopPropagation();
 }
 
 /**
  * Funzione che elabora la risposta del server alla richiesta di login
  * @param {any} res
  */
-function loginWorker(res, username)
-{
-    switch (res.Code)
-    {
+function loginWorker(res) {
+    switch (res.Code) {
         case "Ok":
-        {
+            {
                 //Nome utente e password sono corretti, per cui dobbiamo:
                 //1: inserire username e password in localStorage
 
-                console.log(" " + document.forms.loginForm.username.value);
-                console.log("token" + res.Message.Token);
-                /*localStorage.setItem("username", document.forms.loginForm.username.value);*/
-                localStorage.setItem("username", username);
+                localStorage.setItem("username", document.forms.loginForm.username.value);
                 localStorage.setItem("token", res.Message.Token);
 
                 //2: Mostare la vista calendario
                 showView("calendar-view");
                 //2b: Inizializzare il calendario
-                
+
 
                 //Estraiamo anno e mese corrente
                 const today = new Date();
@@ -95,11 +78,11 @@ function loginWorker(res, username)
                 //3: mostrare tutte le voci di menu nascoste e nascondere il login
                 showMenu();
 
-        } break;
+            } break;
 
         case "Ko":
-        {
-        } break;
+            {
+            } break;
     }
 }
 
@@ -108,13 +91,11 @@ function loginWorker(res, username)
  * 
  * @param {any} viewtoShow l'id della vista da mostrare
  */
-function showView(viewToShow)
-{
+function showView(viewToShow) {
     //Cicliamo su tutte le viste
     const viewsList = document.querySelectorAll(".view");
 
-    for (const el of viewsList)
-    {
+    for (el of viewsList) {
         el.classList.add("view-hidden");
         el.classList.remove("view-visible");
     }
@@ -123,19 +104,17 @@ function showView(viewToShow)
     visibleElement.classList.remove("view-hidden");
     visibleElement.classList.add("view-visible");
 
-    
+
 
 }
 
-function showMenu()
-{
+function showMenu() {
     /* 
     Rimuoviamo la classe guest-hidden dalle voci di menu e nascondiamo la login (se necessario)
     */
     const menuItems = document.querySelectorAll(".guest-hidden");
 
-    for (el of menuItems)
-    {
+    for (el of menuItems) {
         el.classList.remove("guest-hidden");
     }
 
@@ -257,14 +236,12 @@ const fillStatuses = (res, idToFill) => {
     //Otteniamo il riferimento DOM alla select idToFill
     const statuses = document.getElementById(idToFill);
 
-    for (el of res.Message)
-    {
+    for (el of res.Message) {
         const newOption = document.createElement("option");
         newOption.value = el.StatusID;
         newOption.innerText = el.StatusLabel;
 
-        if (el.StatusID == 2)
-        {
+        if (el.StatusID == 2) {
             newOption.selected = true;
         }
 
@@ -284,8 +261,8 @@ const fillCustomers = (res, idToFill) => {
         newOption.value = el.CustomerID;
         newOption.innerText = el.CustomerName;
 
-        if (el.StatusID == 2) {          //if (el.CustomerID == someDefaultValue)
-            newOption.selected = true;  // problems!!!
+        if (el.StatusID == 2) {
+            newOption.selected = true;
         }
 
         statuses.appendChild(newOption);
@@ -297,8 +274,6 @@ const fillCustomers = (res, idToFill) => {
  */
 
 function createInvoiceFunction() {
-    console.log("🔍 DEBUG: event object is:", event);  // Check if it exists
-    console.log("🔍 DEBUG: event is global?", event === window.event);
     let fd = new FormData();
 
     const frontendForm = document.forms["createInvoice"];
@@ -320,8 +295,7 @@ function createInvoiceFunction() {
 
     const xhr = new XMLHttpRequest();
 
-    xhr.onreadystatechange = function ()
-    {
+    xhr.onreadystatechange = function () {
         if (this.readyState === 4) {
             switch (this.status) {
                 case 200:
@@ -329,10 +303,9 @@ function createInvoiceFunction() {
                     const res = JSON.parse(this.responseText);
                     console.log(res);
 
-                    switch (res.Code)
-                    {
+                    switch (res.Code) {
                         case "Ok":
-                            showPopup("Fattura creata correttamente!","complimenti, sei un eroe!!!");
+                            showPopup("Fattura creata correttamente!", "complimenti, sei un eroe!!!");
                             break;
                         default:
                             showPopup("Si è verificato un errore", res.Message);
@@ -378,46 +351,3 @@ window.onload = function () {
     
 }
 */
-
-console.log("Script loaded!");
-
-//Autologin
-window.onload = function () {
-
-    const username = localStorage.getItem("username");
-    const token = localStorage.getItem("token");
-    //username = "adminSuper";
-    //token = "E4824FE97EB27C954C84A6745392F2F2AB5FE23F578B6588628078D843A69211925ea17c-cc23-4f12-aff8-fefc18bed2a8";
-    console.log("Window onload fired!");
-    console.log("Autologin con " + username + " e token " + token);
-
-    if (notEmpty(username) && notEmpty(token))
-    {
-        console.log("Starting doLogin");
-        doLogin(username, token);
-    }
-    else
-    {
-        console.log("Nessun dato di autologin trovato");
-    }
-
-};
-
-const notEmpty = (s) =>
-{
-    return s != null && s != undefined && s != "";
-}
-
-
-
-
-//## Why This Happens
-//    ```
-//1. User clicks Submit
-//2. doLogin() starts
-//3. xhr.send() starts (async - takes time)
-//4. Function continues...
-//5. event.preventDefault() called ❌ BUT...
-//6. Form already submitted! Page reloads!
-//7. localStorage cleared by reload
-//8. XHR response comes back (too late!)
