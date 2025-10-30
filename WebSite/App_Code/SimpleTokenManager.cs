@@ -55,6 +55,33 @@ public class SimpleTokenManager
 
     }
 
+    public static bool ValidateToken2(string token, string username)
+    {
+        bool valid = false;
+
+        if (Helpers.IsNotEmpty(token) && Helpers.IsNotEmpty(username))
+        {
+            using (var db = new schedulerEntities())
+            {
+                var user = db.Users
+                    .Where(u=>u.Username == username)
+                    .FirstOrDefault();
+                if(user != null)
+                {
+                    Session session = db.Sessions
+                    .Where(p => p.SessionToken == token && 
+                                p.UserID == user.UserID && 
+                                p.SessionExpire > DateTime.UtcNow)
+                    .FirstOrDefault();
+                    valid = (session != null);
+                }
+            }
+        }
+
+        return valid;
+
+    }
+
 }
 
  

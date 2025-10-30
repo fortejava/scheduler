@@ -85,7 +85,9 @@ public class InvoicesService
         return result;
     }
 
-    public static List<InvoiceDTO> GetInvoicesByMonthDTO(int month, int year, bool LazyLoading = false)
+    public static List<InvoiceDTO> GetInvoicesByMonthDTO(int month, 
+                                                         int year, 
+                                                         bool LazyLoading = false)
     {
         var result = new List<InvoiceDTO>();
         if (Helpers.ValidMonth(month) && Helpers.ValidYear(year))
