@@ -51,5 +51,3 @@ public class InvoiceYears : IHttpHandler {
 //Response r = new Response("Ok", new { Years = years });
 //context.Response.ContentType = "application/json";
 //context.Response.Write(JsonConvert.SerializeObject(r));
-
-// Rethink the code to return Error Messages on Token not valid !!! 
