@@ -12,7 +12,7 @@ public class GetInvoiceByID_DTO : IHttpHandler {
         Response r = new Response("Ko", null);
         string invoiceIdString = context.Request.Form["invoiceID"];
         int invoiceId;
-        invoiceIdString = "1";
+        //`invoiceIdString = "1";
         if(int.TryParse(invoiceIdString, out invoiceId))
         {
             InvoiceDTO invoicesFound = InvoicesService.GetByIdDTO(invoiceId);

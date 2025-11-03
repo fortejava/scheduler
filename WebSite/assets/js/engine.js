@@ -301,6 +301,7 @@ const reloadCalendar = (events) => {
 }
 
 const showCalendarView = () => {
+    const today = new Date();
     invoicesSearch(today.getMonth(), today.getFullYear());
     showView('calendar-view');
 }
