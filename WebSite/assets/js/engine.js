@@ -992,6 +992,9 @@ const showInvoiceDetail = (invoiceId) => {
     showLoading();
 
     // Fetch invoice data
+    const fd = new FormData();
+    fd.append("InvoiceID",invoiceId);
+
     const xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (this.readyState === 4) {
@@ -1005,8 +1008,8 @@ const showInvoiceDetail = (invoiceId) => {
             }
         }
     };
-    xhr.open("GET", `/Services/InvoiceHandlers/GetInvoiceByID_DTO.ashx?InvoiceID=${invoiceId}`, true);
-    xhr.send();
+    xhr.open("POST", `/Services/InvoiceHandlers/GetInvoiceByID_DTO.ashx`, true);
+    xhr.send(fd);
 };
 
 // Fill form with invoice data

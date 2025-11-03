@@ -10,9 +10,9 @@ public class GetInvoiceByID_DTO : IHttpHandler {
     public void ProcessRequest (HttpContext context) 
     {
         Response r = new Response("Ko", null);
-        string invoiceIdString = context.Request.Form["invoiceID"];
+        string invoiceIdString = context.Request.Form["InvoiceID"];
         int invoiceId;
-        invoiceIdString = "1";
+        //invoiceIdString = "1";
         if(int.TryParse(invoiceIdString, out invoiceId))
         {
             InvoiceDTO invoicesFound = InvoicesService.GetByIdDTO(invoiceId);

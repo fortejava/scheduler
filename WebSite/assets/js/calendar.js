@@ -32,6 +32,7 @@ const calendarHandler = (month, year, invoicesList) => {
             // Event clicking on Invoice!!!
             eventClick: function (info) {
                 const invoiceId = info.event.extendedProps.invoiceId;
+                //console.log(invoiceId);
                 if (invoiceId) {
                     showInvoiceDetail(invoiceId);
                 }
