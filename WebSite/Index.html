@@ -76,12 +76,12 @@
                                             </a>
                                         </li>
                                         <li class="nav-item guest-hidden" id="nav-calendar-view" data-viewport="calendar-view">
-                                            <a href="javascript:void(0)" class="nav-link">
+                                            <a href="javascript:showCalendarView()" class="nav-link">
                                                 <i class="bi bi-calendar3"></i> Calendario
                                             </a>
                                         </li>
-                                        <li class="nav-item guest-hidden" id="nav-invoice-list" data-viewport="">
-                                            <a href="javascript:void(0)" class="nav-link">
+                                        <li class="nav-item guest-hidden" id="nav-invoice-list" data-viewport="invoice-list">
+                                            <a href="javascript:showInvoicesList()" class="nav-link">
                                                 <i class="bi bi-file-earmark-text"></i> Elenco Fatture
                                             </a>
                                         </li>
@@ -206,7 +206,12 @@
                             </div>
                         </div>
 
-
+                        <div class="view invoice-list" id="invoice-list">
+                            <div class="mb-4" id="invoices-list-container">
+                                <!-- Riempiamo dinamicamente la lista -->
+                            </div>
+                        </div>
+                             
                         <div class="view login-view" id="login-view">
                             <div class="container-xl">
                                 <div class="row">

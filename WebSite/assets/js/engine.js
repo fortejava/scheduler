@@ -300,7 +300,86 @@ const reloadCalendar = (events) => {
 
 }
 
+const showInvoicesList = () => {
+    showView('invoice-list');
+};
+
+function invoiceItemCreator(invoiceData)
+{
+    return `
+    <tr>
+        <td>${invoiceData.InvoiceNumber}</td>
+        <td>${invoiceData.InvoiceOrderNumber}</td>
+        <td>${invoiceData.CustomerName}</td>
+        <td>${invoiceData.InvoiceCreationDate}</td>
+        <td>${invoiceData.InvoiceDueDate}</td>
+        <td>${invoiceData.Invoice.Status.StatusLabel}</td>
+    </tr>`;
+    //need to add the buttons!!! 
+};
+
+function fillInvoicesList(res) {
+    const divInvoicesList = document.getElementById('invoices-list-container'); //invoices-list-container
+
+    if (!res) {
+        showPopup('Empty', 'empty invoices list');
+
+    } else {
+        for (el of res.Message) {
+
+        }
+    }
+
+        return;
+};
+
+const getInvoicesList = (month, year) => {
+    //event.preventDefault();
+    //event.stopPropagation();
+    //Estraiamo tutte le fatture del mese e dell'anno corrente
+    const xhr = new XMLHttpRequest();
+    const fd = new FormData();
+    fd.append("Year", year);
+    fd.append("Month", month+1);
+
+    xhr.onreadystatechange = function () {
+        if (this.readyState === 4) {
+            switch (this.status) {
+                case 200:
+                    {
+                        //Prima fase: convertire il JSON in un oggetto Javascript
+                        const res = JSON.parse(this.responseText);
+
+                        fillInvoicesList(res);
+                        //Carichiamo il calendario
+                        //console.log(res);
+                        //loginWorker(res);
+                    } break;
+
+                default:
+                    {
+                        // const res = JSON.parse(this.responseText);
+                        console.log(this.responseText);
+                        console.log("Si è verificato un errore, riprova più tardi");
+                    } break;
+
+
+            }
+        }
+    }
+
+    xhr.open("POST", API.invoices.getInvoicesFiltred, true);
+    xhr.send(fd);
+
+    retvalue = [];
+
+    return retvalue;
+}
+
+
 const showCalendarView = () => {
+
+    const today = new Date();
     invoicesSearch(today.getMonth(), today.getFullYear());
     showView('calendar-view');
 }
