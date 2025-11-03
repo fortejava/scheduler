@@ -18,7 +18,7 @@ public class CustomersService
         bool result = false;
         ErrorMessages = new List<string>();
 
-        if (!Helpers.IsNotEmpty(newCustomerName))
+        if (Helpers.IsNotEmpty(newCustomerName))
         {
             using (var db = new schedulerEntities())
             {

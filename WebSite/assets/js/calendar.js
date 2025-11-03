@@ -28,6 +28,15 @@ const calendarHandler = (month, year, invoicesList) => {
             navLinks: true, // can click day/week names to navigate views
             editable: true,
             dayMaxEvents: true, // allow "more" link when too many events
+
+            // Event clicking on Invoice!!!
+            eventClick: function (info) {
+                const invoiceId = info.event.extendedProps.invoiceId;
+                if (invoiceId) {
+                    showInvoiceDetail(invoiceId);
+                }
+            }, 
+
             datesSet: function (newDate) {
                 
                 const month = calendar.getDate().getMonth() + 1;

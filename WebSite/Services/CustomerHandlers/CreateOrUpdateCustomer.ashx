@@ -8,8 +8,8 @@ using System.Collections.Generic;
 public class CreateOrUpdateCustomer : IHttpHandler {
 
     public void ProcessRequest (HttpContext context) {
-        string customerIdString = context.Request.Form["customerID"];
-        string newCustomerName = context.Request.Form["newCustomerName"];
+        string customerIdString = context.Request.Form["CustomerID"];
+        string newCustomerName = context.Request.Form["CustomerName"];
         int customerId;
         //customerIdString = "2";
         //newCustomerName = "Cesare2";
