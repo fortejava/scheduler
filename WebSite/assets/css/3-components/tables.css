@@ -1,0 +1,193 @@
+/**
+ * TABLES.CSS - Table Components
+ * Loginet Invoice Management System
+ * 
+ * Extends Bootstrap tables with Loginet styles
+ */
+
+/**
+ * BASE TABLE (Extend Bootstrap .table)
+ */
+.table-loginet {
+    width: 100%;
+    background-color: white;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.table-loginet thead {
+    background-color: var(--loginet-primary);
+    color: white;
+}
+
+.table-loginet thead th {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-weight: var(--font-weight-semibold);
+    text-align: left;
+    border-bottom: none;
+}
+
+.table-loginet tbody tr {
+    border-bottom: 1px solid var(--border-color-light);
+    transition: background-color var(--transition-fast);
+}
+
+.table-loginet tbody tr:last-child {
+    border-bottom: none;
+}
+
+.table-loginet tbody tr:hover {
+    background-color: var(--table-hover-bg);
+}
+
+.table-loginet tbody td {
+    padding: var(--table-cell-padding);
+}
+
+/**
+ * GLOBAL TABLE HEADER STYLING
+ * Applied to all tables for consistent Loginet branding
+ * Uses #002C3D (Loginet Primary Color) for all current and future tables
+ */
+table thead {
+    background-color: #002C3D;
+}
+
+table thead th {
+    background-color: #002C3D;
+    color: white;
+}
+
+/**
+ * BOOTSTRAP TABLE-DARK COLOR OVERRIDE
+ * Multi-tiered approach to ensure Bootstrap's .table-dark class uses Loginet colors
+ * Addresses CSS specificity challenges with Bootstrap 5.3
+ */
+
+/* Tier 1: CSS Custom Properties (Bootstrap 5.3+ standard method) */
+.table-dark {
+    --bs-table-bg: #002C3D;
+    --bs-table-color: #ffffff;
+    --bs-table-border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Tier 2: Direct Selector Override (Higher Specificity + !important) */
+.table > thead.table-dark {
+    background-color: #002C3D !important;
+}
+
+.table > thead.table-dark > tr > th {
+    background-color: #002C3D !important;
+    color: white !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Tier 3: Sticky Header Support (Ensure color persists when sticky) */
+.table > thead.table-dark.sticky-top {
+    background-color: #002C3D !important;
+}
+
+.table > thead.table-dark.sticky-top > tr > th {
+    background-color: #002C3D !important;
+    color: white !important;
+}
+
+/**
+ * STRIPED TABLE
+ */
+.table-loginet.table-striped tbody tr:nth-child(even) {
+    background-color: var(--color-gray-50);
+}
+
+/**
+ * TABLE ACTIONS
+ */
+.table-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.table-action-btn {
+    padding: 0.25rem 0.5rem;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.table-action-btn:hover {
+    background-color: var(--color-gray-100);
+    color: var(--loginet-secondary);
+}
+
+/**
+ * STATUS BADGES IN TABLES
+ */
+.table-status {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+}
+
+.table-status.paid {
+    background-color: var(--color-success-light);
+    color: var(--color-success-dark);
+}
+
+.table-status.pending {
+    background-color: var(--color-warning-light);
+    color: var(--color-warning-dark);
+}
+
+.table-status.overdue {
+    background-color: var(--color-danger-light);
+    color: var(--color-danger-dark);
+}
+
+/**
+ * RESPONSIVE TABLE
+ */
+.table-responsive-loginet {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+    .table-loginet {
+        font-size: var(--font-size-sm);
+    }
+    
+    .table-loginet thead th,
+    .table-loginet tbody td {
+        padding: var(--spacing-sm);
+    }
+}
+
+/**
+ * DATATABLES INTEGRATION
+ */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: var(--loginet-secondary);
+    color: white;
+    border-color: var(--loginet-secondary);
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.5rem 1rem;
+}

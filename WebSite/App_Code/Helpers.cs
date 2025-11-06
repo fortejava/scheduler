@@ -72,6 +72,6 @@ public class Helpers
         }
     }
 
-    public static string Paid = "Saldato";
-    public static string NotPaid = "Non Saldato";
+    public static string Paid = "Saldata";
+    public static string NotPaid = "Non Saldata";
 }

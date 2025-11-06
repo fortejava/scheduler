@@ -301,37 +301,117 @@ const reloadCalendar = (events) => {
 }
 
 const showInvoicesList = () => {
+    const today = new Date();
+    getInvoicesList(today.getMonth(), today.getFullYear());
     showView('invoice-list');
 };
 
-function invoiceItemCreator(invoiceData)
-{
+function invoiceItemCreator(message, i) {
+    const invoiceData = message.Invoice;
+    const statusCode = message.StatusCode; 
+
     return `
-    <tr>
-        <td>${invoiceData.InvoiceNumber}</td>
-        <td>${invoiceData.InvoiceOrderNumber}</td>
-        <td>${invoiceData.CustomerName}</td>
-        <td>${invoiceData.InvoiceCreationDate}</td>
-        <td>${invoiceData.InvoiceDueDate}</td>
-        <td>${invoiceData.Invoice.Status.StatusLabel}</td>
+    <tr style="height: 45px;">
+        <th scope="row" class="align-middle">${i}</th>
+        <td class="align-middle">${invoiceData.InvoiceNumber}</td>
+        <td class="align-middle">${invoiceData.InvoiceOrderNumber}</td>
+        <td class="align-middle">${invoiceData.Customer.CustomerName}</td>
+        <td class="align-middle">${invoiceData.InvoiceCreationDate.split('T')[0]}</td>
+        <td class="align-middle">${invoiceData.InvoiceDueDate.split('T')[0]}</td>
+        <td class="align-middle">${getStatusBadge(statusCode)}</td>
+        <td class="align-middle text-center">
+            <button class="btn btn-sm btn-outline-primary" onclick="showInvoiceDetail(${invoiceData.InvoiceID})" title="Visualizza">
+                <i class="bi bi-eye"></i>
+            </button>
+        </td>
+        <td class="align-middle text-center">
+            <button class="btn btn-sm btn-outline-danger" onclick="deleteInvoice(${invoiceData.InvoiceID})" title="Elimina">
+                <i class="bi bi-trash"></i>
+            </button>
+        </td>
     </tr>`;
-    //need to add the buttons!!! 
-};
+}
 
-function fillInvoicesList(res) {
-    const divInvoicesList = document.getElementById('invoices-list-container'); //invoices-list-container
+function getStatusBadge(statusCode) {
+    const statusMap = {
+        '0': { class: 'success', label: 'Saldato' },       // Paid - Green
+        '1': { class: 'warning', label: 'Non Saldato' },   // Not paid, not overdue - Yellow
+        '2': { class: 'danger', label: 'Scaduta' }         // Overdue - Red
+    };
+    const status = statusMap[statusCode] || { class: 'secondary', label: 'Sconosciuto' };
+    return `<span class="badge bg-${status.class}">${status.label}</span>`;
+}
 
-    if (!res) {
-        showPopup('Empty', 'empty invoices list');
+function editInvoice(i) {
+    // Mostra la vista di modifica fattura
+    //showView('invoice-creation');
+    // Carica i dati della fattura da modificare
+    loadInvoiceData(i);
+}
 
-    } else {
-        for (el of res.Message) {
+function loadInvoiceData(invoiceId) {
+    // Implementa la logica per caricare i dati della fattura con l'ID specificato
+    console.log(`Caricamento dati per la fattura con ID: ${invoiceId}`);
+    // Esempio: Effettua una chiamata AJAX per ottenere i dati della fattura e popolare il modulo
+}
 
-        }
-    }
+function deleteInvoice(i) {
+    // Implementa la logica per eliminare la fattura con l'ID specificato
+    console.log(`Eliminazione fattura con ID: ${i}`);
+}
 
-        return;
-};
+function cancelInvoice(i) {
+    // Implementa la logica per annullare la modifica della fattura con l'ID specificato
+    console.log(`Annullamento modifica fattura con ID: ${i}`);
+}
+
+function saveInvoice(i) {
+    // Implementa la logica per salvare la fattura con l'ID specificato
+    console.log(`Salvataggio fattura con ID: ${i}`);
+}
+
+//function fillInvoicesList(res) {
+//    const divInvoicesList = document.getElementById('invoices-list-container');
+
+//    if (!res || !res.Message || res.Message.length === 0) {
+//        divInvoicesList.innerHTML = `
+//            <div class="text-center py-5">
+//                <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+//                <p class="text-muted mt-3">Nessuna fattura trovata.</p>
+//            </div>`;
+//        return;
+//    }
+
+//    let invoicesList = `
+//        <div class="table-responsive">
+//            <table class="table table-hover table-sm">
+//                <thead class="table-light">
+//                    <tr>
+//                        <th scope="col">#</th>
+//                        <th scope="col">N° Fattura</th>
+//                        <th scope="col">N° Ordine</th>
+//                        <th scope="col">Cliente</th>
+//                        <th scope="col">Data Immissione</th>
+//                        <th scope="col">Data Scadenza</th>
+//                        <th scope="col">Stato</th>
+//                        <th scope="col" class="text-center">Visualizza</th>
+//                        <th scope="col" class="text-center">Elimina</th>
+//                    </tr>
+//                </thead>
+//                <tbody>`;
+
+//    let i = 0;
+//    for (el of res.Message) {
+//        invoicesList += invoiceItemCreator(el, ++i);
+//    }
+
+//    invoicesList += `
+//                </tbody>
+//            </table>
+//        </div>`;
+
+//    divInvoicesList.innerHTML = invoicesList;
+//}
 
 const getInvoicesList = (month, year) => {
     //event.preventDefault();
@@ -339,8 +419,8 @@ const getInvoicesList = (month, year) => {
     //Estraiamo tutte le fatture del mese e dell'anno corrente
     const xhr = new XMLHttpRequest();
     const fd = new FormData();
-    fd.append("Year", year);
-    fd.append("Month", month+1);
+    //fd.append("Year", year);
+    //fd.append("Month", month+1);
 
     xhr.onreadystatechange = function () {
         if (this.readyState === 4) {
@@ -1140,3 +1220,615 @@ const fillInvoiceForm = (invoiceDTO, isCreateMode) => {
         '<i class="bi bi-check-circle"></i> Crea Fattura' :
         '<i class="bi bi-save"></i> Aggiorna Fattura';
 };
+
+// Update fillInvoicesList to store data
+// Update fillInvoicesList to set default filters
+function fillInvoicesList(res) {
+    if (!res || !res.Message || res.Message.length === 0) {
+        document.getElementById('invoices-list-container').innerHTML = `
+            <div class="text-center py-5">
+                <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+                <p class="text-muted mt-3">Nessuna fattura trovata.</p>
+            </div>`;
+        return;
+    }
+
+    allInvoices = res.Message;
+
+    // Populate filters
+    populateYearFilter();
+    populateCustomerFilter();
+
+    // Set default to current month/year
+    setDefaultDateFilters();
+
+    // Render with filters applied
+    filterInvoices();
+}
+
+function populateYearFilter() {
+    const yearFilter = document.getElementById('year-filter');
+    if (!yearFilter) return;
+
+    const years = [...new Set(allInvoices.map(inv =>
+        new Date(inv.Invoice.InvoiceDueDate).getFullYear()
+    ))].sort((a, b) => b - a);
+
+    let options = '<option value="">Tutti gli anni</option>';
+    years.forEach(year => {
+        options += `<option value="${year}">${year}</option>`;
+    });
+
+    yearFilter.innerHTML = options;
+}
+
+function setDefaultDateFilters() {
+    const today = new Date();
+    const currentMonth = today.getMonth() + 1;
+    const currentYear = today.getFullYear();
+
+    const monthFilter = document.getElementById('month-filter');
+    const yearFilter = document.getElementById('year-filter');
+
+    if (monthFilter) monthFilter.value = currentMonth;
+    if (yearFilter) yearFilter.value = currentYear;
+}
+
+
+function populateCustomerFilter() {
+    const customerFilter = document.getElementById('customer-filter');
+    if (!customerFilter) return;
+
+    const uniqueCustomers = [...new Set(allInvoices.map(inv => inv.Invoice.Customer.CustomerName))];
+
+    let options = '<option value="">Tutti i clienti</option>';
+    uniqueCustomers.forEach(customer => {
+        options += `<option value="${customer}">${customer}</option>`;
+    });
+
+    customerFilter.innerHTML = options;
+}
+
+//function renderInvoicesTable(invoices) {
+//    const divInvoicesList = document.getElementById('invoices-list-container');
+
+//    let invoicesList = `
+//        <div class="table-responsive">
+//            <table class="table table-hover table-sm">
+//                <thead class="table-light sticky-top">
+//                    <tr>
+//                        <th scope="col">#</th>
+//                        <th scope="col" class="sortable" onclick="sortTable('invoiceNumber')">
+//                            N° Fattura <i class="bi bi-arrow-down-up"></i>
+//                        </th>
+//                        <th scope="col" class="sortable" onclick="sortTable('orderNumber')">
+//                            N° Ordine <i class="bi bi-arrow-down-up"></i>
+//                        </th>
+//                        <th scope="col" class="sortable" onclick="sortTable('customer')">
+//                            Cliente <i class="bi bi-arrow-down-up"></i>
+//                        </th>
+//                        <th scope="col" class="sortable" onclick="sortTable('creationDate')">
+//                            Data Immissione <i class="bi bi-arrow-down-up"></i>
+//                        </th>
+//                        <th scope="col" class="sortable" onclick="sortTable('dueDate')">
+//                            Data Scadenza <i class="bi bi-arrow-down-up"></i>
+//                        </th>
+//                        <th scope="col" class="sortable" onclick="sortTable('status')">
+//                            Stato <i class="bi bi-arrow-down-up"></i>
+//                        </th>
+//                        <th scope="col" class="text-center">Azioni</th>
+//                    </tr>
+//                </thead>
+//                <tbody>`;
+
+//    // Render rows
+//    const startIndex = (currentPage - 1) * itemsPerPage;
+//    const endIndex = startIndex + itemsPerPage;
+//    const paginatedInvoices = invoices.slice(startIndex, endIndex);
+
+//    paginatedInvoices.forEach((el, index) => {
+//        invoicesList += createInvoiceRow(el, startIndex + index + 1);
+//    });
+
+//    invoicesList += `
+//                </tbody>
+//            </table>
+//        </div>
+//        ${renderPagination(invoices.length)}`;
+
+//    divInvoicesList.innerHTML = invoicesList;
+//}
+
+function renderInvoicesTable(invoices) {
+    const divInvoicesList = document.getElementById('invoices-list-container');
+
+    if (!invoices || invoices.length === 0) {
+        divInvoicesList.innerHTML = `
+            <div class="text-center py-5">
+                <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+                <p class="text-muted mt-3">Nessuna fattura trovata con i filtri selezionati.</p>
+            </div>`;
+        return;
+    }
+
+    // Calculate pagination
+    const totalItems = invoices.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+    const paginatedInvoices = invoices.slice(startIndex, endIndex);
+
+    let tableHtml = `
+        <div class="table-responsive">
+            <table class="table table-hover table-striped">
+                <thead class="table-dark sticky-top">
+                    <tr>
+                        <th scope="col" style="font-size: 0.9rem; font-weight: 600;">#</th>
+                        <th scope="col" class="sortable" onclick="sortTable('invoiceNumber')" style="font-size: 0.9rem; font-weight: 600;">
+                            N° FATTURA <i class="bi bi-arrow-down-up"></i>
+                        </th>
+                        <th scope="col" class="sortable" onclick="sortTable('orderNumber')" style="font-size: 0.9rem; font-weight: 600;">
+                            N° ORDINE <i class="bi bi-arrow-down-up"></i>
+                        </th>
+                        <th scope="col" class="sortable" onclick="sortTable('customer')" style="font-size: 0.9rem; font-weight: 600;">
+                            CLIENTE <i class="bi bi-arrow-down-up"></i>
+                        </th>
+                        <th scope="col" class="sortable" onclick="sortTable('creationDate')" style="font-size: 0.9rem; font-weight: 600;">
+                            DATA IMMISSIONE <i class="bi bi-arrow-down-up"></i>
+                        </th>
+                        <th scope="col" class="sortable" onclick="sortTable('dueDate')" style="font-size: 0.9rem; font-weight: 600;">
+                            DATA SCADENZA <i class="bi bi-arrow-down-up"></i>
+                        </th>
+                        <th scope="col" class="sortable" onclick="sortTable('status')" style="font-size: 0.9rem; font-weight: 600;">
+                            STATO <i class="bi bi-arrow-down-up"></i>
+                        </th>
+                        <th scope="col" class="text-center" style="font-size: 0.9rem; font-weight: 600;">AZIONI</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+    // Render paginated rows
+    paginatedInvoices.forEach((el, index) => {
+        tableHtml += createInvoiceRow(el, startIndex + index + 1);
+    });
+
+    tableHtml += `
+                </tbody>
+            </table>
+        </div>`;
+
+    // Add pagination controls
+    if (totalPages > 1) {
+        tableHtml += renderPaginationControls(totalItems, totalPages);
+    }
+
+    divInvoicesList.innerHTML = tableHtml;
+    updateSortIcons();
+}
+
+function createInvoiceRow(message, rowNumber) {
+    const inv = message.Invoice;
+    const statusCode = message.StatusCode;
+
+    return `
+    <tr class="invoice-row" 
+        data-invoice-id="${inv.InvoiceID}"
+        data-invoice-number="${inv.InvoiceNumber}"
+        data-customer="${inv.Customer.CustomerName}"
+        data-status-code="${statusCode}"
+        style="cursor: pointer;">
+        <th scope="row" class="align-middle">${rowNumber}</th>
+        <td class="align-middle fw-bold">${inv.InvoiceNumber}</td>
+        <td class="align-middle text-muted">${inv.InvoiceOrderNumber}</td>
+        <td class="align-middle">${inv.Customer.CustomerName}</td>
+        <td class="align-middle">${formatDate(inv.InvoiceCreationDate)}</td>
+        <td class="align-middle">${formatDate(inv.InvoiceDueDate)}</td>
+        <td class="align-middle">${getStatusBadge(statusCode)}</td>
+        <td class="align-middle text-center">
+            <button class="btn btn-sm btn-outline-primary me-1" 
+                    onclick="event.stopPropagation(); showInvoiceDetail(${inv.InvoiceID})" 
+                    title="Visualizza">
+                <i class="bi bi-eye"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger" 
+                    onclick="event.stopPropagation(); confirmDeleteInvoice(${inv.InvoiceID})" 
+                    title="Elimina">
+                <i class="bi bi-trash"></i>
+            </button>
+        </td>
+    </tr>`;
+}
+
+function renderPaginationControls(totalItems, totalPages) {
+    const startItem = (currentPage - 1) * itemsPerPage + 1;
+    const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+
+    let paginationHtml = `
+        <div class="row mt-3 align-items-center">
+            <!-- Left: Items info -->
+            <div class="col-md-4">
+                <small class="text-muted fw-bold">
+                    Mostrando ${startItem}-${endItem} di ${totalItems} fatture
+                </small>
+            </div>
+            
+            <!-- Center: Page navigation -->
+            <div class="col-md-4 text-center">
+                <nav aria-label="Navigazione pagine">
+                    <ul class="pagination pagination-sm justify-content-center mb-0">
+                        <!-- Previous button -->
+                        <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                            <a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;" aria-label="Precedente">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>`;
+
+    // Page numbers
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    // Adjust start if we're near the end
+    if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    // First page + ellipsis if needed
+    if (startPage > 1) {
+        paginationHtml += `
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="changePage(1); return false;">1</a>
+            </li>`;
+        if (startPage > 2) {
+            paginationHtml += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+        }
+    }
+
+    // Visible page range
+    for (let i = startPage; i <= endPage; i++) {
+        paginationHtml += `
+            <li class="page-item ${i === currentPage ? 'active' : ''}">
+                <a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>
+            </li>`;
+    }
+
+    // Ellipsis + last page if needed
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            paginationHtml += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+        }
+        paginationHtml += `
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="changePage(${totalPages}); return false;">${totalPages}</a>
+            </li>`;
+    }
+
+    paginationHtml += `
+                        <!-- Next button -->
+                        <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                            <a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;" aria-label="Successiva">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            
+            <!-- Right: Items per page selector -->
+            <div class="col-md-4 text-end">
+                <select class="form-select form-select-sm d-inline-block" style="width: auto;" onchange="changeItemsPerPage(this.value)">
+                    <option value="15" ${itemsPerPage === 15 ? 'selected' : ''}>15 per pagina</option>
+                    <option value="30" ${itemsPerPage === 30 ? 'selected' : ''}>30 per pagina</option>
+                    <option value="50" ${itemsPerPage === 50 ? 'selected' : ''}>50 per pagina</option>
+                    <option value="100" ${itemsPerPage === 100 ? 'selected' : ''}>Tutte</option>
+                </select>
+            </div>
+        </div>`;
+
+    return paginationHtml;
+}
+
+function changePage(page) {
+    const filteredData = getCurrentFilteredData();
+    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+    if (page < 1 || page > totalPages) return;
+
+    currentPage = page;
+    renderInvoicesTable(filteredData);
+
+    // Smooth scroll to table top
+    document.querySelector('.table-responsive')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
+}
+
+function changeItemsPerPage(value) {
+    itemsPerPage = parseInt(value);
+    currentPage = 1; // Reset to first page
+    filterInvoices(); // Re-render with new page size
+}
+
+// FILTER FUNCTION
+function filterInvoices() {
+    const filtered = getCurrentFilteredData();
+
+    // Update counter
+    updateResultsCounter(filtered.length, allInvoices.length);
+
+    // Reset to page 1 when filters change
+    currentPage = 1;
+
+    // Render with pagination
+    renderInvoicesTable(filtered);
+}
+//function filterInvoices() {
+//    const searchTerm = document.getElementById('invoice-search')?.value.toLowerCase() || '';
+//    const monthFilter = document.getElementById('month-filter')?.value || '';
+//    const yearFilter = document.getElementById('year-filter')?.value || '';
+//    const statusFilter = document.getElementById('status-filter')?.value || '';
+//    const customerFilter = document.getElementById('customer-filter')?.value || '';
+
+//    const filtered = allInvoices.filter(item => {
+//        const inv = item.Invoice;
+//        const dueDate = new Date(inv.InvoiceDueDate);
+
+//        // Search match
+//        const matchesSearch =
+//            inv.InvoiceNumber.toLowerCase().includes(searchTerm) ||
+//            inv.InvoiceOrderNumber.toLowerCase().includes(searchTerm) ||
+//            inv.Customer.CustomerName.toLowerCase().includes(searchTerm);
+
+//        // Date filters
+//        const matchesMonth = !monthFilter || (dueDate.getMonth() + 1) === parseInt(monthFilter);
+//        const matchesYear = !yearFilter || dueDate.getFullYear() === parseInt(yearFilter);
+
+//        // Other filters
+//        const matchesStatus = !statusFilter || item.StatusCode === statusFilter;
+//        const matchesCustomer = !customerFilter || inv.Customer.CustomerName === customerFilter;
+
+//        return matchesSearch && matchesMonth && matchesYear && matchesStatus && matchesCustomer;
+//    });
+
+//    // Update counter
+//    updateResultsCounter(filtered.length, allInvoices.length);
+
+//    // Reset to page 1
+//    currentPage = 1;
+
+//    renderInvoicesTable(filtered);
+//}
+
+function updateResultsCounter(filtered, total) {
+    const counter = document.getElementById('results-counter');
+    if (counter) {
+        counter.textContent = `Visualizzate ${filtered} di ${total} fatture`;
+    }
+}
+
+function clearFilters() {
+    document.getElementById('invoice-search').value = '';
+    document.getElementById('month-filter').value = '';
+    document.getElementById('year-filter').value = '';
+    document.getElementById('status-filter').value = '';
+    document.getElementById('customer-filter').value = '';
+
+    currentPage = 1;
+    filterInvoices();
+}
+
+// DATE FORMATTING
+function formatDate(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
+// DELETE CONFIRMATION
+function confirmDeleteInvoice(invoiceId) {
+    if (confirm('Sei sicuro di voler eliminare questa fattura?')) {
+        deleteInvoice(invoiceId);
+    }
+}
+
+
+function sortTable(column) {
+    // Toggle direction if same column
+    if (currentSortColumn === column) {
+        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSortColumn = column;
+        currentSortDirection = 'asc';
+    }
+
+    // Get current filtered data
+    let dataToSort = getCurrentFilteredData();
+
+    // Sort logic
+    dataToSort.sort((a, b) => {
+        let valA, valB;
+
+        switch (column) {
+            case 'invoiceNumber':
+                valA = a.Invoice.InvoiceNumber;
+                valB = b.Invoice.InvoiceNumber;
+                break;
+            case 'orderNumber':
+                valA = a.Invoice.InvoiceOrderNumber;
+                valB = b.Invoice.InvoiceOrderNumber;
+                break;
+            case 'customer':
+                valA = a.Invoice.Customer.CustomerName;
+                valB = b.Invoice.Customer.CustomerName;
+                break;
+            case 'creationDate':
+                valA = new Date(a.Invoice.InvoiceCreationDate);
+                valB = new Date(b.Invoice.InvoiceCreationDate);
+                break;
+            case 'dueDate':
+                valA = new Date(a.Invoice.InvoiceDueDate);
+                valB = new Date(b.Invoice.InvoiceDueDate);
+                break;
+            case 'status':
+                valA = parseInt(a.StatusCode);
+                valB = parseInt(b.StatusCode);
+                break;
+        }
+
+        if (valA < valB) return currentSortDirection === 'asc' ? -1 : 1;
+        if (valA > valB) return currentSortDirection === 'asc' ? 1 : -1;
+        return 0;
+    });
+
+    renderInvoicesTable(dataToSort);
+    updateSortIcons();
+}
+
+function updateSortIcons() {
+    // Remove all active sort indicators
+    document.querySelectorAll('.sortable i').forEach(icon => {
+        icon.className = 'bi bi-arrow-down-up';
+    });
+
+    // Add active indicator to current column
+    const iconMap = {
+        'invoiceNumber': 0,
+        'orderNumber': 1,
+        'customer': 2,
+        'creationDate': 3,
+        'dueDate': 4,
+        'status': 5
+    };
+
+    const columnIndex = iconMap[currentSortColumn];
+    if (columnIndex !== undefined) {
+        const icon = document.querySelectorAll('.sortable i')[columnIndex];
+        if (icon) {
+            icon.className = currentSortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down';
+        }
+    }
+}
+
+
+function renderPagination(totalItems) {
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    if (totalPages <= 1) return '';
+
+    const startItem = (currentPage - 1) * itemsPerPage + 1;
+    const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+
+    return `
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div>
+                <small class="text-muted">
+                    Mostrando ${startItem}-${endItem} di ${totalItems} fatture
+                </small>
+            </div>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                        <a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                    ${renderPageNumbers(totalPages)}
+                    <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                        <a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div>
+                <select class="form-select form-select-sm" style="width: auto;" onchange="changeItemsPerPage(this.value)">
+                    <option value="15" ${itemsPerPage === 15 ? 'selected' : ''}>15 per pagina</option>
+                    <option value="30" ${itemsPerPage === 30 ? 'selected' : ''}>30 per pagina</option>
+                    <option value="50" ${itemsPerPage === 50 ? 'selected' : ''}>50 per pagina</option>
+                    <option value="100" ${itemsPerPage === 100 ? 'selected' : ''}>100 per pagina</option>
+                </select>
+            </div>
+        </div>`;
+}
+
+function renderPageNumbers(totalPages) {
+    let pages = '';
+    const maxVisible = 5;
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+    if (endPage - startPage < maxVisible - 1) {
+        startPage = Math.max(1, endPage - maxVisible + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+        pages += `
+            <li class="page-item ${i === currentPage ? 'active' : ''}">
+                <a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>
+            </li>`;
+    }
+
+    return pages;
+}
+
+function changePage(page) {
+    currentPage = page;
+    filterInvoices();
+    // Scroll to top of table
+    document.querySelector('.table-responsive').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function changeItemsPerPage(value) {
+    itemsPerPage = parseInt(value);
+    currentPage = 1;
+    filterInvoices();
+}
+
+function getCurrentFilteredData() {
+    // Returns currently filtered dataset
+    const searchTerm = document.getElementById('invoice-search')?.value.toLowerCase() || '';
+    const monthFilter = document.getElementById('month-filter')?.value || '';
+    const yearFilter = document.getElementById('year-filter')?.value || '';
+    const statusFilter = document.getElementById('status-filter')?.value || '';
+    const customerFilter = document.getElementById('customer-filter')?.value || '';
+
+    return allInvoices.filter(item => {
+        const inv = item.Invoice;
+        const dueDate = new Date(inv.InvoiceDueDate);
+
+        const matchesSearch =
+            inv.InvoiceNumber.toLowerCase().includes(searchTerm) ||
+            inv.InvoiceOrderNumber.toLowerCase().includes(searchTerm) ||
+            inv.Customer.CustomerName.toLowerCase().includes(searchTerm);
+
+        const matchesMonth = !monthFilter || (dueDate.getMonth() + 1) === parseInt(monthFilter);
+        const matchesYear = !yearFilter || dueDate.getFullYear() === parseInt(yearFilter);
+        const matchesStatus = !statusFilter || item.StatusCode === statusFilter;
+        const matchesCustomer = !customerFilter || inv.Customer.CustomerName === customerFilter;
+
+        return matchesSearch && matchesMonth && matchesYear && matchesStatus && matchesCustomer;
+    });
+}
+
+
+
+// Pagination globals - ADD AT TOP OF FILE
+let currentPage = 1;
+let itemsPerPage = 15;
+let allInvoices = [];
+let currentSortColumn = null;
+let currentSortDirection = 'asc';
+
+
+// Pagination globals
+//let currentPage = 1;
+//let itemsPerPage = 15;
+// Global variable to store all invoices
+/*let allInvoices = [];*/
+// Global sorting state
+//let currentSortColumn = null;
+//let currentSortDirection = 'asc';

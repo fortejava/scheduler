@@ -67,6 +67,7 @@ public class CreateOrUpdateInvoice : IHttpHandler {
 
 
         List<string> errorMessages;
+        int resultInvoiceID;
 
         //invoice.InvoiceNumber = "INV-2025-013";
         //invoice.InvoiceOrderNumber = "ORD-1346";
@@ -82,10 +83,15 @@ public class CreateOrUpdateInvoice : IHttpHandler {
         //invoice.InvoiceID = 14;
 
 
-        if (InvoicesService.CreateOrUpdate(invoice, out errorMessages))
+        if (InvoicesService.CreateOrUpdate(invoice, out errorMessages, out resultInvoiceID))
         {
             r.Code = "Ok";
-            r.Message = null;
+            // Return invoice data in Message field for frontend redirect
+            // IsNew determines if this was a CREATE (invoiceID was 0 or -1) or UPDATE operation
+            r.Message = new {
+                InvoiceID = resultInvoiceID,
+                IsNew = (invoiceID == 0 || invoiceID == -1)
+            };
         }
         else
         {

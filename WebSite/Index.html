@@ -1,40 +1,46 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>Scadenzario Fatture</title>
+    <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="MyWebSite" />
+    <link rel="manifest" href="/assets/img/favicon/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap -->
     <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="assets/css/style.css" rel="stylesheet" media="all" />
+
+    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="assets/bootstrap-icons/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css">
 
-    <!--<link href="assets/css/style_added.css" rel="stylesheet" media="all" />-->
-    <link href="assets/css/style_improvements.css" rel="stylesheet" />
-    <link href="assets/css/animations.css" rel="stylesheet" />
-    <link href="assets/css/responsive.css" rel="stylesheet" />
-    <link href="assets/css/accessibility.css" rel="stylesheet" />
-    <link href="assets/css/customers-view.css" rel="stylesheet" />
+    <!-- Loginet Modular CSS (imports all layers 1-5) -->
+    <link href="assets/css/main.css" rel="stylesheet" />
 
+    <!-- Scripts -->
     <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/index.global.min.js"></script>
+    <!-- CRITICAL: Load in this exact order! -->
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/invoices.js"></script>
+    <script src="assets/js/customers.js"></script>
     <script src="assets/js/calendar.js"></script>
-    <script defer src="assets/js/engine.js"></script>
+    <script src="assets/js/main.js"></script>
+    <!-- FullCalendar -->
+    <script src="assets/js/index.global.min.js"></script>
 </head>
 <body>
-    <nav class="navbar" style="background-color: #e3f2fd;" data-bs-theme="light">
-
-        <!--<div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="assets/img/logo_loginet.png" alt="Loginet" style="background-color: #e3f2fd;" data-bs-theme="light" height="60">
-            </a>
-        </div>-->
+    <nav class="navbar" style="background-color: #e3f2fd;" data-bs-theme="light" id="nav-bar-logo">
         <div class="container-fluid">
-
             <a class="navbar-brand" href="#">
-                <img src="assets/img/logo_loginet.png" alt="Loginet" height="60">
+                <img src="assets/img/logo-loginet-corporate-cropped.svg" alt="Loginet" height="60">
             </a>
-            <!--<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-            <button class="btn btn-outline-success" type="submit">Search</button>-->
             <ul class="navbar-nav d-flex flex-row gap-3">
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="#">
@@ -42,21 +48,20 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">
+                    <!-- FIXED: Added onclick handler -->
+                    <a class="nav-link active" aria-current="page" href="javascript:void(0)" onclick="doLogout()">
                         <i class="bi bi-box-arrow-right" style="color: #E5692C;"></i> Logout
                     </a>
                 </li>
             </ul>
         </div>
     </nav>
-    <!--<img src="assets/img/logo_loginet.png" class="header-logo" />-->
+
     <div class="page-wrapper container">
         <div class="row header-wrapper">
-            <div class="col-12 text-center">
-
-            </div>
-
+            <div class="col-12 text-center"></div>
         </div>
+
         <div class="row views">
             <div class="col-md-3 nav-wrapper">
                 <div class="accordion">
@@ -67,7 +72,7 @@
                             </button>
                         </h2>
                         <div class="accordion-collapse collapse show" id="main-menu-accordion">
-                            <nav class="navbar">
+                            <nav class="navbar" style="background-color: #e3f2fd;">
                                 <div class="container-fluid">
                                     <ul class="navbar-nav">
                                         <li class="nav-item" id="nav-login" data-viewport="login-view">
@@ -90,7 +95,6 @@
                                                 <i class="bi bi-plus-circle"></i> Inserisci Fattura
                                             </a>
                                         </li>
-
                                         <li class="nav-item guest-hidden" id="nav-customers-view" data-viewport="customers-view">
                                             <a href="javascript:showCustomersView()" class="nav-link">
                                                 <i class="bi bi-people"></i> Elenco Clienti
@@ -106,20 +110,16 @@
                             </nav>
                         </div>
                     </div>
-
                 </div>
             </div>
+
             <div class="col-md-9 view-wrapper">
-
-
                 <div class="card shadow-sm">
-                    <!-- Aggiungi card -->
                     <div class="card-body">
 
-
+                        <!-- INVOICE CREATION VIEW -->
                         <div class="view" id="invoice-creation">
                             <div class="container-xl">
-                                <!-- HEADER WITH TOGGLE -->
                                 <div class="row mb-4">
                                     <div class="col-12 d-flex justify-content-between align-items-center">
                                         <h2 id="invoice-form-title">Aggiungi Nuova Fattura</h2>
@@ -130,12 +130,10 @@
                                     </div>
                                 </div>
 
-                                <!-- FORM -->
-                                <form action="#" method="post" name="createInvoice" onsubmit="createInvoiceFunction(event); return false;">
+                                <form action="#" method="post" id="createInvoice" name="createInvoice">
                                     <input type="hidden" id="InvoiceID" value="" name="InvoiceID" />
 
                                     <div class="row g-3">
-                                        <!-- Row 1 -->
                                         <div class="col-md-6">
                                             <label for="InvoiceOrderNumber" class="form-label">Numero Ordine</label>
                                             <input type="text" class="form-control" id="InvoiceOrderNumber" name="InvoiceOrderNumber" required />
@@ -145,17 +143,15 @@
                                             <input type="text" class="form-control" id="InvoiceNumber" name="InvoiceNumber" required />
                                         </div>
 
-                                        <!-- Row 2 -->
                                         <div class="col-md-6">
                                             <label for="CustomerID" class="form-label">Cliente</label>
-                                            <select class="form-select w-100" id="CustomerID" name="CustomerID" required style="width: 100% !important;"></select>
+                                            <select class="form-select w-100" id="CustomerID" name="CustomerID" required></select>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="StatusID" class="form-label">Stato</label>
-                                            <select class="form-select w-100" id="StatusID" name="StatusID" required style="width: 100% !important;"></select>
+                                            <select class="form-select w-100" id="StatusID" name="StatusID" required></select>
                                         </div>
 
-                                        <!-- Row 3 -->
                                         <div class="col-md-6">
                                             <label for="InvoiceTaxable" class="form-label">Imponibile</label>
                                             <input type="number" class="form-control" id="InvoiceTaxable" name="InvoiceTaxable" required onchange="updateInvoiceCreation()" />
@@ -165,7 +161,6 @@
                                             <input type="number" class="form-control" id="InvoiceTax" name="InvoiceTax" required onchange="updateInvoiceCreation()" />
                                         </div>
 
-                                        <!-- Row 4 -->
                                         <div class="col-md-6">
                                             <label for="InvoiceDue" class="form-label">Netto a Pagare</label>
                                             <input type="number" class="form-control" id="InvoiceDue" name="InvoiceDue" required />
@@ -175,7 +170,6 @@
                                             <input type="text" class="form-control" id="TaxTotal" name="TaxTotal" readonly />
                                         </div>
 
-                                        <!-- Row 5 -->
                                         <div class="col-md-6">
                                             <label for="InvoiceTotal" class="form-label">Totale Fattura</label>
                                             <input type="text" class="form-control" id="InvoiceTotal" name="InvoiceTotal" readonly />
@@ -185,17 +179,15 @@
                                             <input type="date" class="form-control" id="CreationDate" name="CreationDate" required />
                                         </div>
 
-                                        <!-- Row 6 -->
                                         <div class="col-md-6">
                                             <label for="DueDate" class="form-label">Data Scadenza</label>
                                             <input type="date" class="form-control" id="DueDate" name="DueDate" required />
                                         </div>
                                         <div class="col-md-6">
                                             <label for="Description" class="form-label">Descrizione</label>
-                                            <textarea class="form-control" id="Description" name="Description" rows="1"></textarea>
+                                            <textarea class="form-control" id="Description" name="Description" rows="3"></textarea>
                                         </div>
 
-                                        <!-- Submit Button -->
                                         <div class="col-12">
                                             <button type="submit" class="btn btn-primary" id="invoice-submit-btn">
                                                 <i class="bi bi-check-circle"></i> Crea Fattura
@@ -203,24 +195,101 @@
                                         </div>
                                     </div>
                                 </form>
+
+                                <!-- Navigation Buttons (Detail Mode Only) -->
+                                <div class="row mt-4" id="invoice-detail-actions" style="display:none;">
+                                    <div class="col-12 d-flex justify-content-between gap-2">
+                                        <!-- Left: Return to List -->
+                                        <button type="button" class="btn btn-outline-secondary"
+                                                onclick="Invoices.showList()"
+                                                id="btn-return-to-list">
+                                            <i class="bi bi-arrow-left"></i> Torna a Elenco
+                                        </button>
+
+                                        <!-- Center: New Invoice -->
+                                        <button type="button" class="btn btn-outline-primary"
+                                                onclick="Invoices.showCreate()"
+                                                id="btn-new-invoice">
+                                            <i class="bi bi-plus-circle"></i> Nuova Fattura
+                                        </button>
+
+                                        <!-- Right: Spacer (submit button is in form) -->
+                                        <div class="flex-grow-1"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
+                        <!-- INVOICE LIST VIEW -->
                         <div class="view invoice-list" id="invoice-list">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <input type="text" id="invoice-search" class="form-control"
+                                           placeholder="🔍 Cerca fattura, cliente..." onkeyup="filterInvoices()">
+                                </div>
+                                <div class="col-md-2">
+                                    <select id="month-filter" class="form-select" onchange="filterInvoices()">
+                                        <option value="">Tutti i mesi</option>
+                                        <option value="1">Gennaio</option>
+                                        <option value="2">Febbraio</option>
+                                        <option value="3">Marzo</option>
+                                        <option value="4">Aprile</option>
+                                        <option value="5">Maggio</option>
+                                        <option value="6">Giugno</option>
+                                        <option value="7">Luglio</option>
+                                        <option value="8">Agosto</option>
+                                        <option value="9">Settembre</option>
+                                        <option value="10">Ottobre</option>
+                                        <option value="11">Novembre</option>
+                                        <option value="12">Dicembre</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select id="year-filter" class="form-select" onchange="filterInvoices()">
+                                        <!-- Populated dynamically -->
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select id="status-filter" class="form-select" onchange="filterInvoices()">
+                                        <option value="">Tutti gli stati</option>
+                                        <option value="0">Saldato</option>
+                                        <option value="1">Non Saldato</option>
+                                        <option value="2">Scaduta</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select id="customer-filter" class="form-select" onchange="filterInvoices()">
+                                        <option value="">Tutti i clienti</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-1">
+                                    <button class="btn btn-outline-secondary w-100" onclick="clearFilters()" title="Reset filtri">
+                                        <i class="bi bi-x-circle"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mt-2">
+                                <small class="text-muted" id="results-counter"></small>
+                            </div>
+
                             <div class="mb-4" id="invoices-list-container">
-                                <!-- Riempiamo dinamicamente la lista -->
+                                <!-- Table rendered here -->
                             </div>
                         </div>
-                             
+
+                        <!-- LOGIN VIEW -->
                         <div class="view login-view" id="login-view">
                             <div class="container-xl">
                                 <div class="row">
-                                    <form action="#" method="post" onsubmit="doLogin(null, null, event); return false" name="loginForm">
+                                    <form action="#" method="post" name="loginForm">
                                         <div class="col-12">
-                                            <input type="text" value="" minlength="5" maxlength="20" name="username" id="username" placeholder="Nome utente" />
+                                            <input type="text" value="" minlength="5" maxlength="20"
+                                                   name="username" id="username" placeholder="Nome utente" />
                                         </div>
                                         <div class="col-12">
-                                            <input type="password" value="" minlength="5" maxlength="20" placeholder="*******" class="password" id="password" />
+                                            <input type="password" value="" minlength="5" maxlength="20"
+                                                   placeholder="*******" class="password" id="password" name="password" />
                                         </div>
                                         <div class="col-12">
                                             <input type="submit" value="Login" class="button" id="send-data" />
@@ -229,33 +298,29 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="calendar-view" class="view">
-                            <div id="calendar">
 
-                            </div>
+                        <!-- CALENDAR VIEW -->
+                        <div id="calendar-view" class="view">
+                            <div id="calendar"></div>
                         </div>
 
+                        <!-- CUSTOMERS VIEW -->
                         <div id="customers-view" class="view">
-                            <!-- Header with Search -->
                             <div class="mb-4">
                                 <h3>Clienti Esistenti</h3>
                                 <div class="mt-3">
-                                    <input type="text"
-                                           id="customer-search"
-                                           class="form-control"
-                                           placeholder="&#x1F50D; Cerca cliente per nome..."
-                                           onkeyup="filterCustomers()" />
-                                    <!--  🔍 = &#x1F50D;  -->
+                                    <input type="text" id="customer-search" class="form-control"
+                                           placeholder="🔍 Cerca cliente per nome..." onkeyup="filterCustomers()" />
                                 </div>
                             </div>
 
-                            <!-- Add Customer Form -->
                             <div class="card mb-4">
                                 <div class="card-body">
                                     <h5 class="card-title">Aggiungi Nuovo Cliente</h5>
-                                    <form id="addCustomer" class="row g-3" onsubmit="return addCustomerFunction(event)">
+                                    <form id="addCustomer" class="row g-3">
                                         <div class="col-md-9">
-                                            <input id="addCustomerName" type="text" class="form-control" placeholder="Nome cliente" required />
+                                            <input id="addCustomerName" type="text" class="form-control"
+                                                   placeholder="Nome cliente" required />
                                         </div>
                                         <div class="col-md-3">
                                             <button type="submit" class="btn btn-primary w-100">
@@ -266,24 +331,30 @@
                                 </div>
                             </div>
 
-                            <!-- Customer List -->
                             <div id="customers-list-container" class="mb-4">
-                                <!-- Dynamic list goes here -->
+                                <!-- Customer list rendered here -->
                             </div>
                         </div>
-
 
                     </div>
                 </div>
             </div>
-                </div>
-                <div class="row footer-wrapper">
-                    <footer>
-                        Copyright bla bla bla
-                    </footer>
-                </div>
-            </div>
+        </div>
 
+        <footer class="app-footer">
+            <div class="footer-content">
+                <span class="footer-copyright">
+                    &copy; 2025 <strong>Loginet</strong> - Sistema di Gestione Fatture
+                </span>
+                <span class="footer-separator">|</span>
+                <span class="footer-version">v1.0</span>
+                <span class="footer-separator">|</span>
+                <a href="mailto:support@loginet.com" class="footer-link" title="Contatta il supporto">
+                    <i class="bi bi-headset"></i> Supporto
+                </a>
+            </div>
+        </footer>
+    </div>
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -293,9 +364,7 @@
                     <h5 class="modal-title" id="popup-label">Modal title</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="popup-content">
-
-                </div>
+                <div class="modal-body" id="popup-content"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>

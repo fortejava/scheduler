@@ -157,7 +157,118 @@ public class CustomersService
         return customer;
     }
 
-    //TODO: Delete Customer (Cascade on Invoices!)
+    /// <summary>
+    /// Hard delete customer (STRICT VALIDATION: only if NO invoices exist - active or soft-deleted)
+    /// </summary>
+    /// <param name="customerIdString">Customer ID as string</param>
+    /// <param name="ErrorMessages">Output list of validation error messages</param>
+    /// <returns>True if delete succeeded, false otherwise</returns>
+    public static bool Delete(string customerIdString, out List<string> ErrorMessages)
+    {
+        bool result = false;
+        ErrorMessages = new List<string>();
+        int customerId = -1;
+
+        // Validation 1: Check if customerID is provided
+        if (string.IsNullOrEmpty(customerIdString))
+        {
+            ErrorMessages.Add("CustomerID richiesto");
+            return false;
+        }
+
+        // Validation 2: Check if customerID is valid integer
+        if (!int.TryParse(customerIdString, out customerId))
+        {
+            ErrorMessages.Add("CustomerID non valido (formato non corretto)");
+            return false;
+        }
+
+        using (var db = new schedulerEntities())
+        {
+            // Validation 3: Check if customer exists
+            var customerToDelete = db.Customers
+                .SingleOrDefault(c => c.CustomerID == customerId);
+
+            if (customerToDelete == null)
+            {
+                ErrorMessages.Add(string.Format("Cliente con ID {0} non trovato", customerId));
+                return false;
+            }
+
+            // Validation 4: Check for ANY invoices (CRITICAL - STRICT VALIDATION)
+            // Count active invoices
+            int activeInvoiceCount = db.Invoices
+                .Count(i => i.CustomerID == customerId && i.InvoiceActive == "Y");
+
+            // Count soft-deleted invoices
+            int softDeletedInvoiceCount = db.Invoices
+                .Count(i => i.CustomerID == customerId && i.InvoiceActive == "N");
+
+            int totalInvoiceCount = activeInvoiceCount + softDeletedInvoiceCount;
+
+            // BLOCK if ANY invoices exist
+            if (totalInvoiceCount > 0)
+            {
+                // Build detailed error message
+                if (activeInvoiceCount > 0 && softDeletedInvoiceCount > 0)
+                {
+                    // Both types exist
+                    ErrorMessages.Add(string.Format(
+                        "Impossibile eliminare il cliente: esistono {0} fatture attive e {1} fatture eliminate",
+                        activeInvoiceCount,
+                        softDeletedInvoiceCount
+                    ));
+                }
+                else if (activeInvoiceCount > 0)
+                {
+                    // Only active invoices
+                    ErrorMessages.Add(string.Format(
+                        "Impossibile eliminare il cliente: esistono {0} fatture attive associate",
+                        activeInvoiceCount
+                    ));
+                }
+                else
+                {
+                    // Only soft-deleted invoices
+                    ErrorMessages.Add(string.Format(
+                        "Impossibile eliminare il cliente: esistono {0} fatture eliminate (storiche). Eliminarle prima di procedere.",
+                        softDeletedInvoiceCount
+                    ));
+                }
+
+                return false;
+            }
+
+            // No invoices exist - safe to delete customer
+            db.Customers.Remove(customerToDelete);
+
+            // Validation 5: Check if save succeeded
+            try
+            {
+                int rowsAffected = db.SaveChanges();
+
+                if (rowsAffected == 1)
+                {
+                    result = true;
+                }
+                else
+                {
+                    ErrorMessages.Add(string.Format(
+                        "Errore durante l'eliminazione (righe modificate: {0})",
+                        rowsAffected
+                    ));
+                }
+            }
+            catch (System.Data.Entity.Infrastructure.DbUpdateException ex)
+            {
+                // FK constraint violation (shouldn't happen if validation #4 works)
+                ErrorMessages.Add("Errore database: impossibile eliminare il cliente (vincolo chiave esterna)");
+                return false;
+            }
+        }
+
+        return result;
+    }
 
 }
 

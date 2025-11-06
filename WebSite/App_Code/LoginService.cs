@@ -13,7 +13,7 @@ public class LoginService
 {
     public static bool PasswordVerify (string username, string password, out string newToken)
     {
-        bool result = false;
+        //bool result = false;
         User user = null;
         newToken = null;
 

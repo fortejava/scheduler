@@ -1,0 +1,1062 @@
+/**
+ * INVOICES.CSS - Invoice Management Styles
+ * Loginet Invoice Management System
+ * 
+ * Purpose: Invoice-specific styles for list view, detail pages,
+ *          creation forms, status displays, and print layouts
+ * Dependencies: Bootstrap 5.3+, variables.css
+ * Author: Loginet Team
+ * Last Updated: November 2025
+ */
+
+/* ============================================
+   TABLE OF CONTENTS
+   1. Invoice List View
+   2. Invoice Detail Page
+   3. Invoice Creation Form
+   4. Status Displays
+   5. Invoice Actions Toolbar
+   6. Invoice Components
+   7. Print Styles
+   8. Responsive Adjustments
+============================================ */
+
+/* ============================================
+   1. INVOICE LIST VIEW
+============================================ */
+
+/* Invoice Table Enhancement */
+.invoice-table-loginet {
+  width: 100%;
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.invoice-table-loginet thead {
+  background: var(--loginet-primary, #002C3D);
+  color: var(--white, #ffffff);
+}
+
+.invoice-table-loginet thead th {
+  padding: var(--spacing-md, 16px);
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+}
+
+.invoice-table-loginet tbody tr {
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  transition: background 0.2s ease;
+}
+
+.invoice-table-loginet tbody tr:hover {
+  background: var(--bg-secondary, #f8f9fa);
+}
+
+.invoice-table-loginet tbody tr:last-child {
+  border-bottom: none;
+}
+
+.invoice-table-loginet tbody td {
+  padding: var(--spacing-md, 16px);
+  vertical-align: middle;
+}
+
+/* Invoice Number Link */
+.invoice-number-link-loginet {
+  color: var(--loginet-primary, #002C3D);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.invoice-number-link-loginet:hover {
+  color: var(--loginet-secondary, #FF5912);
+  text-decoration: underline;
+}
+
+/* Invoice Amount */
+.invoice-amount-loginet {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-primary, #1f2937);
+}
+
+/* Invoice Date */
+.invoice-date-loginet {
+  color: var(--text-muted, #6c757d);
+  font-size: 14px;
+}
+
+/* Invoice Actions in Table */
+.invoice-table-actions-loginet {
+  display: flex;
+  gap: var(--spacing-sm, 8px);
+  justify-content: flex-end;
+}
+
+.invoice-action-icon-loginet {
+  padding: 6px 10px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  background: transparent;
+  border-radius: var(--border-radius-sm, 6px);
+  color: var(--text-primary, #1f2937);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.invoice-action-icon-loginet:hover {
+  background: var(--loginet-primary, #002C3D);
+  color: var(--white, #ffffff);
+  border-color: var(--loginet-primary, #002C3D);
+}
+
+/* Invoice Filters */
+.invoice-filters-loginet {
+  display: flex;
+  gap: var(--spacing-md, 16px);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-lg, 24px);
+  padding: var(--spacing-lg, 24px);
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.invoice-filter-group-loginet {
+  flex: 1;
+  min-width: 200px;
+}
+
+.invoice-filter-label-loginet {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  margin-bottom: 6px;
+}
+
+.invoice-filter-select-loginet,
+.invoice-filter-input-loginet {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: var(--border-radius-base, 8px);
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.invoice-filter-select-loginet:focus,
+.invoice-filter-input-loginet:focus {
+  outline: none;
+  border-color: var(--loginet-primary, #002C3D);
+}
+
+/* ============================================
+   2. INVOICE DETAIL PAGE
+============================================ */
+
+/* Invoice Detail Container */
+.invoice-detail-loginet {
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+  overflow: hidden;
+}
+
+/* Invoice Header */
+.invoice-header-loginet {
+  padding: var(--spacing-xl, 32px);
+  background: linear-gradient(135deg, var(--loginet-primary, #002C3D), var(--loginet-primary-light, #004D66));
+  color: var(--white, #ffffff);
+}
+
+.invoice-header-top-loginet {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-lg, 24px);
+}
+
+.invoice-logo-loginet {
+  max-width: 180px;
+  height: auto;
+}
+
+.invoice-number-badge-loginet {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 10px 20px;
+  border-radius: var(--border-radius-base, 8px);
+  backdrop-filter: blur(10px);
+}
+
+.invoice-number-label-loginet {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.8;
+  margin-bottom: 4px;
+}
+
+.invoice-number-value-loginet {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+/* Invoice Parties */
+.invoice-parties-loginet {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-xl, 32px);
+}
+
+.invoice-party-loginet {
+  opacity: 0.95;
+}
+
+.invoice-party-title-loginet {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: var(--spacing-sm, 8px);
+  opacity: 0.8;
+}
+
+.invoice-party-name-loginet {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs, 4px);
+}
+
+.invoice-party-info-loginet {
+  font-size: 14px;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+/* Invoice Meta Info */
+.invoice-meta-loginet {
+  padding: var(--spacing-xl, 32px);
+  background: var(--bg-secondary, #f8f9fa);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-lg, 24px);
+}
+
+.invoice-meta-item-loginet {
+  display: flex;
+  flex-direction: column;
+}
+
+.invoice-meta-label-loginet {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted, #6c757d);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.invoice-meta-value-loginet {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary, #1f2937);
+}
+
+/* Invoice Line Items */
+.invoice-items-loginet {
+  padding: var(--spacing-xl, 32px);
+}
+
+.invoice-items-title-loginet {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--loginet-primary, #002C3D);
+  margin-bottom: var(--spacing-lg, 24px);
+}
+
+.invoice-items-table-loginet {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.invoice-items-table-loginet thead th {
+  padding: var(--spacing-md, 16px);
+  background: var(--bg-secondary, #f8f9fa);
+  border-bottom: 2px solid var(--border-color, #e5e7eb);
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: var(--text-primary, #1f2937);
+  text-align: left;
+}
+
+.invoice-items-table-loginet thead th:last-child {
+  text-align: right;
+}
+
+.invoice-items-table-loginet tbody td {
+  padding: var(--spacing-md, 16px);
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  vertical-align: top;
+}
+
+.invoice-items-table-loginet tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.invoice-item-description-loginet {
+  font-weight: 500;
+  color: var(--text-primary, #1f2937);
+  margin-bottom: 4px;
+}
+
+.invoice-item-details-loginet {
+  font-size: 13px;
+  color: var(--text-muted, #6c757d);
+}
+
+.invoice-item-amount-loginet {
+  font-weight: 600;
+  text-align: right;
+}
+
+/* Invoice Totals */
+.invoice-totals-loginet {
+  padding: var(--spacing-xl, 32px);
+  background: var(--bg-secondary, #f8f9fa);
+  border-top: 2px solid var(--border-color, #e5e7eb);
+}
+
+.invoice-totals-wrapper-loginet {
+  max-width: 400px;
+  margin-left: auto;
+}
+
+.invoice-total-row-loginet {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm, 8px) 0;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.invoice-total-row-loginet:last-child {
+  border-bottom: none;
+}
+
+.invoice-total-label-loginet {
+  font-size: 14px;
+  color: var(--text-primary, #1f2937);
+}
+
+.invoice-total-value-loginet {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary, #1f2937);
+}
+
+/* Grand Total */
+.invoice-grand-total-loginet {
+  margin-top: var(--spacing-md, 16px);
+  padding-top: var(--spacing-md, 16px);
+  border-top: 2px solid var(--loginet-primary, #002C3D);
+}
+
+.invoice-grand-total-loginet .invoice-total-label-loginet {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--loginet-primary, #002C3D);
+}
+
+.invoice-grand-total-loginet .invoice-total-value-loginet {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--loginet-secondary, #FF5912);
+}
+
+/* Invoice Notes */
+.invoice-notes-loginet {
+  padding: var(--spacing-xl, 32px);
+}
+
+.invoice-notes-title-loginet {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--loginet-primary, #002C3D);
+  margin-bottom: var(--spacing-md, 16px);
+}
+
+.invoice-notes-content-loginet {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-primary, #1f2937);
+}
+
+/* ============================================
+   3. INVOICE CREATION FORM
+============================================ */
+
+/* Multi-Step Form Container */
+.invoice-form-loginet {
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+  overflow: hidden;
+}
+
+/* Step Progress */
+.invoice-steps-loginet {
+  display: flex;
+  padding: var(--spacing-lg, 24px);
+  background: var(--bg-secondary, #f8f9fa);
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.invoice-step-loginet {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm, 8px);
+  position: relative;
+}
+
+.invoice-step-loginet:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: -50%;
+  width: 100%;
+  height: 2px;
+  background: var(--border-color, #e5e7eb);
+  top: 15px;
+  z-index: 0;
+}
+
+.invoice-step-number-loginet {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--border-color, #e5e7eb);
+  color: var(--text-muted, #6c757d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.invoice-step-label-loginet {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted, #6c757d);
+}
+
+.invoice-step-loginet.active .invoice-step-number-loginet {
+  background: var(--loginet-primary, #002C3D);
+  color: var(--white, #ffffff);
+}
+
+.invoice-step-loginet.active .invoice-step-label-loginet {
+  color: var(--loginet-primary, #002C3D);
+  font-weight: 600;
+}
+
+.invoice-step-loginet.completed .invoice-step-number-loginet {
+  background: var(--loginet-accent, #00A8CC);
+  color: var(--white, #ffffff);
+}
+
+.invoice-step-loginet.completed::after {
+  background: var(--loginet-accent, #00A8CC);
+}
+
+/* Form Body */
+.invoice-form-body-loginet {
+  padding: var(--spacing-xl, 32px);
+}
+
+/* Dynamic Line Items */
+.invoice-line-items-loginet {
+  margin-bottom: var(--spacing-xl, 32px);
+}
+
+.invoice-line-item-loginet {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 48px;
+  gap: var(--spacing-md, 16px);
+  align-items: start;
+  padding: var(--spacing-md, 16px);
+  background: var(--bg-secondary, #f8f9fa);
+  border-radius: var(--border-radius-base, 8px);
+  margin-bottom: var(--spacing-md, 16px);
+}
+
+.invoice-line-item-field-loginet {
+  display: flex;
+  flex-direction: column;
+}
+
+.invoice-line-item-label-loginet {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  margin-bottom: 6px;
+}
+
+.invoice-line-item-input-loginet {
+  padding: 10px 14px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: var(--border-radius-base, 8px);
+  font-size: 14px;
+  background: var(--white, #ffffff);
+}
+
+.invoice-line-item-input-loginet:focus {
+  outline: none;
+  border-color: var(--loginet-primary, #002C3D);
+}
+
+.invoice-line-item-remove-loginet {
+  align-self: end;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: var(--border-radius-base, 8px);
+  color: #dc2626;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.invoice-line-item-remove-loginet:hover {
+  background: #dc2626;
+  color: var(--white, #ffffff);
+}
+
+.invoice-add-item-btn-loginet {
+  padding: 12px 24px;
+  background: transparent;
+  border: 2px dashed var(--border-color, #e5e7eb);
+  border-radius: var(--border-radius-base, 8px);
+  color: var(--loginet-primary, #002C3D);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.invoice-add-item-btn-loginet:hover {
+  border-color: var(--loginet-primary, #002C3D);
+  background: var(--bg-secondary, #f8f9fa);
+}
+
+/* Calculation Display */
+.invoice-calculation-loginet {
+  background: var(--bg-secondary, #f8f9fa);
+  padding: var(--spacing-lg, 24px);
+  border-radius: var(--border-radius-base, 8px);
+  max-width: 400px;
+  margin-left: auto;
+}
+
+.invoice-calc-row-loginet {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm, 8px) 0;
+  font-size: 14px;
+}
+
+.invoice-calc-total-loginet {
+  border-top: 2px solid var(--loginet-primary, #002C3D);
+  padding-top: var(--spacing-md, 16px);
+  margin-top: var(--spacing-md, 16px);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--loginet-primary, #002C3D);
+}
+
+/* Form Validation */
+.invoice-form-error-loginet {
+  padding: var(--spacing-md, 16px);
+  background: #fee2e2;
+  border-left: 4px solid #dc2626;
+  border-radius: var(--border-radius-base, 8px);
+  color: #dc2626;
+  margin-bottom: var(--spacing-md, 16px);
+}
+
+/* ============================================
+   4. STATUS DISPLAYS
+============================================ */
+
+/* Status Badge */
+.invoice-status-badge-loginet {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.invoice-status-badge-loginet i {
+  font-size: 10px;
+}
+
+/* Status Variants */
+.invoice-status-paid-loginet {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.invoice-status-pending-loginet {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.invoice-status-overdue-loginet {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.invoice-status-draft-loginet {
+  background: #e5e7eb;
+  color: #6b7280;
+}
+
+.invoice-status-cancelled-loginet {
+  background: #f3e8ff;
+  color: #9333ea;
+}
+
+/* Status Timeline */
+.invoice-status-timeline-loginet {
+  position: relative;
+  padding-left: var(--spacing-xl, 32px);
+}
+
+.invoice-status-timeline-loginet::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: var(--border-color, #e5e7eb);
+}
+
+.invoice-timeline-item-loginet {
+  position: relative;
+  padding: var(--spacing-md, 16px) 0;
+}
+
+.invoice-timeline-item-loginet::before {
+  content: '';
+  position: absolute;
+  left: -26px;
+  top: 22px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--loginet-primary, #002C3D);
+  border: 2px solid var(--white, #ffffff);
+  box-shadow: 0 0 0 2px var(--loginet-primary, #002C3D);
+  z-index: 1;
+}
+
+.invoice-timeline-status-loginet {
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  margin-bottom: 4px;
+}
+
+.invoice-timeline-date-loginet {
+  font-size: 13px;
+  color: var(--text-muted, #6c757d);
+}
+
+/* Payment Progress */
+.invoice-payment-progress-loginet {
+  margin-top: var(--spacing-md, 16px);
+}
+
+.invoice-progress-bar-loginet {
+  height: 8px;
+  background: var(--border-color, #e5e7eb);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.invoice-progress-fill-loginet {
+  height: 100%;
+  background: linear-gradient(90deg, var(--loginet-accent, #00A8CC), var(--loginet-accent-light, #33BADC));
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+.invoice-progress-text-loginet {
+  margin-top: var(--spacing-xs, 4px);
+  font-size: 13px;
+  color: var(--text-muted, #6c757d);
+  text-align: center;
+}
+
+/* ============================================
+   5. INVOICE ACTIONS TOOLBAR
+============================================ */
+
+/* Toolbar Container */
+.invoice-toolbar-loginet {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg, 24px);
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+  margin-bottom: var(--spacing-lg, 24px);
+}
+
+/* Action Button Group */
+.invoice-action-group-loginet {
+  display: flex;
+  gap: var(--spacing-sm, 8px);
+}
+
+.invoice-action-btn-loginet {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 2px solid var(--border-color, #e5e7eb);
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-base, 8px);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.invoice-action-btn-loginet:hover {
+  border-color: var(--loginet-primary, #002C3D);
+  background: var(--loginet-primary, #002C3D);
+  color: var(--white, #ffffff);
+}
+
+.invoice-action-btn-loginet i {
+  font-size: 16px;
+}
+
+/* Primary Action */
+.invoice-action-btn-primary-loginet {
+  background: var(--loginet-secondary, #FF5912);
+  border-color: var(--loginet-secondary, #FF5912);
+  color: var(--white, #ffffff);
+}
+
+.invoice-action-btn-primary-loginet:hover {
+  background: var(--loginet-secondary-dark, #E04D0F);
+  border-color: var(--loginet-secondary-dark, #E04D0F);
+}
+
+/* ============================================
+   6. INVOICE COMPONENTS
+============================================ */
+
+/* Invoice Card (List View Alternative) */
+.invoice-card-loginet {
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  padding: var(--spacing-lg, 24px);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+  transition: all 0.3s ease;
+  margin-bottom: var(--spacing-md, 16px);
+}
+
+.invoice-card-loginet:hover {
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.15));
+  transform: translateY(-2px);
+}
+
+.invoice-card-header-loginet {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: var(--spacing-md, 16px);
+}
+
+.invoice-card-number-loginet {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--loginet-primary, #002C3D);
+}
+
+.invoice-card-body-loginet {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--spacing-md, 16px);
+}
+
+.invoice-card-field-loginet {
+  display: flex;
+  flex-direction: column;
+}
+
+.invoice-card-label-loginet {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted, #6c757d);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.invoice-card-value-loginet {
+  font-size: 14px;
+  color: var(--text-primary, #1f2937);
+}
+
+/* ============================================
+   7. PRINT STYLES
+============================================ */
+
+@media print {
+  /* Hide non-printable elements */
+  .invoice-toolbar-loginet,
+  .invoice-action-group-loginet,
+  .invoice-filters-loginet,
+  .invoice-table-actions-loginet {
+    display: none !important;
+  }
+  
+  /* Optimize invoice detail for print */
+  .invoice-detail-loginet {
+    box-shadow: none;
+    border: 1px solid var(--border-color, #e5e7eb);
+  }
+  
+  .invoice-header-loginet {
+    background: var(--white, #ffffff) !important;
+    color: var(--text-primary, #1f2937) !important;
+    border-bottom: 2px solid var(--loginet-primary, #002C3D);
+  }
+  
+  .invoice-number-badge-loginet {
+    background: transparent;
+    border: 2px solid var(--loginet-primary, #002C3D);
+    color: var(--text-primary, #1f2937) !important;
+  }
+  
+  .invoice-party-loginet {
+    opacity: 1 !important;
+    color: var(--text-primary, #1f2937) !important;
+  }
+  
+  /* Ensure proper page breaks */
+  .invoice-items-loginet,
+  .invoice-totals-loginet {
+    page-break-inside: avoid;
+  }
+  
+  .invoice-line-item-loginet {
+    page-break-inside: avoid;
+  }
+  
+  /* Adjust colors for print */
+  .invoice-status-badge-loginet {
+    border: 1px solid currentColor;
+    background: transparent !important;
+  }
+  
+  /* Remove shadows */
+  * {
+    box-shadow: none !important;
+  }
+}
+
+/* ============================================
+   8. RESPONSIVE ADJUSTMENTS
+============================================ */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .invoice-filters-loginet {
+    flex-direction: column;
+  }
+  
+  .invoice-filter-group-loginet {
+    width: 100%;
+  }
+  
+  .invoice-line-item-loginet {
+    grid-template-columns: 1fr 1fr 1fr 48px;
+  }
+}
+
+/* Mobile (< 768px) */
+@media (max-width: 768px) {
+  /* Invoice Table - Convert to Cards */
+  .invoice-table-loginet thead {
+    display: none;
+  }
+  
+  .invoice-table-loginet,
+  .invoice-table-loginet tbody,
+  .invoice-table-loginet tr,
+  .invoice-table-loginet td {
+    display: block;
+  }
+  
+  .invoice-table-loginet tr {
+    margin-bottom: var(--spacing-md, 16px);
+    padding: var(--spacing-md, 16px);
+    border: 1px solid var(--border-color, #e5e7eb);
+    border-radius: var(--border-radius-base, 8px);
+  }
+  
+  .invoice-table-loginet td {
+    padding: var(--spacing-sm, 8px) 0;
+    border-bottom: none;
+    text-align: left !important;
+  }
+  
+  .invoice-table-loginet td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+    color: var(--text-muted, #6c757d);
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+  
+  .invoice-table-actions-loginet {
+    justify-content: flex-start;
+    margin-top: var(--spacing-sm, 8px);
+  }
+  
+  /* Invoice Header */
+  .invoice-header-top-loginet {
+    flex-direction: column;
+    gap: var(--spacing-md, 16px);
+  }
+  
+  .invoice-header-loginet {
+    padding: var(--spacing-lg, 24px);
+  }
+  
+  .invoice-parties-loginet {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Invoice Meta */
+  .invoice-meta-loginet {
+    grid-template-columns: 1fr;
+    padding: var(--spacing-lg, 24px);
+  }
+  
+  /* Invoice Items */
+  .invoice-items-loginet {
+    padding: var(--spacing-lg, 24px);
+  }
+  
+  .invoice-items-table-loginet {
+    display: block;
+  }
+  
+  .invoice-items-table-loginet thead {
+    display: none;
+  }
+  
+  .invoice-items-table-loginet tbody,
+  .invoice-items-table-loginet tr,
+  .invoice-items-table-loginet td {
+    display: block;
+  }
+  
+  .invoice-items-table-loginet tr {
+    margin-bottom: var(--spacing-md, 16px);
+    padding-bottom: var(--spacing-md, 16px);
+    border-bottom: 2px solid var(--border-color, #e5e7eb);
+  }
+  
+  .invoice-items-table-loginet td {
+    padding: var(--spacing-xs, 4px) 0;
+    border-bottom: none;
+  }
+  
+  /* Totals */
+  .invoice-totals-loginet {
+    padding: var(--spacing-lg, 24px);
+  }
+  
+  .invoice-totals-wrapper-loginet {
+    max-width: 100%;
+  }
+  
+  /* Toolbar */
+  .invoice-toolbar-loginet {
+    flex-direction: column;
+    gap: var(--spacing-md, 16px);
+  }
+  
+  .invoice-action-group-loginet {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  
+  .invoice-action-btn-loginet {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+  }
+  
+  /* Form Steps */
+  .invoice-steps-loginet {
+    flex-direction: column;
+    gap: var(--spacing-md, 16px);
+  }
+  
+  .invoice-step-loginet::after {
+    display: none;
+  }
+  
+  /* Line Items Form */
+  .invoice-line-item-loginet {
+    grid-template-columns: 1fr;
+  }
+  
+  .invoice-line-item-remove-loginet {
+    align-self: stretch;
+  }
+  
+  .invoice-calculation-loginet {
+    max-width: 100%;
+  }
+}
+
+/* Small Mobile (< 480px) */
+@media (max-width: 480px) {
+  .invoice-action-group-loginet {
+    flex-direction: column;
+  }
+  
+  .invoice-action-btn-loginet {
+    width: 100%;
+  }
+  
+  .invoice-card-body-loginet {
+    grid-template-columns: 1fr;
+  }
+}

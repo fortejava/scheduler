@@ -1,0 +1,203 @@
+/**
+ * MODALS.CSS - Modal Dialogs
+ * Loginet Invoice Management System
+ * 
+ * Extends Bootstrap modals with Loginet styles
+ */
+
+/**
+ * MODAL BACKDROP
+ */
+.modal-backdrop-loginet {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 44, 61, 0.7);
+    z-index: var(--z-index-modal-backdrop);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-base);
+}
+
+.modal-backdrop-loginet.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/**
+ * MODAL CONTAINER
+ */
+.modal-loginet {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-index-modal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-base);
+    padding: var(--spacing-lg);
+}
+
+.modal-loginet.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/**
+ * MODAL DIALOG
+ */
+.modal-dialog-loginet {
+    width: 100%;
+    max-width: 600px;
+    background-color: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    transform: scale(0.9);
+    transition: transform var(--transition-base);
+}
+
+.modal-loginet.show .modal-dialog-loginet {
+    transform: scale(1);
+}
+
+/* Modal Sizes */
+.modal-dialog-sm {
+    max-width: 400px;
+}
+
+.modal-dialog-lg {
+    max-width: 800px;
+}
+
+.modal-dialog-xl {
+    max-width: 1000px;
+}
+
+/**
+ * MODAL HEADER
+ */
+.modal-header-loginet {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-title-loginet {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--loginet-primary);
+    margin: 0;
+}
+
+.modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.modal-close:hover {
+    background-color: var(--color-gray-100);
+    color: var(--text-primary);
+}
+
+/**
+ * MODAL BODY
+ */
+.modal-body-loginet {
+    padding: var(--spacing-xl);
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+/**
+ * MODAL FOOTER
+ */
+.modal-footer-loginet {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-top: 1px solid var(--border-color);
+}
+
+/**
+ * CONFIRMATION MODAL
+ */
+.modal-confirm {
+    text-align: center;
+}
+
+.modal-confirm-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--spacing-lg);
+    border-radius: var(--radius-circle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+}
+
+.modal-confirm-icon.danger {
+    background-color: var(--color-danger-light);
+    color: var(--color-danger);
+}
+
+.modal-confirm-icon.warning {
+    background-color: var(--color-warning-light);
+    color: var(--color-warning-dark);
+}
+
+.modal-confirm-icon.success {
+    background-color: var(--color-success-light);
+    color: var(--color-success);
+}
+
+/**
+ * RESPONSIVE MODAL
+ */
+@media (max-width: 768px) {
+    .modal-loginet {
+        padding: var(--spacing-md);
+    }
+    
+    .modal-dialog-loginet,
+    .modal-dialog-sm,
+    .modal-dialog-lg,
+    .modal-dialog-xl {
+        max-width: 100%;
+    }
+    
+    .modal-header-loginet,
+    .modal-body-loginet,
+    .modal-footer-loginet {
+        padding: var(--spacing-md);
+    }
+    
+    .modal-footer-loginet {
+        flex-direction: column-reverse;
+    }
+    
+    .modal-footer-loginet .btn {
+        width: 100%;
+    }
+}

@@ -1,0 +1,1253 @@
+/**
+ * CALENDAR.CSS - Calendar and Scheduling Styles
+ * Loginet Invoice Management System
+ * 
+ * Purpose: Calendar-specific styles for various views, events,
+ *          date pickers, toolbars, and event creation
+ * Dependencies: Bootstrap 5.3+, variables.css
+ * Author: Loginet Team
+ * Last Updated: November 2025
+ */
+
+/* ============================================
+   TABLE OF CONTENTS
+   1. Calendar Container & Views
+   2. Event Displays
+   3. Date Picker Customization
+   4. Calendar Toolbar
+   5. Event Creation Modal
+   6. Mini Calendar
+   7. Responsive Adjustments
+============================================ */
+
+/* ============================================
+   1. CALENDAR CONTAINER & VIEWS
+============================================ */
+
+/* Calendar Container */
+.calendar-container-loginet {
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+  overflow: hidden;
+}
+
+/* Month View Grid */
+.calendar-month-view-loginet {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-top: none;
+}
+
+/* Calendar Header - Days of Week */
+.calendar-day-header-loginet {
+  padding: var(--spacing-md, 16px);
+  background: var(--loginet-primary, #002C3D);
+  color: var(--white, #ffffff);
+  text-align: center;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Calendar Day Cell */
+.calendar-day-cell-loginet {
+  min-height: 120px;
+  border-right: 1px solid var(--border-color, #e5e7eb);
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  padding: var(--spacing-sm, 8px);
+  background: var(--white, #ffffff);
+  transition: background 0.2s ease;
+  position: relative;
+}
+
+.calendar-day-cell-loginet:nth-child(7n) {
+  border-right: none;
+}
+
+.calendar-day-cell-loginet:hover {
+  background: var(--bg-secondary, #f8f9fa);
+  cursor: pointer;
+}
+
+/* Day Number */
+.calendar-day-number-loginet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  margin-bottom: var(--spacing-xs, 4px);
+}
+
+/* Today Highlight */
+.calendar-day-cell-loginet.today {
+  background: rgba(0, 168, 204, 0.05);
+}
+
+.calendar-day-cell-loginet.today .calendar-day-number-loginet {
+  background: var(--loginet-accent, #00A8CC);
+  color: var(--white, #ffffff);
+}
+
+/* Other Month Days */
+.calendar-day-cell-loginet.other-month {
+  background: var(--bg-secondary, #f8f9fa);
+  opacity: 0.5;
+}
+
+/* Selected Day */
+.calendar-day-cell-loginet.selected {
+  background: rgba(0, 44, 61, 0.05);
+  border: 2px solid var(--loginet-primary, #002C3D);
+}
+
+.calendar-day-cell-loginet.selected .calendar-day-number-loginet {
+  background: var(--loginet-primary, #002C3D);
+  color: var(--white, #ffffff);
+}
+
+/* Week View Layout */
+.calendar-week-view-loginet {
+  display: grid;
+  grid-template-columns: 60px repeat(7, 1fr);
+  border: 1px solid var(--border-color, #e5e7eb);
+}
+
+/* Time Column */
+.calendar-time-column-loginet {
+  border-right: 1px solid var(--border-color, #e5e7eb);
+  background: var(--bg-secondary, #f8f9fa);
+}
+
+.calendar-time-slot-loginet {
+  height: 60px;
+  padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  font-size: 12px;
+  color: var(--text-muted, #6c757d);
+  text-align: right;
+}
+
+/* Day Column in Week View */
+.calendar-day-column-loginet {
+  border-right: 1px solid var(--border-color, #e5e7eb);
+  position: relative;
+}
+
+.calendar-day-column-loginet:last-child {
+  border-right: none;
+}
+
+/* Time Slots in Day Column */
+.calendar-time-grid-loginet {
+  position: relative;
+  height: 100%;
+}
+
+.calendar-hour-line-loginet {
+  height: 60px;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+/* Day View Layout */
+.calendar-day-view-loginet {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  border: 1px solid var(--border-color, #e5e7eb);
+}
+
+.calendar-day-view-loginet .calendar-time-slot-loginet {
+  height: 80px;
+}
+
+.calendar-day-view-loginet .calendar-hour-line-loginet {
+  height: 80px;
+}
+
+/* Current Time Indicator */
+.calendar-current-time-loginet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--loginet-secondary, #FF5912);
+  z-index: 10;
+}
+
+.calendar-current-time-loginet::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--loginet-secondary, #FF5912);
+}
+
+/* ============================================
+   2. EVENT DISPLAYS
+============================================ */
+
+/* Event Card */
+.calendar-event-loginet {
+  padding: 4px 8px;
+  margin-bottom: 2px;
+  border-radius: var(--border-radius-sm, 6px);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--white, #ffffff);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-left: 3px solid rgba(255, 255, 255, 0.5);
+}
+
+.calendar-event-loginet:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+/* Event Color Variants */
+.calendar-event-primary-loginet {
+  background: var(--loginet-primary, #002C3D);
+  border-left-color: var(--loginet-primary-light, #004D66);
+}
+
+.calendar-event-secondary-loginet {
+  background: var(--loginet-secondary, #FF5912);
+  border-left-color: var(--loginet-secondary-light, #FF7740);
+}
+
+.calendar-event-accent-loginet {
+  background: var(--loginet-accent, #00A8CC);
+  border-left-color: var(--loginet-accent-light, #33BADC);
+}
+
+.calendar-event-success-loginet {
+  background: #10b981;
+  border-left-color: #34d399;
+}
+
+.calendar-event-warning-loginet {
+  background: #f59e0b;
+  border-left-color: #fbbf24;
+}
+
+.calendar-event-danger-loginet {
+  background: #ef4444;
+  border-left-color: #f87171;
+}
+
+.calendar-event-info-loginet {
+  background: #3b82f6;
+  border-left-color: #60a5fa;
+}
+
+/* Event in Week/Day View - Absolute Positioned */
+.calendar-event-absolute-loginet {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  padding: 6px 8px;
+  border-radius: var(--border-radius-sm, 6px);
+  font-size: 12px;
+  color: var(--white, #ffffff);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  border-left: 3px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-event-absolute-loginet:hover {
+  z-index: 5;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Event Time Display */
+.calendar-event-time-loginet {
+  display: block;
+  font-size: 11px;
+  opacity: 0.9;
+  margin-bottom: 2px;
+}
+
+.calendar-event-title-loginet {
+  display: block;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Event Icons */
+.calendar-event-icon-loginet {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  opacity: 0.9;
+}
+
+/* All Day Event */
+.calendar-all-day-event-loginet {
+  padding: 8px 12px;
+  border-radius: var(--border-radius-base, 8px);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm, 8px);
+}
+
+/* Event Count Indicator */
+.calendar-event-count-loginet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  background: var(--text-muted, #6c757d);
+  color: var(--white, #ffffff);
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* ============================================
+   3. DATE PICKER CUSTOMIZATION
+============================================ */
+
+/* Date Picker Container */
+.datepicker-loginet {
+  background: var(--white, #ffffff);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: var(--border-radius-lg, 12px);
+  box-shadow: var(--shadow-lg, 0 10px 25px rgba(0, 0, 0, 0.15));
+  padding: var(--spacing-md, 16px);
+  max-width: 320px;
+}
+
+/* Date Picker Header */
+.datepicker-header-loginet {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md, 16px);
+  padding-bottom: var(--spacing-md, 16px);
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.datepicker-month-year-loginet {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--loginet-primary, #002C3D);
+}
+
+.datepicker-nav-btn-loginet {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text-primary, #1f2937);
+  border-radius: var(--border-radius-base, 8px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.datepicker-nav-btn-loginet:hover {
+  background: var(--bg-secondary, #f8f9fa);
+  color: var(--loginet-primary, #002C3D);
+}
+
+/* Date Picker Grid */
+.datepicker-grid-loginet {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.datepicker-day-name-loginet {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted, #6c757d);
+  padding: 8px 4px;
+  text-transform: uppercase;
+}
+
+.datepicker-day-loginet {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-base, 8px);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary, #1f2937);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.datepicker-day-loginet:hover {
+  background: var(--bg-secondary, #f8f9fa);
+}
+
+/* Date Picker States */
+.datepicker-day-loginet.today {
+  background: rgba(0, 168, 204, 0.1);
+  color: var(--loginet-accent, #00A8CC);
+  font-weight: 700;
+}
+
+.datepicker-day-loginet.selected {
+  background: var(--loginet-primary, #002C3D);
+  color: var(--white, #ffffff);
+}
+
+.datepicker-day-loginet.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.datepicker-day-loginet.disabled:hover {
+  background: transparent;
+}
+
+.datepicker-day-loginet.other-month {
+  opacity: 0.4;
+}
+
+/* Date Range Selection */
+.datepicker-day-loginet.in-range {
+  background: rgba(0, 44, 61, 0.1);
+}
+
+.datepicker-day-loginet.range-start,
+.datepicker-day-loginet.range-end {
+  background: var(--loginet-primary, #002C3D);
+  color: var(--white, #ffffff);
+}
+
+/* Date Picker Footer */
+.datepicker-footer-loginet {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--spacing-md, 16px);
+  padding-top: var(--spacing-md, 16px);
+  border-top: 1px solid var(--border-color, #e5e7eb);
+}
+
+.datepicker-action-btn-loginet {
+  padding: 8px 16px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-base, 8px);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.datepicker-action-btn-loginet:hover {
+  background: var(--bg-secondary, #f8f9fa);
+}
+
+.datepicker-action-btn-primary-loginet {
+  background: var(--loginet-primary, #002C3D);
+  color: var(--white, #ffffff);
+  border-color: var(--loginet-primary, #002C3D);
+}
+
+.datepicker-action-btn-primary-loginet:hover {
+  background: var(--loginet-primary-dark, #001A24);
+}
+
+/* ============================================
+   4. CALENDAR TOOLBAR
+============================================ */
+
+/* Toolbar Container */
+.calendar-toolbar-loginet {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg, 24px);
+  background: var(--white, #ffffff);
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+/* Toolbar Left */
+.calendar-toolbar-left-loginet {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 16px);
+}
+
+/* Current Date/Month Display */
+.calendar-current-date-loginet {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--loginet-primary, #002C3D);
+}
+
+/* Navigation Buttons */
+.calendar-nav-buttons-loginet {
+  display: flex;
+  gap: var(--spacing-xs, 4px);
+}
+
+.calendar-nav-btn-loginet {
+  padding: 10px 16px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-base, 8px);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calendar-nav-btn-loginet:hover {
+  background: var(--bg-secondary, #f8f9fa);
+  border-color: var(--loginet-primary, #002C3D);
+}
+
+.calendar-today-btn-loginet {
+  padding: 10px 20px;
+  background: var(--loginet-accent, #00A8CC);
+  border: none;
+  color: var(--white, #ffffff);
+  border-radius: var(--border-radius-base, 8px);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calendar-today-btn-loginet:hover {
+  background: var(--loginet-accent-dark, #008CA8);
+}
+
+/* Toolbar Right */
+.calendar-toolbar-right-loginet {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 16px);
+}
+
+/* View Switcher */
+.calendar-view-switcher-loginet {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-secondary, #f8f9fa);
+  padding: 4px;
+  border-radius: var(--border-radius-base, 8px);
+}
+
+.calendar-view-btn-loginet {
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  border-radius: var(--border-radius-sm, 6px);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calendar-view-btn-loginet:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.calendar-view-btn-loginet.active {
+  background: var(--white, #ffffff);
+  color: var(--loginet-primary, #002C3D);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Add Event Button */
+.calendar-add-event-btn-loginet {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--loginet-secondary, #FF5912);
+  border: none;
+  color: var(--white, #ffffff);
+  border-radius: var(--border-radius-base, 8px);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calendar-add-event-btn-loginet:hover {
+  background: var(--loginet-secondary-dark, #E04D0F);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 89, 18, 0.3);
+}
+
+/* ============================================
+   5. EVENT CREATION MODAL
+============================================ */
+
+/* Event Modal Overlay */
+.event-modal-overlay-loginet {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg, 24px);
+}
+
+/* Event Modal */
+.event-modal-loginet {
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-xl, 0 20px 50px rgba(0, 0, 0, 0.3));
+}
+
+/* Modal Header */
+.event-modal-header-loginet {
+  padding: var(--spacing-lg, 24px);
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.event-modal-title-loginet {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--loginet-primary, #002C3D);
+  margin: 0;
+}
+
+.event-modal-close-loginet {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text-muted, #6c757d);
+  border-radius: var(--border-radius-base, 8px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 20px;
+}
+
+.event-modal-close-loginet:hover {
+  background: var(--bg-secondary, #f8f9fa);
+  color: var(--text-primary, #1f2937);
+}
+
+/* Modal Body */
+.event-modal-body-loginet {
+  padding: var(--spacing-lg, 24px);
+}
+
+/* Form Group */
+.event-form-group-loginet {
+  margin-bottom: var(--spacing-lg, 24px);
+}
+
+.event-form-label-loginet {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  margin-bottom: 8px;
+}
+
+.event-form-input-loginet,
+.event-form-textarea-loginet,
+.event-form-select-loginet {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: var(--border-radius-base, 8px);
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.event-form-input-loginet:focus,
+.event-form-textarea-loginet:focus,
+.event-form-select-loginet:focus {
+  outline: none;
+  border-color: var(--loginet-primary, #002C3D);
+}
+
+.event-form-textarea-loginet {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Time Picker */
+.event-time-picker-loginet {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md, 16px);
+}
+
+/* Color Picker */
+.event-color-picker-loginet {
+  display: flex;
+  gap: var(--spacing-sm, 8px);
+  flex-wrap: wrap;
+}
+
+.event-color-option-loginet {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.event-color-option-loginet:hover {
+  transform: scale(1.1);
+}
+
+.event-color-option-loginet.selected {
+  border-color: var(--loginet-primary, #002C3D);
+  box-shadow: 0 0 0 2px var(--white, #ffffff), 0 0 0 4px var(--loginet-primary, #002C3D);
+}
+
+/* Reminder Options */
+.event-reminder-options-loginet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm, 8px);
+}
+
+.event-reminder-checkbox-loginet {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: var(--border-radius-base, 8px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.event-reminder-checkbox-loginet:hover {
+  background: var(--bg-secondary, #f8f9fa);
+}
+
+.event-reminder-checkbox-loginet input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* Modal Footer */
+.event-modal-footer-loginet {
+  padding: var(--spacing-lg, 24px);
+  border-top: 1px solid var(--border-color, #e5e7eb);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md, 16px);
+}
+
+.event-btn-cancel-loginet {
+  padding: 12px 24px;
+  border: 2px solid var(--border-color, #e5e7eb);
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-base, 8px);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.event-btn-cancel-loginet:hover {
+  background: var(--bg-secondary, #f8f9fa);
+}
+
+.event-btn-save-loginet {
+  padding: 12px 24px;
+  border: none;
+  background: var(--loginet-secondary, #FF5912);
+  border-radius: var(--border-radius-base, 8px);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--white, #ffffff);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.event-btn-save-loginet:hover {
+  background: var(--loginet-secondary-dark, #E04D0F);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 89, 18, 0.3);
+}
+
+/* ============================================
+   6. MINI CALENDAR
+============================================ */
+
+/* Mini Calendar Container */
+.mini-calendar-loginet {
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  padding: var(--spacing-md, 16px);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.mini-calendar-header-loginet {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md, 16px);
+}
+
+.mini-calendar-title-loginet {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--loginet-primary, #002C3D);
+}
+
+.mini-calendar-nav-loginet {
+  display: flex;
+  gap: 4px;
+}
+
+.mini-calendar-nav-btn-loginet {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text-muted, #6c757d);
+  border-radius: var(--border-radius-sm, 6px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+}
+
+.mini-calendar-nav-btn-loginet:hover {
+  background: var(--bg-secondary, #f8f9fa);
+  color: var(--loginet-primary, #002C3D);
+}
+
+.mini-calendar-grid-loginet {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.mini-calendar-day-name-loginet {
+  text-align: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted, #6c757d);
+  padding: 4px;
+  text-transform: uppercase;
+}
+
+.mini-calendar-day-loginet {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-sm, 6px);
+  font-size: 11px;
+  color: var(--text-primary, #1f2937);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mini-calendar-day-loginet:hover {
+  background: var(--bg-secondary, #f8f9fa);
+}
+
+.mini-calendar-day-loginet.today {
+  background: var(--loginet-accent, #00A8CC);
+  color: var(--white, #ffffff);
+  font-weight: 700;
+}
+
+.mini-calendar-day-loginet.has-event {
+  position: relative;
+}
+
+.mini-calendar-day-loginet.has-event::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--loginet-secondary, #FF5912);
+}
+
+/* ============================================
+   7. RESPONSIVE ADJUSTMENTS
+============================================ */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .calendar-toolbar-loginet {
+    flex-wrap: wrap;
+    gap: var(--spacing-md, 16px);
+  }
+  
+  .calendar-toolbar-right-loginet {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .calendar-day-cell-loginet {
+    min-height: 100px;
+  }
+}
+
+/* Mobile (< 768px) */
+@media (max-width: 768px) {
+  .calendar-toolbar-loginet {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .calendar-toolbar-left-loginet {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .calendar-current-date-loginet {
+    text-align: center;
+    font-size: 18px;
+  }
+  
+  .calendar-nav-buttons-loginet {
+    justify-content: center;
+  }
+  
+  .calendar-toolbar-right-loginet {
+    flex-direction: column;
+  }
+  
+  .calendar-view-switcher-loginet {
+    width: 100%;
+  }
+  
+  .calendar-view-btn-loginet {
+    flex: 1;
+  }
+  
+  .calendar-add-event-btn-loginet {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  /* Simplify Month View */
+  .calendar-day-cell-loginet {
+    min-height: 80px;
+    padding: 4px;
+  }
+  
+  .calendar-day-number-loginet {
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+  }
+  
+  .calendar-event-loginet {
+    font-size: 10px;
+    padding: 2px 4px;
+  }
+  
+  /* Switch to List View for Week/Day */
+  .calendar-week-view-loginet,
+  .calendar-day-view-loginet {
+    display: block;
+  }
+  
+  .calendar-time-column-loginet {
+    display: none;
+  }
+  
+  /* Event Modal */
+  .event-modal-overlay-loginet {
+    padding: 0;
+    align-items: flex-end;
+  }
+  
+  .event-modal-loginet {
+    max-width: 100%;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  
+  .event-time-picker-loginet {
+    grid-template-columns: 1fr;
+  }
+  
+  .event-modal-footer-loginet {
+    flex-direction: column;
+  }
+  
+  .event-btn-cancel-loginet,
+  .event-btn-save-loginet {
+    width: 100%;
+  }
+}
+
+/* Small Mobile (< 480px) */
+@media (max-width: 480px) {
+  .calendar-day-cell-loginet {
+    min-height: 60px;
+    padding: 2px;
+  }
+  
+  .calendar-day-number-loginet {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+  
+  .calendar-event-count-loginet {
+    font-size: 9px;
+    padding: 1px 4px;
+  }
+  
+  .datepicker-loginet {
+    max-width: 100%;
+  }
+}
+
+/* ============================================
+   FULLCALENDAR IMPROVEMENTS
+   Restored from original design for better UX
+============================================ */
+
+/**
+ * Calendar View Container
+ */
+#calendar-view {
+    padding: 0;
+    padding-left: 20px;
+    background-color: #ffffff;
+}
+
+@media (min-width: 768px) {
+    #calendar-view {
+        padding-left: 30px;
+    }
+}
+
+#calendar {
+    min-height: 600px;
+}
+
+/**
+ * FullCalendar Toolbar
+ */
+.fc .fc-toolbar {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.fc .fc-toolbar-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #212529;
+}
+
+/**
+ * Calendar Buttons - Orange theme
+ */
+.fc .fc-button-primary,
+.fc .fc-prevYear-button,
+.fc .fc-nextYear-button {
+    background-color: #E5692C !important;
+    border-color: #E5692C !important;
+    color: white !important;
+    border-radius: 6px !important;
+    padding: 8px 16px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    margin: 0 2px !important;
+}
+
+.fc .fc-button-primary:hover,
+.fc .fc-prevYear-button:hover,
+.fc .fc-nextYear-button:hover {
+    background-color: #d45a1f !important;
+    border-color: #d45a1f !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(229, 105, 44, 0.3) !important;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active,
+.fc .fc-prevYear-button:not(:disabled):active,
+.fc .fc-nextYear-button:not(:disabled):active {
+    background-color: #d45a1f !important;
+    border-color: #d45a1f !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2) !important;
+}
+
+.fc .fc-button-primary:focus,
+.fc .fc-prevYear-button:focus,
+.fc .fc-nextYear-button:focus {
+    box-shadow: 0 0 0 3px rgba(229, 105, 44, 0.3) !important;
+}
+
+/* Year navigation buttons - slightly smaller for << >> */
+.fc .fc-prevYear-button,
+.fc .fc-nextYear-button {
+    font-size: 14px !important;
+    padding: 8px 12px !important;
+    font-weight: 700 !important;
+}
+
+/**
+ * Day Headers
+ */
+.fc-col-header-cell {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #212529;
+    padding: 12px 0;
+    border: 1px solid #dee2e6;
+    text-transform: uppercase;
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+}
+
+/**
+ * Calendar Days
+ */
+.fc .fc-daygrid-day {
+    transition: background-color 0.2s ease;
+}
+
+.fc .fc-daygrid-day:hover {
+    background-color: rgba(229, 105, 44, 0.05);
+}
+
+/**
+ * Today Highlight - Orange theme
+ */
+.fc .fc-day-today {
+    background-color: rgba(229, 105, 44, 0.1) !important;
+}
+
+.fc .fc-day-today .fc-daygrid-day-number {
+    background-color: #E5692C;
+    color: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+/**
+ * Events - ENHANCED VISIBILITY
+ * Fixed: Events now fully opaque and readable
+ */
+.fc-event {
+    border-radius: 6px;
+    border: none;
+    padding: 6px 10px;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    transition: all 0.2s ease;
+    opacity: 1 !important;
+    color: white !important;
+}
+
+.fc-event:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+    filter: brightness(1.1);
+}
+
+/* Event Colors - More Visible */
+.fc-event.event-paid {
+    background-color: #28a745 !important;
+}
+
+.fc-event.event-pending {
+    background-color: #ffc107 !important;
+    color: #333 !important;
+}
+
+.fc-event.event-overdue {
+    background-color: #dc3545 !important;
+}
+
+/* Default event styling - Make all events fully visible */
+.fc-event,
+.fc-h-event,
+.fc-v-event {
+    background-color: rgba(76, 175, 80, 0.95) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    border: none !important;
+}
+
+.fc-event-main {
+    color: white !important;
+}
+
+.fc-daygrid-event {
+    opacity: 1 !important;
+}
+
+/* Hide time grid for all-day events */
+.fc-timegrid-slot {
+    display: none !important;
+}
+
+.fc-timegrid-axis {
+    display: none !important;
+}
+
+.fc-timegrid-slot-label {
+    display: none !important;
+}
+
+/* ============================================
+   END FULLCALENDAR IMPROVEMENTS
+============================================ */

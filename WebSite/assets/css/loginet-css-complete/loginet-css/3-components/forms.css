@@ -1,0 +1,395 @@
+/**
+ * FORMS.CSS - Form Controls
+ * Loginet Invoice Management System
+ * 
+ * Extends Bootstrap form controls with Loginet brand styles
+ */
+
+/**
+ * FORM GROUPS (Extend Bootstrap)
+ */
+.form-group-loginet {
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-group-loginet:last-child {
+    margin-bottom: 0;
+}
+
+/**
+ * LABELS
+ */
+.form-label-loginet {
+    display: inline-block;
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+}
+
+.form-label-loginet.required::after {
+    content: ' *';
+    color: var(--color-danger);
+}
+
+/**
+ * INPUT FIELDS (Extend Bootstrap .form-control)
+ */
+.form-control-loginet {
+    display: block;
+    width: 100%;
+    padding: var(--input-padding-y) var(--input-padding-x);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    color: var(--text-primary);
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: var(--input-radius);
+    transition: all var(--transition-fast);
+}
+
+.form-control-loginet:focus {
+    outline: none;
+    border-color: var(--input-focus-border);
+    box-shadow: 0 0 0 3px rgba(255, 89, 18, 0.1);
+}
+
+.form-control-loginet::placeholder {
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
+.form-control-loginet:disabled {
+    background-color: var(--color-gray-200);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Input with Icon */
+.input-group-icon {
+    position: relative;
+}
+
+.input-group-icon input {
+    padding-left: var(--spacing-2xl);
+}
+
+.input-group-icon i {
+    position: absolute;
+    left: var(--spacing-md);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.input-group-icon.icon-right input {
+    padding-left: var(--input-padding-x);
+    padding-right: var(--spacing-2xl);
+}
+
+.input-group-icon.icon-right i {
+    left: auto;
+    right: var(--spacing-md);
+}
+
+/**
+ * TEXTAREA
+ */
+textarea.form-control-loginet {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/**
+ * SELECT DROPDOWN
+ */
+.form-select-loginet {
+    display: block;
+    width: 100%;
+    padding: var(--input-padding-y) var(--spacing-2xl) var(--input-padding-y) var(--input-padding-x);
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+    background-color: var(--input-bg);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right var(--spacing-md) center;
+    background-size: 16px 12px;
+    border: 1px solid var(--input-border);
+    border-radius: var(--input-radius);
+    appearance: none;
+    transition: all var(--transition-fast);
+}
+
+.form-select-loginet:focus {
+    outline: none;
+    border-color: var(--input-focus-border);
+    box-shadow: 0 0 0 3px rgba(255, 89, 18, 0.1);
+}
+
+/**
+ * CHECKBOX & RADIO
+ */
+.form-check-loginet {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.form-check-input-loginet {
+    width: 18px;
+    height: 18px;
+    margin-right: var(--spacing-sm);
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.form-check-input-loginet[type="checkbox"] {
+    border-radius: var(--radius-sm);
+}
+
+.form-check-input-loginet[type="radio"] {
+    border-radius: var(--radius-circle);
+}
+
+.form-check-input-loginet:checked {
+    background-color: var(--loginet-secondary);
+    border-color: var(--loginet-secondary);
+}
+
+.form-check-input-loginet:focus {
+    outline: 2px solid rgba(255, 89, 18, 0.3);
+    outline-offset: 2px;
+}
+
+.form-check-label-loginet {
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+    cursor: pointer;
+    user-select: none;
+}
+
+/**
+ * SWITCH TOGGLE
+ */
+.form-switch-loginet {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.form-switch-input {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    appearance: none;
+    background-color: var(--color-gray-400);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.form-switch-input::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform var(--transition-fast);
+}
+
+.form-switch-input:checked {
+    background-color: var(--loginet-secondary);
+}
+
+.form-switch-input:checked::before {
+    transform: translateX(20px);
+}
+
+.form-switch-input:focus {
+    outline: 2px solid rgba(255, 89, 18, 0.3);
+    outline-offset: 2px;
+}
+
+/**
+ * INPUT VALIDATION STATES
+ */
+.form-control-loginet.is-valid {
+    border-color: var(--color-success);
+    padding-right: calc(1.5em + 0.75rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.form-control-loginet.is-valid:focus {
+    border-color: var(--color-success);
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+.form-control-loginet.is-invalid {
+    border-color: var(--color-danger);
+    padding-right: calc(1.5em + 0.75rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.form-control-loginet.is-invalid:focus {
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+/**
+ * VALIDATION FEEDBACK
+ */
+.valid-feedback {
+    display: none;
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--color-success);
+}
+
+.is-valid ~ .valid-feedback {
+    display: block;
+}
+
+.invalid-feedback {
+    display: none;
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--color-danger);
+}
+
+.is-invalid ~ .invalid-feedback {
+    display: block;
+}
+
+/**
+ * FORM HELP TEXT
+ */
+.form-text {
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+}
+
+/**
+ * FILE UPLOAD
+ */
+.form-file-loginet {
+    position: relative;
+}
+
+.form-file-input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.form-file-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-lg);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--input-radius);
+    background-color: var(--color-gray-100);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.form-file-label:hover {
+    border-color: var(--loginet-secondary);
+    background-color: rgba(255, 89, 18, 0.05);
+    color: var(--loginet-secondary);
+}
+
+.form-file-label i {
+    font-size: 1.5rem;
+}
+
+/**
+ * DATE PICKER (Enhance browser default)
+ */
+input[type="date"].form-control-loginet,
+input[type="time"].form-control-loginet,
+input[type="datetime-local"].form-control-loginet {
+    padding-right: var(--spacing-md);
+}
+
+/**
+ * NUMBER INPUT CONTROLS
+ */
+input[type="number"].form-control-loginet {
+    -moz-appearance: textfield;
+}
+
+input[type="number"].form-control-loginet::-webkit-inner-spin-button,
+input[type="number"].form-control-loginet::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/**
+ * FLOATING LABELS (Modern Style)
+ */
+.form-floating-loginet {
+    position: relative;
+}
+
+.form-floating-loginet input,
+.form-floating-loginet textarea {
+    padding: 1.5rem 0.75rem 0.5rem;
+}
+
+.form-floating-loginet label {
+    position: absolute;
+    top: 0;
+    left: 0.75rem;
+    padding: 1rem 0 0;
+    pointer-events: none;
+    transform-origin: 0 0;
+    transition: all var(--transition-fast);
+    color: var(--text-muted);
+}
+
+.form-floating-loginet input:focus ~ label,
+.form-floating-loginet input:not(:placeholder-shown) ~ label,
+.form-floating-loginet textarea:focus ~ label,
+.form-floating-loginet textarea:not(:placeholder-shown) ~ label {
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    color: var(--loginet-secondary);
+}
+
+/**
+ * RESPONSIVE FORMS
+ */
+@media (max-width: 768px) {
+    .form-group-loginet {
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .form-control-loginet {
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+}
+
+/**
+ * ACCESSIBILITY
+ */
+.form-control-loginet:focus-visible,
+.form-select-loginet:focus-visible {
+    outline: 2px solid var(--loginet-secondary);
+    outline-offset: 2px;
+}

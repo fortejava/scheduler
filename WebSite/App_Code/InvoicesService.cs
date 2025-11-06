@@ -109,10 +109,11 @@ public class InvoicesService
         return result;
     }
 
-    public static bool CreateOrUpdate(Invoice invoice, out List<string> ErrorMessages)
+    public static bool CreateOrUpdate(Invoice invoice, out List<string> ErrorMessages, out int ResultInvoiceID)
     {
         bool res = false;
         ErrorMessages = new List<string>();
+        ResultInvoiceID = 0;  // Initialize out parameter
 
         ValidateInvoiceFields(invoice, ErrorMessages);
         ValidateDBFields(invoice, ErrorMessages);
@@ -130,6 +131,14 @@ public class InvoicesService
                     invoiceToSave = invoice;
                     db.Invoices.AddOrUpdate(invoiceToSave);
                     res = (db.SaveChanges() == 1);
+
+                    // Entity Framework automatically populates InvoiceID after SaveChanges()
+                    // For CREATE: EF sets the identity column value from database
+                    // For UPDATE: InvoiceID already exists in the entity
+                    if (res)
+                    {
+                        ResultInvoiceID = invoiceToSave.InvoiceID;
+                    }
                 }
                 else
                 {
@@ -169,8 +178,45 @@ public class InvoicesService
         if (!Helpers.IsNotEmpty(invoice.InvoiceDueDate))
             ErrorMessages.Add("Invoice due date is null or wrong format");
 
-        if(Helpers.IsNotEmpty(invoice.InvoiceCreationDate) && 
-            Helpers.IsNotEmpty(invoice.InvoiceDueDate) && 
+        // Numeric range validations
+        if (Helpers.IsNotEmpty(invoice.InvoiceTaxable) && invoice.InvoiceTaxable <= 0)
+            ErrorMessages.Add("Invoice taxable must be greater than 0");
+
+        // NOTE: invoice.InvoiceTax is stored as DECIMAL (0.22 = 22%)
+        // because CreateOrUpdateInvoice.ashx line 60 converts: invoice.InvoiceTax = invoiceTax/100m
+        // Valid range is 0.00 (0%) to 1.00 (100%)
+        if (Helpers.IsNotEmpty(invoice.InvoiceTax) && (invoice.InvoiceTax < 0 || invoice.InvoiceTax > 1))
+            ErrorMessages.Add("Invoice tax must be between 0% and 100% (decimal format)");
+
+        if (Helpers.IsNotEmpty(invoice.InvoiceDue) && invoice.InvoiceDue <= 0)
+            ErrorMessages.Add("Invoice due must be greater than 0");
+
+        // CRITICAL: Calculate InvoiceTotal and validate InvoiceDue <= InvoiceTotal
+        // NOTE: invoice.InvoiceTax is already in DECIMAL format (0.22 = 22%)
+        // DO NOT divide by 100 again! Use the decimal value directly.
+        if (Helpers.IsNotEmpty(invoice.InvoiceTaxable) &&
+            Helpers.IsNotEmpty(invoice.InvoiceTax) &&
+            Helpers.IsNotEmpty(invoice.InvoiceDue))
+        {
+            decimal calculatedInvoiceTotal = invoice.InvoiceTaxable * (1 + invoice.InvoiceTax);
+
+            if (calculatedInvoiceTotal <= 0)
+                ErrorMessages.Add("Invoice total (calculated) must be greater than 0");
+
+            // NOTE: Uses > (not >=) to allow InvoiceDue to EQUAL InvoiceTotal (full payment)
+            if (invoice.InvoiceDue > calculatedInvoiceTotal)
+                ErrorMessages.Add("Invoice due amount cannot exceed total amount");
+        }
+
+        // String length validations (database constraint: nvarchar(50))
+        if (Helpers.IsNotEmpty(invoice.InvoiceNumber) && invoice.InvoiceNumber.Length > 50)
+            ErrorMessages.Add("Invoice number cannot exceed 50 characters");
+
+        if (Helpers.IsNotEmpty(invoice.InvoiceOrderNumber) && invoice.InvoiceOrderNumber.Length > 50)
+            ErrorMessages.Add("Invoice order number cannot exceed 50 characters");
+
+        if(Helpers.IsNotEmpty(invoice.InvoiceCreationDate) &&
+            Helpers.IsNotEmpty(invoice.InvoiceDueDate) &&
             invoice.InvoiceCreationDate > invoice.InvoiceDueDate)
             ErrorMessages.Add("Invoice creation date must be earlier than invoice due date");
     }
@@ -229,12 +275,15 @@ public class InvoicesService
                     .Where(i => i.InvoiceDueDate.Year == year);
             if (Helpers.ValidMonth(month)) query = query
                     .Where(i => i.InvoiceDueDate.Month == month);
-            query = query.Include(c => c.Customer).Include(s => s.Status);
+            query = query.OrderByDescending(i=>i.InvoiceDueDate)
+                .ThenBy(i => i.InvoiceID)
+                .Include(c => c.Customer).Include(s => s.Status);
             invoicesFound = query.ToList().Select(i=> new InvoiceDTO(i, GetStatusCode(i))).ToList();     
         }
         return invoicesFound;
     }
 
+    // 0 = Pagato , 1 = Non Pagato e Non Scaduto, 2 = Non Pagato e Scaduto
     public static string GetStatusCode(Invoice i)
     {
         DateTime DueDate = i.InvoiceDueDate;
@@ -270,24 +319,61 @@ public class InvoicesService
         return statusId;
     }
 
-    public static bool Delete(string invoiceIdString)
+    public static bool Delete(string invoiceIdString, out List<string> ErrorMessages)
     {
         bool result = false;
+        ErrorMessages = new List<string>();
         int invoiceId = -1;
-        if(int.TryParse(invoiceIdString, out invoiceId))
+
+        // Validation 1: Check if invoiceId is provided
+        if (string.IsNullOrEmpty(invoiceIdString))
         {
-            using (var db = new schedulerEntities())
+            ErrorMessages.Add("InvoiceID richiesto");
+            return false;
+        }
+
+        // Validation 2: Check if invoiceId is valid integer
+        if (!int.TryParse(invoiceIdString, out invoiceId))
+        {
+            ErrorMessages.Add("InvoiceID non valido (formato non corretto)");
+            return false;
+        }
+
+        using (var db = new schedulerEntities())
+        {
+            var invoiceToDelete = db.Invoices
+                .SingleOrDefault(i => i.InvoiceID == invoiceId);
+
+            // Validation 3: Check if invoice exists
+            if (invoiceToDelete == null)
             {
-                var invoiceToDelete = db.Invoices
-                    .SingleOrDefault(i => i.InvoiceID == invoiceId);
-                if (invoiceToDelete != null)
-                {
-                    invoiceToDelete.InvoiceActive = "N";
-                    db.Invoices.AddOrUpdate(invoiceToDelete);
-                    result = (db.SaveChanges() == 1);
-                }
+                ErrorMessages.Add(string.Format("Fattura con ID {0} non trovata", invoiceId));
+                return false;
+            }
+
+            // Validation 4: Check if already deleted
+            if (invoiceToDelete.InvoiceActive == "N")
+            {
+                ErrorMessages.Add("La fattura è già stata eliminata");
+                return false;
+            }
+
+            // Perform soft delete
+            invoiceToDelete.InvoiceActive = "N";
+            db.Invoices.AddOrUpdate(invoiceToDelete);
+
+            // Validation 5: Check if save succeeded
+            int rowsAffected = db.SaveChanges();
+            if (rowsAffected == 1)
+            {
+                result = true;
+            }
+            else
+            {
+                ErrorMessages.Add(string.Format("Errore durante il salvataggio (righe modificate: {0})", rowsAffected));
             }
         }
+
         return result;
     }
 

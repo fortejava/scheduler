@@ -1,0 +1,721 @@
+/**
+ * RESPONSIVE.CSS - Responsive Utility Classes
+ * Loginet Invoice Management System
+ * 
+ * Purpose: Breakpoint-specific utilities, hide/show classes,
+ *          responsive spacing, layout utilities, and touch optimization
+ * Dependencies: Bootstrap 5.3+, variables.css
+ * Author: Loginet Team
+ * Last Updated: November 2025
+ */
+
+/* ============================================
+   TABLE OF CONTENTS
+   1. Breakpoint Definitions
+   2. Hide/Show Utilities
+   3. Responsive Spacing
+   4. Layout Utilities
+   5. Typography Responsive
+   6. Touch Optimizations
+   7. Mobile Menu Styles
+   8. Responsive Tables
+============================================ */
+
+/* ============================================
+   1. BREAKPOINT DEFINITIONS
+============================================ */
+
+/* 
+Breakpoint Reference:
+- Mobile: < 576px
+- Tablet: 576px - 992px
+- Desktop: > 992px
+
+Custom breakpoints:
+- xs: 0-575px
+- sm: 576px-767px
+- md: 768px-991px
+- lg: 992px-1199px
+- xl: 1200px-1399px
+- xxl: 1400px+
+*/
+
+/* ============================================
+   2. HIDE/SHOW UTILITIES
+============================================ */
+
+/* Hide on Mobile (< 576px) */
+.hide-mobile-loginet {
+  display: none !important;
+}
+
+@media (min-width: 576px) {
+  .hide-mobile-loginet {
+    display: block !important;
+  }
+}
+
+/* Hide on Tablet (576px - 992px) */
+@media (min-width: 576px) and (max-width: 991px) {
+  .hide-tablet-loginet {
+    display: none !important;
+  }
+}
+
+/* Hide on Desktop (> 992px) */
+@media (min-width: 992px) {
+  .hide-desktop-loginet {
+    display: none !important;
+  }
+}
+
+/* Show on Mobile Only */
+.show-mobile-only-loginet {
+  display: block !important;
+}
+
+@media (min-width: 576px) {
+  .show-mobile-only-loginet {
+    display: none !important;
+  }
+}
+
+/* Show on Tablet Only */
+.show-tablet-only-loginet {
+  display: none !important;
+}
+
+@media (min-width: 576px) and (max-width: 991px) {
+  .show-tablet-only-loginet {
+    display: block !important;
+  }
+}
+
+/* Show on Desktop Only */
+.show-desktop-only-loginet {
+  display: none !important;
+}
+
+@media (min-width: 992px) {
+  .show-desktop-only-loginet {
+    display: block !important;
+  }
+}
+
+/* Specific Breakpoint Visibility */
+.visible-xs-loginet {
+  display: none !important;
+}
+
+@media (max-width: 575px) {
+  .visible-xs-loginet {
+    display: block !important;
+  }
+}
+
+.visible-sm-loginet {
+  display: none !important;
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .visible-sm-loginet {
+    display: block !important;
+  }
+}
+
+.visible-md-loginet {
+  display: none !important;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .visible-md-loginet {
+    display: block !important;
+  }
+}
+
+.visible-lg-loginet {
+  display: none !important;
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  .visible-lg-loginet {
+    display: block !important;
+  }
+}
+
+.visible-xl-loginet {
+  display: none !important;
+}
+
+@media (min-width: 1200px) {
+  .visible-xl-loginet {
+    display: block !important;
+  }
+}
+
+/* ============================================
+   3. RESPONSIVE SPACING
+============================================ */
+
+/* Mobile Spacing Adjustments (< 576px) */
+@media (max-width: 575px) {
+  .mobile-p-0-loginet { padding: 0 !important; }
+  .mobile-p-xs-loginet { padding: 4px !important; }
+  .mobile-p-sm-loginet { padding: 8px !important; }
+  .mobile-p-md-loginet { padding: 16px !important; }
+  .mobile-p-lg-loginet { padding: 24px !important; }
+  
+  .mobile-m-0-loginet { margin: 0 !important; }
+  .mobile-m-xs-loginet { margin: 4px !important; }
+  .mobile-m-sm-loginet { margin: 8px !important; }
+  .mobile-m-md-loginet { margin: 16px !important; }
+  .mobile-m-lg-loginet { margin: 24px !important; }
+  
+  /* Vertical Spacing */
+  .mobile-py-0-loginet { padding-top: 0 !important; padding-bottom: 0 !important; }
+  .mobile-py-sm-loginet { padding-top: 8px !important; padding-bottom: 8px !important; }
+  .mobile-py-md-loginet { padding-top: 16px !important; padding-bottom: 16px !important; }
+  .mobile-py-lg-loginet { padding-top: 24px !important; padding-bottom: 24px !important; }
+  
+  .mobile-my-0-loginet { margin-top: 0 !important; margin-bottom: 0 !important; }
+  .mobile-my-sm-loginet { margin-top: 8px !important; margin-bottom: 8px !important; }
+  .mobile-my-md-loginet { margin-top: 16px !important; margin-bottom: 16px !important; }
+  .mobile-my-lg-loginet { margin-top: 24px !important; margin-bottom: 24px !important; }
+  
+  /* Horizontal Spacing */
+  .mobile-px-0-loginet { padding-left: 0 !important; padding-right: 0 !important; }
+  .mobile-px-sm-loginet { padding-left: 8px !important; padding-right: 8px !important; }
+  .mobile-px-md-loginet { padding-left: 16px !important; padding-right: 16px !important; }
+  .mobile-px-lg-loginet { padding-left: 24px !important; padding-right: 24px !important; }
+  
+  .mobile-mx-0-loginet { margin-left: 0 !important; margin-right: 0 !important; }
+  .mobile-mx-sm-loginet { margin-left: 8px !important; margin-right: 8px !important; }
+  .mobile-mx-md-loginet { margin-left: 16px !important; margin-right: 16px !important; }
+  .mobile-mx-lg-loginet { margin-left: 24px !important; margin-right: 24px !important; }
+  .mobile-mx-auto-loginet { margin-left: auto !important; margin-right: auto !important; }
+}
+
+/* Tablet Spacing Adjustments (576px - 992px) */
+@media (min-width: 576px) and (max-width: 991px) {
+  .tablet-p-0-loginet { padding: 0 !important; }
+  .tablet-p-sm-loginet { padding: 8px !important; }
+  .tablet-p-md-loginet { padding: 16px !important; }
+  .tablet-p-lg-loginet { padding: 24px !important; }
+  .tablet-p-xl-loginet { padding: 32px !important; }
+  
+  .tablet-m-0-loginet { margin: 0 !important; }
+  .tablet-m-sm-loginet { margin: 8px !important; }
+  .tablet-m-md-loginet { margin: 16px !important; }
+  .tablet-m-lg-loginet { margin: 24px !important; }
+  .tablet-m-xl-loginet { margin: 32px !important; }
+}
+
+/* Desktop Spacing Adjustments (> 992px) */
+@media (min-width: 992px) {
+  .desktop-p-0-loginet { padding: 0 !important; }
+  .desktop-p-md-loginet { padding: 16px !important; }
+  .desktop-p-lg-loginet { padding: 24px !important; }
+  .desktop-p-xl-loginet { padding: 32px !important; }
+  .desktop-p-2xl-loginet { padding: 48px !important; }
+  
+  .desktop-m-0-loginet { margin: 0 !important; }
+  .desktop-m-md-loginet { margin: 16px !important; }
+  .desktop-m-lg-loginet { margin: 24px !important; }
+  .desktop-m-xl-loginet { margin: 32px !important; }
+  .desktop-m-2xl-loginet { margin: 48px !important; }
+}
+
+/* Responsive Gap Utilities */
+@media (max-width: 575px) {
+  .mobile-gap-xs-loginet { gap: 4px !important; }
+  .mobile-gap-sm-loginet { gap: 8px !important; }
+  .mobile-gap-md-loginet { gap: 16px !important; }
+}
+
+@media (min-width: 576px) and (max-width: 991px) {
+  .tablet-gap-sm-loginet { gap: 8px !important; }
+  .tablet-gap-md-loginet { gap: 16px !important; }
+  .tablet-gap-lg-loginet { gap: 24px !important; }
+}
+
+@media (min-width: 992px) {
+  .desktop-gap-md-loginet { gap: 16px !important; }
+  .desktop-gap-lg-loginet { gap: 24px !important; }
+  .desktop-gap-xl-loginet { gap: 32px !important; }
+}
+
+/* ============================================
+   4. LAYOUT UTILITIES
+============================================ */
+
+/* Flex Direction - Mobile */
+@media (max-width: 575px) {
+  .mobile-flex-column-loginet {
+    flex-direction: column !important;
+  }
+  
+  .mobile-flex-row-loginet {
+    flex-direction: row !important;
+  }
+  
+  .mobile-flex-wrap-loginet {
+    flex-wrap: wrap !important;
+  }
+  
+  .mobile-flex-nowrap-loginet {
+    flex-wrap: nowrap !important;
+  }
+}
+
+/* Flex Direction - Tablet */
+@media (min-width: 576px) and (max-width: 991px) {
+  .tablet-flex-column-loginet {
+    flex-direction: column !important;
+  }
+  
+  .tablet-flex-row-loginet {
+    flex-direction: row !important;
+  }
+}
+
+/* Grid Columns - Responsive */
+@media (max-width: 575px) {
+  .mobile-grid-1-loginet {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .mobile-grid-2-loginet {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 991px) {
+  .tablet-grid-2-loginet {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .tablet-grid-3-loginet {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .desktop-grid-3-loginet {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  
+  .desktop-grid-4-loginet {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+  
+  .desktop-grid-5-loginet {
+    grid-template-columns: repeat(5, 1fr) !important;
+  }
+}
+
+/* Stack Utilities */
+.stack-mobile-loginet {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 576px) {
+  .stack-mobile-loginet {
+    flex-direction: row;
+  }
+}
+
+/* Order Utilities */
+@media (max-width: 575px) {
+  .mobile-order-first-loginet { order: -1 !important; }
+  .mobile-order-last-loginet { order: 999 !important; }
+  .mobile-order-0-loginet { order: 0 !important; }
+  .mobile-order-1-loginet { order: 1 !important; }
+  .mobile-order-2-loginet { order: 2 !important; }
+  .mobile-order-3-loginet { order: 3 !important; }
+}
+
+/* Width Utilities */
+@media (max-width: 575px) {
+  .mobile-w-full-loginet { width: 100% !important; }
+  .mobile-w-auto-loginet { width: auto !important; }
+  .mobile-w-50-loginet { width: 50% !important; }
+}
+
+@media (min-width: 992px) {
+  .desktop-w-auto-loginet { width: auto !important; }
+  .desktop-w-50-loginet { width: 50% !important; }
+  .desktop-w-75-loginet { width: 75% !important; }
+}
+
+/* Height Utilities */
+@media (max-width: 575px) {
+  .mobile-h-auto-loginet { height: auto !important; }
+  .mobile-min-h-screen-loginet { min-height: 100vh !important; }
+}
+
+/* ============================================
+   5. TYPOGRAPHY RESPONSIVE
+============================================ */
+
+/* Font Size - Mobile */
+@media (max-width: 575px) {
+  .mobile-text-xs-loginet { font-size: 12px !important; }
+  .mobile-text-sm-loginet { font-size: 14px !important; }
+  .mobile-text-base-loginet { font-size: 16px !important; }
+  .mobile-text-lg-loginet { font-size: 18px !important; }
+  .mobile-text-xl-loginet { font-size: 20px !important; }
+  .mobile-text-2xl-loginet { font-size: 24px !important; }
+}
+
+/* Text Alignment - Responsive */
+@media (max-width: 575px) {
+  .mobile-text-left-loginet { text-align: left !important; }
+  .mobile-text-center-loginet { text-align: center !important; }
+  .mobile-text-right-loginet { text-align: right !important; }
+}
+
+@media (min-width: 576px) and (max-width: 991px) {
+  .tablet-text-left-loginet { text-align: left !important; }
+  .tablet-text-center-loginet { text-align: center !important; }
+  .tablet-text-right-loginet { text-align: right !important; }
+}
+
+@media (min-width: 992px) {
+  .desktop-text-left-loginet { text-align: left !important; }
+  .desktop-text-center-loginet { text-align: center !important; }
+  .desktop-text-right-loginet { text-align: right !important; }
+}
+
+/* ============================================
+   6. TOUCH OPTIMIZATIONS
+============================================ */
+
+/* Touch-Friendly Button Sizes */
+.touch-btn-loginet {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 12px 20px;
+}
+
+@media (min-width: 992px) {
+  .touch-btn-loginet {
+    min-height: auto;
+    min-width: auto;
+    padding: 10px 16px;
+  }
+}
+
+/* Touch Target Size */
+.touch-target-loginet {
+  position: relative;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.touch-target-loginet::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Disable Touch Callout */
+.no-touch-callout-loginet {
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Touch Scroll Optimization */
+.touch-scroll-loginet {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+}
+
+/* Swipe Gesture Support */
+.swipeable-loginet {
+  touch-action: pan-x pinch-zoom;
+  user-select: none;
+}
+
+/* Mobile-Optimized Cards */
+@media (max-width: 575px) {
+  .mobile-card-loginet {
+    border-radius: var(--border-radius-base, 8px);
+    padding: var(--spacing-md, 16px);
+    margin-bottom: var(--spacing-md, 16px);
+  }
+}
+
+/* ============================================
+   7. MOBILE MENU STYLES
+============================================ */
+
+/* Mobile Menu Container */
+.mobile-menu-loginet {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 280px;
+  height: 100vh;
+  background: var(--white, #ffffff);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  transition: left 0.3s ease;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.mobile-menu-loginet.open {
+  left: 0;
+}
+
+@media (min-width: 992px) {
+  .mobile-menu-loginet {
+    position: static;
+    width: auto;
+    height: auto;
+    box-shadow: none;
+    transition: none;
+  }
+}
+
+/* Mobile Menu Overlay */
+.mobile-menu-overlay-loginet {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 999;
+}
+
+.mobile-menu-overlay-loginet.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+@media (min-width: 992px) {
+  .mobile-menu-overlay-loginet {
+    display: none;
+  }
+}
+
+/* Hamburger Menu */
+.hamburger-menu-loginet {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 28px;
+  height: 24px;
+  cursor: pointer;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.hamburger-menu-loginet span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: var(--loginet-primary, #002C3D);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.hamburger-menu-loginet.active span:nth-child(1) {
+  transform: rotate(45deg) translateY(10px);
+}
+
+.hamburger-menu-loginet.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-menu-loginet.active span:nth-child(3) {
+  transform: rotate(-45deg) translateY(-10px);
+}
+
+@media (min-width: 992px) {
+  .hamburger-menu-loginet {
+    display: none;
+  }
+}
+
+/* ============================================
+   8. RESPONSIVE TABLES
+============================================ */
+
+/* Mobile Table Cards */
+@media (max-width: 767px) {
+  .responsive-table-loginet thead {
+    display: none;
+  }
+  
+  .responsive-table-loginet,
+  .responsive-table-loginet tbody,
+  .responsive-table-loginet tr,
+  .responsive-table-loginet td {
+    display: block;
+    width: 100%;
+  }
+  
+  .responsive-table-loginet tr {
+    margin-bottom: var(--spacing-md, 16px);
+    padding: var(--spacing-md, 16px);
+    border: 1px solid var(--border-color, #e5e7eb);
+    border-radius: var(--border-radius-base, 8px);
+    background: var(--white, #ffffff);
+  }
+  
+  .responsive-table-loginet td {
+    padding: var(--spacing-sm, 8px) 0;
+    border-bottom: 1px solid var(--border-color, #e5e7eb);
+    text-align: left !important;
+    position: relative;
+    padding-left: 50%;
+  }
+  
+  .responsive-table-loginet td:last-child {
+    border-bottom: none;
+  }
+  
+  .responsive-table-loginet td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0;
+    width: 45%;
+    padding-right: 10px;
+    font-weight: 600;
+    text-align: left;
+    color: var(--text-primary, #1f2937);
+  }
+}
+
+/* Horizontal Scroll Tables */
+.table-scroll-mobile-loginet {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 768px) {
+  .table-scroll-mobile-loginet {
+    overflow-x: visible;
+  }
+}
+
+/* ============================================
+   CONTAINER QUERIES (MODERN BROWSERS)
+============================================ */
+
+/* Container-based responsive utilities */
+@container (max-width: 400px) {
+  .container-mobile-loginet {
+    flex-direction: column !important;
+  }
+}
+
+/* ============================================
+   PRINT RESPONSIVE
+============================================ */
+
+@media print {
+  .hide-print-loginet {
+    display: none !important;
+  }
+  
+  .show-print-loginet {
+    display: block !important;
+  }
+}
+
+/* ============================================
+   ORIENTATION UTILITIES
+============================================ */
+
+/* Landscape Orientation */
+@media (orientation: landscape) {
+  .landscape-only-loginet {
+    display: block !important;
+  }
+  
+  .portrait-only-loginet {
+    display: none !important;
+  }
+}
+
+/* Portrait Orientation */
+@media (orientation: portrait) {
+  .landscape-only-loginet {
+    display: none !important;
+  }
+  
+  .portrait-only-loginet {
+    display: block !important;
+  }
+}
+
+/* ============================================
+   ASPECT RATIO UTILITIES
+============================================ */
+
+.aspect-square-loginet {
+  aspect-ratio: 1 / 1;
+}
+
+.aspect-video-loginet {
+  aspect-ratio: 16 / 9;
+}
+
+.aspect-4-3-loginet {
+  aspect-ratio: 4 / 3;
+}
+
+@media (max-width: 575px) {
+  .mobile-aspect-auto-loginet {
+    aspect-ratio: auto !important;
+  }
+}
+
+/* ============================================
+   RESPONSIVE IMAGES
+============================================ */
+
+.responsive-img-loginet {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 575px) {
+  .mobile-img-full-loginet {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* ============================================
+   SAFE AREA INSETS (iOS)
+============================================ */
+
+.safe-area-inset-top-loginet {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-inset-bottom-loginet {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-inset-left-loginet {
+  padding-left: env(safe-area-inset-left);
+}
+
+.safe-area-inset-right-loginet {
+  padding-right: env(safe-area-inset-right);
+}
