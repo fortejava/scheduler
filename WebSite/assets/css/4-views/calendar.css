@@ -1235,19 +1235,6 @@
     opacity: 1 !important;
 }
 
-/* Hide time grid for all-day events */
-.fc-timegrid-slot {
-    display: none !important;
-}
-
-.fc-timegrid-axis {
-    display: none !important;
-}
-
-.fc-timegrid-slot-label {
-    display: none !important;
-}
-
 /* ============================================
    END FULLCALENDAR IMPROVEMENTS
 ============================================ */

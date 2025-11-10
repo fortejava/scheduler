@@ -38,7 +38,7 @@ const Calendar = {
             headerToolbar: {
                 left: 'prevYear,prev,next,nextYear today',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                right: 'dayGridMonth,dayGridWeek,dayGridDay'
             },
             customButtons: {
                 prevYear: {
