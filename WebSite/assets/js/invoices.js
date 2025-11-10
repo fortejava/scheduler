@@ -13,11 +13,55 @@ const Invoices = {
         currentPage: 1,
         itemsPerPage: PAGINATION.DEFAULT_ITEMS_PER_PAGE,
         sortColumn: null,
-        sortDirection: 'asc'
+        sortDirection: 'asc',
+        currentInvoiceDTO: null  // Stores current invoice for edit mode revert capability
     },
 
     // Form submission protection (prevents double-submit)
     _isSubmitting: false,
+
+    /**
+     * Setup event delegation for invoice row buttons
+     * Handles clicks on dynamically generated buttons: view detail, delete
+     * @private
+     */
+    _setupRowButtonDelegation: function () {
+        const container = document.getElementById('invoices-list-container');
+        if (!container) return;
+
+        // Check if we already have a listener attached
+        if (this._rowButtonHandler) {
+            container.removeEventListener('click', this._rowButtonHandler);
+        }
+
+        this._rowButtonHandler = (e) => {
+            // Stop propagation for all button clicks
+            const button = e.target.closest('button');
+            if (button) {
+                e.stopPropagation();
+            }
+
+            // Find the invoice row
+            const row = e.target.closest('tr[data-invoice-id]');
+            if (!row) return;  // Not clicked on a row, ignore
+
+            // Step 3: Get the invoice ID from the row's data attribute
+            const invoiceId = parseInt(row.dataset.invoiceId);
+            //NOTE: data-invoice-id becomes dataset.invoiceId (camelCase!)
+            //row.dataset.invoiceId = reads data-invoice-id attribute
+
+            // Step 4: Check which button was clicked
+            if (button.classList.contains('invoice-detail-btn')) {
+                this.showDetail(invoiceId);
+            } else if (button.classList.contains('invoice-delete-btn')) {
+                this.confirmDelete(invoiceId);
+            }
+        };
+
+        // Step 5: Attach the event listener to the container
+        container.addEventListener('click', this._rowButtonHandler);
+
+    },
 
     /**
      * Initialize invoice list view
@@ -71,6 +115,40 @@ const Invoices = {
     },
 
     /**
+     * Reload invoice list while preserving filter state
+     * Used after operations like delete to maintain user's filter context
+     * @param {Object} savedFilters - Saved filter state to restore
+     * @private
+     */
+    _reloadWithFilterPreservation: function(savedFilters) {
+        UI.showLoading();
+
+        InvoiceAPI.getFiltered(
+            {},  // Fetch all invoices
+            (response) => {
+                ApiClient.handleResponse(response, {
+                    onOk: (data) => {
+                        this.state.allInvoices = data;
+                        this._populateFilters();
+
+                        // ✅ RESTORE SAVED FILTERS (instead of setting defaults)
+                        this._restoreFilterState(savedFilters);
+
+                        this.applyFilters();
+                        UI.hideLoading();
+                    },
+                    onKo: (message) => {
+                        console.error('Failed to reload invoices:', message);
+                        UI.hideLoading();
+                        UI.showPopup('Errore', 'Impossibile ricaricare le fatture', { type: 'error' });
+                    }
+                });
+            },
+            (error) => this._handleInvoiceListError(error)
+        );
+    },
+
+    /**
      * Populate filter dropdowns
      * @private
      */
@@ -100,23 +178,34 @@ const Invoices = {
     },
 
     /**
-     * Populate customer filter
+     * Populate customer filter (now using autocomplete with ALL customers)
+     * Loads ALL customers from API (not just those with invoices)
      * @private
      */
     _populateCustomerFilter: function() {
-        const customerFilter = document.getElementById('customer-filter');
-        if (!customerFilter) return;
+        // Load ALL customers via API (not just from invoices)
+        CustomerAPI.getAll(
+            (response) => {
+                ApiClient.handleResponse(response, {
+                    onOk: (customers) => {
+                        // Initialize filter autocomplete
+                        this._initCustomerFilterAutocomplete();
 
-        const uniqueCustomers = [...new Set(
-            this.state.allInvoices.map(inv => inv.Invoice.Customer.CustomerName)
-        )].sort();
-
-        let options = '<option value="">Tutti i clienti</option>';
-        uniqueCustomers.forEach(customer => {
-            options += `<option value="${escapeHtml(customer)}">${escapeHtml(customer)}</option>`;
-        });
-
-        customerFilter.innerHTML = options;
+                        // Set ALL customers in filter
+                        if (this.customerFilterAutocomplete) {
+                            this.customerFilterAutocomplete.setCustomers(customers);
+                            console.log(`Loaded ${customers.length} customers into filter (ALL customers, including those without invoices)`);
+                        }
+                    },
+                    onError: (message) => {
+                        console.error('Failed to load customers for filter:', message);
+                    }
+                });
+            },
+            (error) => {
+                console.error('Failed to load customers (network error):', error);
+            }
+        );
     },
 
     /**
@@ -134,21 +223,76 @@ const Invoices = {
     },
 
     /**
+     * Save current filter state (for preserving filters after operations like delete)
+     * @returns {Object} Current filter values
+     * @private
+     */
+    _saveFilterState: function() {
+        return {
+            search: document.getElementById('invoice-search')?.value || '',
+            month: document.getElementById('month-filter')?.value || '',
+            year: document.getElementById('year-filter')?.value || '',
+            status: document.getElementById('status-filter')?.value || '',
+            customerId: document.getElementById('customer-filter-id')?.value || '',
+            customerName: document.getElementById('customer-filter-display')?.value || ''
+        };
+    },
+
+    /**
+     * Restore saved filter state (after operations like delete)
+     * @param {Object} state - Saved filter state
+     * @private
+     */
+    _restoreFilterState: function(state) {
+        if (!state) return;
+
+        // Restore simple filters
+        const searchInput = document.getElementById('invoice-search');
+        const monthFilter = document.getElementById('month-filter');
+        const yearFilter = document.getElementById('year-filter');
+        const statusFilter = document.getElementById('status-filter');
+
+        if (searchInput) searchInput.value = state.search;
+        if (monthFilter) monthFilter.value = state.month;
+        if (yearFilter) yearFilter.value = state.year;
+        if (statusFilter) statusFilter.value = state.status;
+
+        // Restore customer filter (autocomplete)
+        if (state.customerId && this.customerFilterAutocomplete) {
+            const hiddenInput = document.getElementById('customer-filter-id');
+            const displayInput = document.getElementById('customer-filter-display');
+
+            if (hiddenInput) hiddenInput.value = state.customerId;
+            if (displayInput) displayInput.value = state.customerName;
+
+            // Show clear button if customer selected
+            const clearButton = document.getElementById('customer-filter-clear');
+            if (clearButton && state.customerId) {
+                clearButton.classList.add('visible');
+            }
+        }
+
+        console.log('Filters restored after deletion:', state);
+    },
+
+    /**
      * Get currently filtered invoice data
      * @returns {Array} Filtered invoices
      */
     getFilteredData: function() {
-        const searchTerm = (document.getElementById('invoice-search')?.value || '').toLowerCase();
+        const searchTerm = (document.getElementById('invoice-search')?.value || '').toLowerCase().trim();
         const monthFilter = document.getElementById('month-filter')?.value || '';
         const yearFilter = document.getElementById('year-filter')?.value || '';
         const statusFilter = document.getElementById('status-filter')?.value || '';
-        const customerFilter = document.getElementById('customer-filter')?.value || '';
+
+        // ✅ CHANGED: Get CustomerID from hidden field (autocomplete)
+        const customerFilterId = document.getElementById('customer-filter-id')?.value || '';
 
         return this.state.allInvoices.filter(item => {
             const inv = item.Invoice;
             const dueDate = new Date(inv.InvoiceDueDate);
 
-            // Search filter
+            // Search filter (independent from customer filter)
             const matchesSearch =
                 inv.InvoiceNumber.toLowerCase().includes(searchTerm) ||
                 inv.InvoiceOrderNumber.toLowerCase().includes(searchTerm) ||
@@ -160,7 +304,9 @@ const Invoices = {
 
             // Other filters
             const matchesStatus = !statusFilter || item.StatusCode === statusFilter;
-            const matchesCustomer = !customerFilter || inv.Customer.CustomerName === customerFilter;
+
+            // ✅ CHANGED: Compare by CustomerID (not CustomerName string)
+            const matchesCustomer = !customerFilterId || inv.CustomerID === parseInt(customerFilterId);
 
             return matchesSearch && matchesMonth && matchesYear && matchesStatus && matchesCustomer;
         });
@@ -190,7 +336,15 @@ const Invoices = {
         document.getElementById('month-filter').value = '';
         document.getElementById('year-filter').value = '';
         document.getElementById('status-filter').value = '';
-        document.getElementById('customer-filter').value = '';
+
+        // ✅ CHANGED: Clear customer filter autocomplete properly
+        if (this.customerFilterAutocomplete) {
+            this.customerFilterAutocomplete.clearSelection();
+        } else {
+            // Fallback: clear hidden field directly
+            const hiddenInput = document.getElementById('customer-filter-id');
+            if (hiddenInput) hiddenInput.value = '';
+        }
 
         this.state.currentPage = 1;
         this.applyFilters();
@@ -216,10 +370,21 @@ const Invoices = {
         if (!container) return;
 
         if (!notEmptyArray(invoices)) {
+            // ✅ ENHANCED: Show specific message for customer with no invoices
+            const customerFilterId = document.getElementById('customer-filter-id')?.value || '';
+            let noResultsMessage = 'Nessuna fattura trovata con i filtri selezionati.';
+
+            // If customer filter is active, show customer-specific message
+            if (customerFilterId && this.customerFilterAutocomplete) {
+                const displayInput = document.getElementById('customer-filter-display');
+                const customerName = displayInput?.value || 'questo cliente';
+                noResultsMessage = `Nessuna fattura trovata per <strong>${customerName}</strong>.`;
+            }
+
             container.innerHTML = `
                 <div class="text-center py-5">
                     <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
-                    <p class="text-muted mt-3">Nessuna fattura trovata con i filtri selezionati.</p>
+                    <p class="text-muted mt-3">${noResultsMessage}</p>
                 </div>`;
             return;
         }
@@ -239,6 +404,7 @@ const Invoices = {
 
         container.innerHTML = html;
         this._updateSortIcons();
+        this._setupRowButtonDelegation();
     },
 
     /**
@@ -307,13 +473,11 @@ const Invoices = {
                     <span class="badge bg-${statusConfig.badgeClass}">${statusConfig.label}</span>
                 </td>
                 <td class="align-middle text-center">
-                    <button class="btn btn-sm btn-outline-primary me-1" 
-                            onclick="event.stopPropagation(); Invoices.showDetail(${inv.InvoiceID})" 
+                    <button class="btn btn-sm btn-outline-primary me-1 invoice-detail-btn"  
                             title="Visualizza">
                         <i class="bi bi-eye"></i>
                     </button>
-                    <button class="btn btn-sm btn-outline-danger" 
-                            onclick="event.stopPropagation(); Invoices.confirmDelete(${inv.InvoiceID})" 
+                    <button class="btn btn-sm btn-outline-danger invoice-delete-btn" 
                             title="Elimina">
                         <i class="bi bi-trash"></i>
                     </button>
@@ -668,6 +832,9 @@ const Invoices = {
     _fillDetailForm: function(invoiceDTO) {
         const invoice = invoiceDTO.Invoice;
 
+        // Store original invoice data for revert capability
+        this.state.currentInvoiceDTO = invoiceDTO;
+
         // Set form title and controls
         document.getElementById('invoice-form-title').innerText = 'Dettaglio Fattura';
         document.getElementById('edit-mode-toggle').style.display = 'block';
@@ -703,8 +870,20 @@ const Invoices = {
         this._loadCustomersDropdown('CustomerID');
         this._loadStatusesDropdown('StatusID');
 
+        // Set selected customer in autocomplete and status in select
         setTimeout(() => {
-            document.getElementById('CustomerID').value = invoice.CustomerID || '';
+            // Set customer in autocomplete
+            if (this.customerAutocomplete && invoice.CustomerID) {
+                // Find customer object from loaded customers
+                const customers = this.customerAutocomplete.customers || [];
+                const selectedCustomer = customers.find(c => c.CustomerID === invoice.CustomerID);
+
+                if (selectedCustomer) {
+                    this.customerAutocomplete.setSelectedCustomer(selectedCustomer);
+                }
+            }
+
+            // Set status in select (unchanged)
             document.getElementById('StatusID').value = invoice.StatusID || '';
         }, 500);
 
@@ -721,24 +900,239 @@ const Invoices = {
      */
     toggleEditMode: function() {
         const isEditMode = document.getElementById('enableEditMode').checked;
-        
+
+        // If toggling OFF (from ON to OFF), revert to original invoice data
+        if (!isEditMode && this.state.currentInvoiceDTO) {
+            this._revertToOriginalInvoice();
+        }
+
         UI.setFormEnabled('createInvoice', isEditMode, ['InvoiceID', 'enableEditMode', 'TaxTotal', 'InvoiceTotal']);
         UI.setElementVisible('invoice-submit-btn', isEditMode);
     },
 
     /**
-     * Load customers dropdown
+     * Revert form to original invoice data (discard unsaved changes)
+     * Called when Edit Mode is toggled OFF without saving
+     * @private
+     */
+    _revertToOriginalInvoice: function() {
+        if (!this.state.currentInvoiceDTO) {
+            console.warn('_revertToOriginalInvoice: No current invoice to revert to');
+            return;
+        }
+
+        const invoice = this.state.currentInvoiceDTO.Invoice;
+
+        console.log('Reverting to original invoice data:', invoice.InvoiceID);
+
+        // Revert all form fields to original values
+        const formData = {
+            InvoiceID: invoice.InvoiceID || '',
+            InvoiceOrderNumber: invoice.InvoiceOrderNumber || '',
+            InvoiceNumber: invoice.InvoiceNumber || '',
+            InvoiceTaxable: invoice.InvoiceTaxable || '',
+            InvoiceTax: this._convertTaxForDisplay(invoice.InvoiceTax) || '',
+            InvoiceDue: invoice.InvoiceDue || '',
+            TaxTotal: (invoice.InvoiceTaxable * invoice.InvoiceTax) || '',
+            InvoiceTotal: (invoice.InvoiceTaxable + (invoice.InvoiceTaxable * invoice.InvoiceTax)) || '',
+            CreationDate: invoice.InvoiceCreationDate?.split('T')[0] || '',
+            DueDate: invoice.InvoiceDueDate?.split('T')[0] || '',
+            Description: invoice.InvoiceDescription || ''
+        };
+
+        UI.setFormData('createInvoice', formData);
+
+        // Revert customer selection in autocomplete
+        if (this.customerAutocomplete && invoice.CustomerID) {
+            const customers = this.customerAutocomplete.customers || [];
+            const selectedCustomer = customers.find(c => c.CustomerID === invoice.CustomerID);
+
+            if (selectedCustomer) {
+                this.customerAutocomplete.setSelectedCustomer(selectedCustomer);
+                console.log('Reverted customer to:', selectedCustomer.CustomerName);
+            } else {
+                console.warn('Could not find original customer with ID:', invoice.CustomerID);
+            }
+        }
+
+        // Revert status selection
+        setTimeout(() => {
+            document.getElementById('StatusID').value = invoice.StatusID || '';
+
+            // Reapply status color
+            const statusConfig = getStatusConfig(this.state.currentInvoiceDTO.StatusCode);
+            const statusSelect = document.getElementById('StatusID');
+            if (statusSelect) {
+                statusSelect.style.backgroundColor = statusConfig.backgroundColor;
+                statusSelect.style.color = statusConfig.textColor;
+            }
+        }, 100);
+
+        console.log('Successfully reverted to original invoice data');
+    },
+
+    /**
+     * Initialize customer autocomplete (lazy initialization)
+     * @private
+     */
+    _initCustomerAutocomplete: function() {
+        // Check if already initialized
+        if (this.customerAutocomplete) return;
+
+        try {
+            const config = {
+                inputId: 'CustomerID-display',
+                dropdownId: 'CustomerID-dropdown',
+                clearButtonId: 'CustomerID-clear',
+                arrowId: 'CustomerID-arrow',
+                spinnerId: 'CustomerID-spinner',
+                hiddenInputId: 'CustomerID',
+
+                // Callback when customer is selected
+                onSelect: (customer) => {
+                    // Update hidden field with CustomerID for form submission
+                    const hiddenInput = document.getElementById('CustomerID');
+                    if (hiddenInput) {
+                        hiddenInput.value = customer.CustomerID;
+                    }
+                },
+
+                // Callback when selection is cleared
+                onClear: () => {
+                    // Clear hidden field
+                    const hiddenInput = document.getElementById('CustomerID');
+                    if (hiddenInput) {
+                        hiddenInput.value = '';
+                    }
+                },
+
+                // No API endpoint (we load all customers upfront)
+                apiEndpoint: null,
+                minChars: 0,  // Show all on click
+                debounceDelay: 300
+            };
+
+            this.customerAutocomplete = new AutocompleteCustomer(config);
+            this.customerAutocomplete.init();
+
+            console.log('Customer autocomplete initialized successfully');
+
+        } catch (error) {
+            console.error('Failed to initialize customer autocomplete:', error);
+
+            // Show user-facing error message
+            UI.showPopup(
+                'Errore di Inizializzazione',
+                'Impossibile inizializzare la ricerca clienti. Ricaricare la pagina.',
+                { type: 'error' }
+            );
+        }
+    },
+
+    /**
+     * Load customers dropdown (now using autocomplete)
      * @private
      */
     _loadCustomersDropdown: function(selectId) {
         CustomerAPI.getAll(
             (response) => {
                 ApiClient.handleResponse(response, {
-                    onOk: (data) => this._fillCustomersSelect(data, selectId)
+                    onOk: (data) => {
+                        // Initialize autocomplete if not already done
+                        this._initCustomerAutocomplete();
+
+                        // Set customers in autocomplete
+                        if (this.customerAutocomplete) {
+                            this.customerAutocomplete.setCustomers(data);
+                            console.log(`Loaded ${data.length} customers into autocomplete`);
+                        }
+                    },
+                    onError: (message) => {
+                        console.error('Failed to load customers:', message);
+                        UI.showPopup(
+                            'Errore Caricamento Clienti',
+                            'Impossibile caricare l\'elenco clienti. Riprovare.',
+                            { type: 'error' }
+                        );
+                    }
                 });
             },
-            (error) => console.error('Failed to load customers:', error)
+            (error) => {
+                console.error('Failed to load customers (network error):', error);
+                UI.showPopup(
+                    'Errore di Rete',
+                    'Impossibile caricare i clienti. Verificare la connessione.',
+                    { type: 'error' }
+                );
+            }
         );
+    },
+
+    /**
+     * Initialize customer filter autocomplete (lazy initialization)
+     * Called when loading ALL customers for filtering
+     * @private
+     */
+    _initCustomerFilterAutocomplete: function() {
+        // Check if already initialized
+        if (this.customerFilterAutocomplete) return;
+
+        try {
+            const config = {
+                inputId: 'customer-filter-display',
+                dropdownId: 'customer-filter-dropdown',
+                clearButtonId: 'customer-filter-clear',
+                arrowId: 'customer-filter-arrow',
+                spinnerId: null,  // No spinner for filter
+                hiddenInputId: 'customer-filter-id',
+
+                // Callback when customer is selected
+                onSelect: (customer) => {
+                    console.log('Filter customer selected:', customer.CustomerName, 'ID:', customer.CustomerID);
+
+                    // Store selected CustomerID in hidden field
+                    const hiddenInput = document.getElementById('customer-filter-id');
+                    if (hiddenInput) {
+                        hiddenInput.value = customer.CustomerID;
+                    }
+
+                    // Trigger filter update
+                    this.applyFilters();
+                },
+
+                // Callback when selection is cleared
+                onClear: () => {
+                    console.log('Filter customer cleared - showing all invoices');
+
+                    // Clear hidden field
+                    const hiddenInput = document.getElementById('customer-filter-id');
+                    if (hiddenInput) {
+                        hiddenInput.value = '';
+                    }
+
+                    // Trigger filter update (show all)
+                    this.applyFilters();
+                },
+
+                // No API endpoint (customers loaded via CustomerAPI.getAll)
+                apiEndpoint: null,
+                minChars: 0,  // Show all customers on click
+                debounceDelay: 300
+            };
+
+            this.customerFilterAutocomplete = new AutocompleteCustomer(config);
+            this.customerFilterAutocomplete.init();
+
+            console.log('Customer filter autocomplete initialized successfully');
+
+        } catch (error) {
+            console.error('Failed to initialize customer filter autocomplete:', error);
+            UI.showPopup(
+                'Errore di Inizializzazione Filtro',
+                'Impossibile inizializzare il filtro clienti. Ricaricare la pagina.',
+                { type: 'error' }
+            );
+        }
     },
 
     /**
@@ -756,31 +1150,6 @@ const Invoices = {
         );
     },
 
-    /**
-     * Fill customers select element
-     * @private
-     */
-    _fillCustomersSelect: function(customers, selectId) {
-        const select = document.getElementById(selectId);
-        if (!select) return;
-
-        select.innerHTML = '';
-
-        // CRITICAL: Add empty default option
-        const defaultOption = document.createElement('option');
-        defaultOption.value = '';
-        defaultOption.textContent = '-- Seleziona Cliente --';
-        defaultOption.disabled = true;
-        defaultOption.selected = true;
-        select.appendChild(defaultOption);
-
-        customers.forEach(customer => {
-            const option = document.createElement('option');
-            option.value = customer.CustomerID;
-            option.textContent = customer.CustomerName;
-            select.appendChild(option);
-        });
-    },
 
     /**
      * Fill statuses select element
@@ -1062,6 +1431,10 @@ const Invoices = {
      * @param {number} invoiceId - Invoice ID
      */
     delete: function(invoiceId) {
+        // ✅ SAVE FILTER STATE BEFORE DELETION
+        const savedFilters = this._saveFilterState();
+        console.log('Saving filters before deletion:', savedFilters);
+
         InvoiceAPI.delete(
             invoiceId,
             (response) => {
@@ -1073,13 +1446,15 @@ const Invoices = {
                         {
                             type: 'success',
                             onClose: () => {
-                                // Refresh the invoice list
-                                this.showList();
+                                // ✅ RELOAD WITH FILTER PRESERVATION
+                                this._reloadWithFilterPreservation(savedFilters);
                             }
                         }
                     );
                 } else {
                     // Backend returned Ko
+                    // NOTE: Filters are preserved because NO reload happens (no onClose callback)
+                    // This is CORRECT behavior: invoice NOT deleted → data unchanged → keep current view
                     let errorMsg = 'Impossibile eliminare la fattura';
 
                     // Handle error messages (can be array or string)
@@ -1089,17 +1464,26 @@ const Invoices = {
                         errorMsg = response.Message;
                     }
 
+                    // ✅ NO RELOAD on error - filters preserved, data unchanged
+                    console.warn('Delete failed (backend error):', errorMsg);
+                    console.log('Filters preserved (no reload on error):', savedFilters);
+
                     UI.showPopup('Errore', errorMsg, { type: 'error' });
                 }
             },
             (error) => {
                 // Error handler (network/parsing errors)
-                console.error('Delete invoice error:', error);
+                // NOTE: Filters are preserved because NO reload happens (no onClose callback)
+                // This is CORRECT behavior: invoice likely NOT deleted → keep current view
+                console.error('Delete invoice error (network/parsing):', error);
 
                 let errorMsg = 'Errore durante l\'eliminazione della fattura';
                 if (error && error.message) {
                     errorMsg = error.message;
                 }
+
+                // ✅ NO RELOAD on error - filters preserved, data unchanged
+                console.log('Filters preserved (no reload on error):', savedFilters);
 
                 UI.showPopup('Errore', errorMsg, { type: 'error' });
             }

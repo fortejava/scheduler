@@ -9,18 +9,71 @@
 const Customers = {
     // State management
     state: {
-        allCustomers: []
+        allCustomers: [],
+        filteredCustomers: [], // Currently displayed customers (after search)
+        currentPage: 1,
+        itemsPerPage: PAGINATION.DEFAULT_ITEMS_PER_PAGE
     },
 
     // Form submission protection (prevents double-submit)
     _isSubmittingAdd: false,
 
     /**
+     * Setup event delegation for customers row buttons
+     * Handles clicks on dynamically generated buttons: view detail, delete
+     * @private
+     */
+    _setupRowButtonDelegation: function () {
+        const container = document.getElementById('customers-list-container');
+        if (!container) return;
+
+        // Check if we already have a listener attached
+        if (this._rowButtonHandler) {
+            container.removeEventListener('click', this._rowButtonHandler);
+        }
+
+        this._rowButtonHandler = (e) => {
+            // Stop propagation for all button clicks
+            const button = e.target.closest('button');
+            if (button) {
+                e.stopPropagation();
+            }
+
+            const row = e.target.closest('.customer-item');
+            if (!row) return; // Not clicked on a row, ignore
+
+            const customerId = parseInt(row.dataset.customerId);
+            if (isNaN(customerId)) return; // Invalid customer ID, ignore
+
+            // Determine action based on clicked button
+            if (button) {
+                if (button.classList.contains('edit-button')) {
+                    Customers.edit(customerId);
+                } else if (button.classList.contains('delete-button')) {
+                    Customers.confirmDelete(customerId);
+                } else if (button.classList.contains('save-button')) {
+                    Customers.save(customerId);
+                } else if (button.classList.contains('cancel-button')) {
+                    Customers.cancel(customerId);
+                }
+            }
+        };
+
+        container.addEventListener('click', this._rowButtonHandler);
+    },
+
+    /**
      * Initialize customer list view
      */
     showList: function() {
         UI.showLoading();
-        
+
+        // Clear search box when reloading
+        const searchInput = document.getElementById('customer-search');
+        if (searchInput) {
+            searchInput.value = '';
+        }
+
         CustomerAPI.getAll(
             (response) => this._handleCustomerListResponse(response),
             (error) => this._handleCustomerListError(error)
@@ -37,6 +90,7 @@ const Customers = {
         ApiClient.handleResponse(response, {
             onOk: (data) => {
                 this.state.allCustomers = data;
+                this.state.filteredCustomers = data; // Initially, filtered = all
                 this.renderList(data);
                 UI.hideLoading();
             },
@@ -62,7 +116,7 @@ const Customers = {
      * Render customer list
      * @param {Array} customers - Array of customer objects
      */
-    renderList: function(customers) {
+    renderList: function (customers) {
         const container = document.getElementById('customers-list-container');
         if (!container) return;
 
@@ -71,13 +125,155 @@ const Customers = {
             return;
         }
 
+        // Calculate pagination
+        const totalPages = Math.ceil(customers.length / this.state.itemsPerPage);
+        const startIndex = (this.state.currentPage - 1) * this.state.itemsPerPage;
+        const endIndex = Math.min(startIndex + this.state.itemsPerPage, customers.length);
+        const paginatedCustomers = customers.slice(startIndex, endIndex);
+
+        // Build HTML
         let html = this._buildListHeader();
-        
-        customers.forEach((customer, index) => {
-            html += this._buildCustomerItem(customer, index + 1);
+
+        paginatedCustomers.forEach((customer) => {
+            html += this._buildCustomerItem(customer);
         });
 
+        html += this._buildPaginationHTML(customers.length, totalPages);
+
         container.innerHTML = html;
+        this._setupRowButtonDelegation();
+    },
+
+    /**
+     * Build pagination HTML
+     * @private
+     */
+    _buildPaginationHTML: function (totalItems, totalPages) {
+        const startItem = (this.state.currentPage - 1) * this.state.itemsPerPage + 1;
+        const endItem = Math.min(this.state.currentPage * this.state.itemsPerPage, totalItems);
+
+        let html = `
+            <div class="row mt-3 align-items-center">`;
+
+        // CONDITIONAL: Only show counter and page navigation if multiple pages
+        if (totalPages > 1) {
+            html += `
+                <div class="col-md-4">
+                    <small class="text-muted fw-bold">
+                        Mostrando ${startItem}-${endItem} di ${totalItems} clienti
+                    </small>
+                </div>
+                <div class="col-md-4 text-center">
+                    <nav aria-label="Navigazione pagine">
+                        <ul class="pagination pagination-sm justify-content-center mb-0">`;
+
+            // Previous button
+            html += `
+                            <li class="page-item ${this.state.currentPage === 1 ? 'disabled' : ''}">
+                                <a class="page-link" href="#" onclick="Customers.changePage(${this.state.currentPage - 1}); return false;">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>`;
+
+            // Page numbers
+            html += this._buildPageNumbers(totalPages);
+
+            // Next button
+            html += `
+                            <li class="page-item ${this.state.currentPage === totalPages ? 'disabled' : ''}">
+                                <a class="page-link" href="#" onclick="Customers.changePage(${this.state.currentPage + 1}); return false;">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>`;
+        }
+
+        // ALWAYS SHOW: Items per page dropdown
+        // Column class adapts: col-md-4 when with navigation, col-12 when alone
+        html += `
+                <div class="${totalPages > 1 ? 'col-md-4' : 'col-12'} text-end">
+                    <select class="form-select form-select-sm d-inline-block" style="width: auto;"
+                            onchange="Customers.changeItemsPerPage(this.value)">`;
+
+        PAGINATION.ITEMS_PER_PAGE_OPTIONS.forEach(option => {
+            html += `<option value="${option}" ${this.state.itemsPerPage === option ? 'selected' : ''}>${option} per pagina</option>`;
+        });
+
+        html += `
+                    </select>
+                </div>
+            </div>`;
+
+        return html;
+    },
+
+    /**
+     * Build page numbers for pagination
+     * @private
+     * @param {number} totalPages - Total number of pages
+     * @returns {string} HTML for page numbers
+     */
+    _buildPageNumbers: function(totalPages) {
+        let html = '';
+        const maxVisible = PAGINATION.MAX_VISIBLE_PAGES;
+        let startPage = Math.max(1, this.state.currentPage - 2);
+        let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+        if (endPage - startPage < maxVisible - 1) {
+            startPage = Math.max(1, endPage - maxVisible + 1);
+        }
+
+        // First page + ellipsis if needed
+        if (startPage > 1) {
+            html += `<li class="page-item"><a class="page-link" href="#" onclick="Customers.changePage(1); return false;">1</a></li>`;
+            if (startPage > 2) {
+                html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+        }
+
+        // Page numbers
+        for (let i = startPage; i <= endPage; i++) {
+            html += `
+                <li class="page-item ${i === this.state.currentPage ? 'active' : ''}">
+                    <a class="page-link" href="#" onclick="Customers.changePage(${i}); return false;">${i}</a>
+                </li>`;
+        }
+
+        // Ellipsis + last page if needed
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+            html += `<li class="page-item"><a class="page-link" href="#" onclick="Customers.changePage(${totalPages}); return false;">${totalPages}</a></li>`;
+        }
+
+        return html;
+    },
+
+    /**
+     * Change to specific page
+     * @param {number} page - Page number
+     */
+    changePage: function (page) {
+        const customers = this.state.filteredCustomers;
+        const totalPages = Math.ceil(customers.length / this.state.itemsPerPage);
+
+        if (page < 1 || page > totalPages) return;
+
+        this.state.currentPage = page;
+        this.renderList(customers);
+    },
+
+    /**
+     * Change items per page
+     * @param {number} value - Items per page
+     */
+    changeItemsPerPage: function (value) {
+        this.state.itemsPerPage = parseInt(value, 10);
+        this.state.currentPage = 1;
+        this.renderList(this.state.filteredCustomers);
     },
 
     /**
@@ -100,88 +296,92 @@ const Customers = {
      * Build single customer item
      * @private
      */
-    _buildCustomerItem: function(customer, index) {
+    _buildCustomerItem: function (customer) {
+        const customerId = customer.CustomerID;  // Extract once
+        const customerName = escapeHtml(customer.CustomerName);
+
         return `
-            <div class="customer-item mb-3 p-3 border rounded bg-white shadow-sm" 
-                 id="customer-${index}" 
-                 data-customer-name="${escapeHtml(customer.CustomerName)}">
-                <div class="row align-items-center">
-                    <div class="col-8">
-                        <input 
-                            readonly 
-                            class="form-control-plaintext customer-name-input" 
-                            id="customer-input-${index}" 
-                            data-customer-id="${customer.CustomerID}" 
-                            data-customer-name="${escapeHtml(customer.CustomerName)}" 
-                            value="${escapeHtml(customer.CustomerName)}"
-                        />
-                    </div>
-                    <div class="col-4 text-end">
-                        <!-- View mode buttons -->
-                        <button class="btn btn-sm btn-outline-primary me-2 edit-button" 
-                                onclick="Customers.edit(${index})" 
-                                id="customer-edit-button-${index}" 
-                                title="Modifica">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger delete-button" 
-                                onclick="Customers.confirmDelete(${index})" 
-                                id="customer-delete-button-${index}" 
-                                title="Elimina">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                        
-                        <!-- Edit mode buttons (hidden by default) -->
-                        <button class="btn btn-sm btn-success me-2 save-button hidden" 
-                                onclick="Customers.save(${index})" 
-                                id="customer-save-button-${index}" 
-                                title="Salva">
-                            <i class="bi bi-check-lg"></i>
-                        </button>
-                        <button class="btn btn-sm btn-secondary cancel-button hidden" 
-                                onclick="Customers.cancel(${index})" 
-                                id="customer-cancel-button-${index}" 
-                                title="Annulla">
-                            <i class="bi bi-x-lg"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>`;
+          <div class="customer-item mb-3 p-3 border rounded bg-white shadow-sm"
+               id="customer-${customerId}"
+               data-customer-id="${customerId}"
+               data-customer-name="${customerName}">
+              <div class="row align-items-center">
+                  <div class="col-8">
+                      <input
+                          readonly
+                          class="form-control-plaintext customer-name-input"
+                          id="customer-input-${customerId}"
+                          data-customer-id="${customerId}"
+                          data-customer-name="${customerName}"
+                          value="${customerName}"
+                      />
+                  </div>
+                  <div class="col-4 text-end">
+                      <button class="btn btn-sm btn-outline-primary me-2 edit-button"
+                              id="customer-edit-button-${customerId}"
+                              title="Modifica">
+                          <i class="bi bi-pencil"></i>
+                      </button>
+                      <button class="btn btn-sm btn-outline-danger delete-button"
+                              id="customer-delete-button-${customerId}"
+                              title="Elimina">
+                          <i class="bi bi-trash"></i>
+                      </button>
+
+                      <button class="btn btn-sm btn-success me-2 save-button hidden"
+                              id="customer-save-button-${customerId}"
+                              title="Salva">
+                          <i class="bi bi-check-lg"></i>
+                      </button>
+                      <button class="btn btn-sm btn-secondary cancel-button hidden"
+                              id="customer-cancel-button-${customerId}"
+                              title="Annulla">
+                          <i class="bi bi-x-lg"></i>
+                      </button>
+                  </div>
+              </div>
+          </div>`;
     },
 
     /**
      * Filter customers by search term
      */
     search: function() {
-        const searchInput = document.getElementById('customer-search');
-        const query = searchInput ? searchInput.value.toLowerCase() : '';
-        const customerItems = document.querySelectorAll('.customer-item');
+        this.state.currentPage = 1; // Reset to page 1 when searching
 
-        customerItems.forEach(item => {
-            const customerName = item.getAttribute('data-customer-name');
-            if (!customerName || customerName.toLowerCase().includes(query)) {
-                item.style.display = '';
-            } else {
-                item.style.display = 'none';
-            }
-        });
+        const searchInput = document.getElementById('customer-search');
+        const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+        // Filter the customers array
+        if (query === '') {
+            // No search query - show all customers
+            this.state.filteredCustomers = this.state.allCustomers;
+        } else {
+            // Filter customers by name
+            this.state.filteredCustomers = this.state.allCustomers.filter(customer => {
+                return customer.CustomerName.toLowerCase().includes(query);
+            });
+        }
+
+        // Re-render with filtered data
+        this.renderList(this.state.filteredCustomers);
     },
 
     /**
      * Enter edit mode for customer
-     * @param {number} index - Customer index in list
+     * @param {number} customerId - Customer ID in list
      */
-    edit: function(index) {
+    edit: function(customerId) {
         // Hide view buttons
-        UI.addClass(`customer-edit-button-${index}`, 'hidden');
-        UI.addClass(`customer-delete-button-${index}`, 'hidden');
+        UI.addClass(`customer-edit-button-${customerId}`, 'hidden');
+        UI.addClass(`customer-delete-button-${customerId}`, 'hidden');
 
         // Show edit buttons
-        UI.removeClass(`customer-save-button-${index}`, 'hidden');
-        UI.removeClass(`customer-cancel-button-${index}`, 'hidden');
+        UI.removeClass(`customer-save-button-${customerId}`, 'hidden');
+        UI.removeClass(`customer-cancel-button-${customerId}`, 'hidden');
 
         // Make input editable
-        const input = document.getElementById(`customer-input-${index}`);
+        const input = document.getElementById(`customer-input-${customerId}`);
         if (input) {
             input.removeAttribute('readonly');
             input.classList.remove('form-control-plaintext');
@@ -192,19 +392,19 @@ const Customers = {
 
     /**
      * Cancel edit mode for customer
-     * @param {number} index - Customer index in list
+     * @param {number} customerId - Customer ID in list
      */
-    cancel: function(index) {
+    cancel: function (customerId) {
         // Show view buttons
-        UI.removeClass(`customer-edit-button-${index}`, 'hidden');
-        UI.removeClass(`customer-delete-button-${index}`, 'hidden');
+        UI.removeClass(`customer-edit-button-${customerId}`, 'hidden');
+        UI.removeClass(`customer-delete-button-${customerId}`, 'hidden');
 
         // Hide edit buttons
-        UI.addClass(`customer-save-button-${index}`, 'hidden');
-        UI.addClass(`customer-cancel-button-${index}`, 'hidden');
+        UI.addClass(`customer-save-button-${customerId}`, 'hidden');
+        UI.addClass(`customer-cancel-button-${customerId}`, 'hidden');
 
         // Make input readonly and restore original value
-        const input = document.getElementById(`customer-input-${index}`);
+        const input = document.getElementById(`customer-input-${customerId}`);
         if (input) {
             input.setAttribute('readonly', 'readonly');
             input.classList.remove('form-control');
@@ -215,19 +415,19 @@ const Customers = {
 
     /**
      * Save customer changes
-     * @param {number} index - Customer index in list
+     * @param {number} customerId - Customer ID in list
      * @param {Event} event - Optional event object
      */
-    save: function(index, event) {
+    save: function (customerId, event) {
         if (event) {
             event.preventDefault();
             event.stopPropagation();
         }
 
-        const input = document.getElementById(`customer-input-${index}`);
+        const input = document.getElementById(`customer-input-${customerId}`);
         if (!input) return;
 
-        const customerId = input.getAttribute('data-customer-id');
+        //const customerId2 = input.getAttribute('data-customer-id');
         const customerName = input.value;
         const originalName = input.getAttribute('data-customer-name');
 
@@ -247,7 +447,7 @@ const Customers = {
         // Submit to API
         CustomerAPI.createOrUpdate(
             { CustomerID: customerId, CustomerName: customerName },
-            (response) => this._handleSaveResponse(response, index, input, customerName),
+            (response) => this._handleSaveResponse(response, customerId, input, customerName),
             (error) => this._handleSaveError(error)
         );
     },
@@ -256,7 +456,7 @@ const Customers = {
      * Handle save response
      * @private
      */
-    _handleSaveResponse: function(response, index, input, customerName) {
+    _handleSaveResponse: function (response, customerId, input, customerName) {
         UI.hideLoading();
 
         ApiClient.handleResponse(response, {
@@ -267,7 +467,7 @@ const Customers = {
                 input.setAttribute('data-customer-name', customerName);
                 
                 // Exit edit mode
-                this._exitEditMode(index);
+                this._exitEditMode(customerId);
             },
             onKo: (message) => {
                 UI.showPopup('Errore', message, { type: 'error' });
@@ -289,17 +489,17 @@ const Customers = {
      * Exit edit mode programmatically
      * @private
      */
-    _exitEditMode: function(index) {
+    _exitEditMode: function (customerId) {
         // Show view buttons
-        UI.removeClass(`customer-edit-button-${index}`, 'hidden');
-        UI.removeClass(`customer-delete-button-${index}`, 'hidden');
+        UI.removeClass(`customer-edit-button-${customerId}`, 'hidden');
+        UI.removeClass(`customer-delete-button-${customerId}`, 'hidden');
 
         // Hide edit buttons
-        UI.addClass(`customer-save-button-${index}`, 'hidden');
-        UI.addClass(`customer-cancel-button-${index}`, 'hidden');
+        UI.addClass(`customer-save-button-${customerId}`, 'hidden');
+        UI.addClass(`customer-cancel-button-${customerId}`, 'hidden');
 
         // Make input readonly
-        const input = document.getElementById(`customer-input-${index}`);
+        const input = document.getElementById(`customer-input-${customerId}`);
         if (input) {
             input.setAttribute('readonly', 'readonly');
             input.classList.remove('form-control');
@@ -414,26 +614,26 @@ const Customers = {
 
     /**
      * Confirm and delete customer
-     * @param {number} index - Customer index in list
+     * @param {number} customerId - Customer ID in list
      */
-    confirmDelete: function(index) {
+    confirmDelete: function (customerId) {
         UI.showConfirmation(
             'Conferma Eliminazione',
             'Sei sicuro di voler eliminare questo cliente? Questa azione non può essere annullata.',
-            () => this.delete(index)
+            () => this.delete(customerId)
         );
     },
 
     /**
      * Delete customer (hard delete)
      * NOTE: Only succeeds if customer has NO invoices (active or soft-deleted)
-     * @param {number} index - Customer index in list
+     * @param {number} customerId - Customer ID in list
      */
-    delete: function(index) {
-        const input = document.getElementById(`customer-input-${index}`);
-        if (!input) return;
+    delete: function (customerId) {
+        //const input = document.getElementById(`customer-input-${customerId}`);
+        //if (!input) return;
 
-        const customerId = input.getAttribute('data-customer-id');
+        //const customerId2 = input.getAttribute('data-customer-id');
 
         CustomerAPI.delete(
             customerId,

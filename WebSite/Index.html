@@ -17,7 +17,7 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="assets/bootstrap-icons/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css">
 
-    <!-- Loginet Modular CSS (imports all layers 1-5) -->
+    <!-- Loginet Modular CSS (imports all layers 1-5, including autocomplete component) -->
     <link href="assets/css/main.css" rel="stylesheet" />
 
     <!-- Scripts -->
@@ -25,6 +25,7 @@
     <!-- CRITICAL: Load in this exact order! -->
     <script src="assets/js/config.js"></script>
     <script src="assets/js/utils.js"></script>
+    <script src="assets/js/autocomplete-utils.js"></script>
     <script src="assets/js/api.js"></script>
     <script src="assets/js/ui.js"></script>
     <script src="assets/js/auth.js"></script>
@@ -144,8 +145,36 @@
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label for="CustomerID" class="form-label">Cliente</label>
-                                            <select class="form-select w-100" id="CustomerID" name="CustomerID" required></select>
+                                            <label for="CustomerID-display" class="form-label">Cliente</label>
+                                            <div class="autocomplete-wrapper" id="customer-autocomplete-wrapper">
+                                                <!-- Visible input for customer name -->
+                                                <!-- placeholder="Digita per cercare cliente..." -->
+                                                <input type="text"
+                                                       id="CustomerID-display"
+                                                       class="form-control"
+                                                       placeholder="Cliente..."
+                                                       autocomplete="off"
+                                                       required>
+
+                                                <!-- Hidden input for actual CustomerID (backend compatibility) -->
+                                                <input type="hidden" id="CustomerID" name="CustomerID">
+
+                                                <!-- Clear button (X) -->
+                                                <i class="bi bi-x-circle-fill clear-button" id="CustomerID-clear"></i>
+
+                                                <!-- Loading spinner (for API calls) -->
+                                                <div class="spinner-border spinner-border-sm text-primary loading-spinner"
+                                                     id="CustomerID-spinner"
+                                                     role="status">
+                                                    <span class="visually-hidden">Caricamento...</span>
+                                                </div>
+
+                                                <!-- Dropdown arrow -->
+                                                <i class="bi bi-chevron-down dropdown-arrow" id="CustomerID-arrow"></i>
+
+                                                <!-- Dropdown items container -->
+                                                <div id="CustomerID-dropdown" class="autocomplete-dropdown hidden"></div>
+                                            </div>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="StatusID" class="form-label">Stato</label>
@@ -258,9 +287,26 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2">
-                                    <select id="customer-filter" class="form-select" onchange="filterInvoices()">
-                                        <option value="">Tutti i clienti</option>
-                                    </select>
+                                    <div class="autocomplete-wrapper" id="customer-filter-wrapper">
+                                        <!-- Visible input for customer name -->
+                                        <input type="text"
+                                               id="customer-filter-display"
+                                               class="form-control"
+                                               placeholder="Filtra per cliente..."
+                                               autocomplete="off">
+
+                                        <!-- Hidden field to store CustomerID for filter logic -->
+                                        <input type="hidden" id="customer-filter-id">
+
+                                        <!-- Clear button (X) -->
+                                        <i class="bi bi-x-circle-fill clear-button" id="customer-filter-clear"></i>
+
+                                        <!-- Dropdown arrow -->
+                                        <i class="bi bi-chevron-down dropdown-arrow" id="customer-filter-arrow"></i>
+
+                                        <!-- Dropdown items container -->
+                                        <div id="customer-filter-dropdown" class="autocomplete-dropdown hidden"></div>
+                                    </div>
                                 </div>
                                 <div class="col-md-1">
                                     <button class="btn btn-outline-secondary w-100" onclick="clearFilters()" title="Reset filtri">

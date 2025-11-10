@@ -82,6 +82,9 @@
 /* Alerts - Alert and notification styles */
 @import '3-components/alerts.css';
 
+/* Autocomplete - Customer autocomplete component */
+@import '3-components/autocomplete.css';
+
 /* ============================================
    LAYER 4: VIEWS - PAGE-SPECIFIC STYLES
    Styles specific to individual pages/views

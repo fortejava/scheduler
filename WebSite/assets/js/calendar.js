@@ -110,16 +110,8 @@ const Calendar = {
      * @private
      */
     _handleInvoicesResponse: function(response) {
-        // DEBUG: Log raw response
-        console.log('📅 CALENDAR - Raw API Response:', response);
-
         ApiClient.handleResponse(response, {
             onOk: (data) => {
-                // DEBUG: Log what we received after handleResponse
-                console.log('📅 CALENDAR - Data received (response.Message):', data);
-                console.log('📅 CALENDAR - First invoice sample:', data[0]);
-                console.log('📅 CALENDAR - First invoice StatusCode:', data[0]?.StatusCode);
-
                 this.updateEvents(data);
             },
             onKo: (message) => {
@@ -165,14 +157,9 @@ const Calendar = {
      * @returns {Array} Array of calendar event objects
      */
     _buildEvents: function(invoices) {
-        console.log('📅 CALENDAR - _buildEvents called with:', invoices);
-
         if (!notEmptyArray(invoices)) {
-            console.log('📅 CALENDAR - No invoices to build events from');
             return [];
         }
-
-        console.log(`📅 CALENDAR - Building ${invoices.length} events`);
 
         return invoices.map((item, index) => {
             const invoice = item.Invoice;
@@ -198,15 +185,6 @@ const Calendar = {
             };
 
             const eventClass = statusClassMap[statusCode] || 'event-paid';  // Default to paid
-
-            // DEBUG: Log each invoice's status processing
-            console.log(`📅 Invoice #${index + 1} (ID:${invoice.InvoiceID}):`, {
-                invoiceNumber: invoice.InvoiceNumber,
-                dueDate: invoice.InvoiceDueDate,
-                statusCode: statusCode,
-                cssClass: eventClass,
-                expectedColor: statusClassMap[statusCode] ? 'CSS class color' : 'default green'
-            });
 
             return {
                 title: `${invoice.Customer.CustomerName} - ${formatCurrency(invoice.InvoiceDue)}`,
