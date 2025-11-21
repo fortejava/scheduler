@@ -21,3 +21,4 @@ PrecompiledWeb/
 # Environment
 .env
 credentials.json
+/nul
