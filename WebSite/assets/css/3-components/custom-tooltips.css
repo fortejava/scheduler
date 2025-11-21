@@ -1,0 +1,75 @@
+/**
+ * CUSTOM TOOLTIPS FOR LOGINET - TIPPY.JS OVERLAY THEME
+ * Production implementation using Tippy.js
+ *
+ * This file provides custom styling for Tippy.js overlay-style tooltips
+ * that appear OVER truncated text with expansion animation.
+ */
+
+/* ============================================
+   TIPPY.JS OVERLAY THEME
+   Positioned OVER element with expansion animation
+============================================ */
+
+/* Tippy.js overlay theme container */
+.tippy-box[data-theme~='loginet-overlay'] {
+  /* Styling to match cell */
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid rgba(0, 44, 61, 0.15);
+  border-radius: 6px;
+  padding: 0;
+
+  /* Elevation effect */
+  box-shadow: 0 4px 20px rgba(0, 44, 61, 0.25),
+              0 1px 3px rgba(0, 0, 0, 0.1);
+
+  /* Start with cell width, expand to content */
+  min-width: var(--cell-width, 150px);
+  max-width: max-content;
+
+  /* Z-index for overlay */
+  z-index: 1000;
+}
+
+/* Tippy.js overlay content */
+.tippy-box[data-theme~='loginet-overlay'] .tippy-content {
+  padding: 8px 14px;
+
+  /* Text styling */
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.5;
+  text-align: left;
+  white-space: nowrap;
+  color: #000000;
+}
+
+/* Expansion animation for Tippy.js overlay */
+.tippy-box[data-theme~='loginet-overlay'].tippy-expanding {
+  animation: tippyOverlayExpand 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes tippyOverlayExpand {
+  0% {
+    width: var(--cell-width, 150px);
+    opacity: 0.8;
+    transform: translateY(-1px) scaleX(0.95);
+  }
+  100% {
+    width: max-content;
+    opacity: 1;
+    transform: translateY(-1px) scaleX(1);
+  }
+}
+
+/* Shift-away animation override for overlay */
+.tippy-box[data-theme~='loginet-overlay'][data-animation='shift-away-subtle'][data-state='hidden'] {
+  opacity: 0;
+  transform: translateY(5px);
+}
+
+.tippy-box[data-theme~='loginet-overlay'][data-animation='shift-away-subtle'][data-state='visible'] {
+  opacity: 1;
+  transform: translateY(-1px);
+}

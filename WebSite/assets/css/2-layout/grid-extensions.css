@@ -1,0 +1,235 @@
+/**
+ * GRID-EXTENSIONS.CSS - Bootstrap Grid Extensions
+ * Loginet Invoice Management System
+ * 
+ * Custom grid utilities that EXTEND Bootstrap's grid system
+ * DO NOT override Bootstrap classes - only add new ones
+ */
+
+/**
+ * CUSTOM GAP UTILITIES (Extend Bootstrap)
+ * Bootstrap has gap-* classes, these add more options
+ */
+.gap-xs { gap: var(--spacing-xs) !important; }
+.gap-2xl { gap: var(--spacing-2xl) !important; }
+.gap-3xl { gap: var(--spacing-3xl) !important; }
+
+.row-gap-xs { row-gap: var(--spacing-xs) !important; }
+.row-gap-2xl { row-gap: var(--spacing-2xl) !important; }
+.row-gap-3xl { row-gap: var(--spacing-3xl) !important; }
+
+.column-gap-xs { column-gap: var(--spacing-xs) !important; }
+.column-gap-2xl { column-gap: var(--spacing-2xl) !important; }
+.column-gap-3xl { column-gap: var(--spacing-3xl) !important; }
+
+/**
+ * CONTAINER VARIANTS (Extend Bootstrap containers)
+ */
+.container-narrow {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+}
+
+.container-wide {
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+}
+
+/**
+ * GRID PATTERNS (Common Layouts)
+ */
+
+/* Two Column Equal */
+.grid-2-col {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+}
+
+/* Three Column Equal */
+.grid-3-col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-lg);
+}
+
+/* Four Column Equal */
+.grid-4-col {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-lg);
+}
+
+/* Sidebar Layout (300px sidebar + auto main) */
+.grid-sidebar {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: var(--spacing-xl);
+}
+
+/* Main/Aside Layout (1fr main + 350px aside) */
+.grid-main-aside {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: var(--spacing-xl);
+}
+
+/**
+ * AUTO-FIT GRID (Responsive without media queries)
+ */
+.grid-auto-fit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.grid-auto-fit-sm {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.grid-auto-fit-lg {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+/**
+ * FLEXBOX UTILITIES (Complement Bootstrap flex)
+ */
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-start {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.flex-end {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.flex-column-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/**
+ * SPACING UTILITIES (Extend Bootstrap m-/p- classes)
+ */
+.m-auto-x {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.p-section {
+    padding-top: var(--spacing-2xl);
+    padding-bottom: var(--spacing-2xl);
+}
+
+.p-section-sm {
+    padding-top: var(--spacing-xl);
+    padding-bottom: var(--spacing-xl);
+}
+
+.p-section-lg {
+    padding-top: var(--spacing-3xl);
+    padding-bottom: var(--spacing-3xl);
+}
+
+/**
+ * RESPONSIVE GRID BREAKPOINTS
+ * These override at specific breakpoints
+ */
+
+/* Tablet (768px and below) */
+@media (max-width: 768px) {
+    .grid-2-col,
+    .grid-3-col,
+    .grid-4-col {
+        grid-template-columns: 1fr;
+    }
+    
+    .grid-sidebar,
+    .grid-main-aside {
+        grid-template-columns: 1fr;
+    }
+    
+    .grid-auto-fit {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
+    .container-narrow,
+    .container-wide {
+        padding-left: var(--spacing-sm);
+        padding-right: var(--spacing-sm);
+    }
+    
+    .p-section {
+        padding-top: var(--spacing-xl);
+        padding-bottom: var(--spacing-xl);
+    }
+    
+    .p-section-sm {
+        padding-top: var(--spacing-lg);
+        padding-bottom: var(--spacing-lg);
+    }
+}
+
+/**
+ * STICKY POSITIONING (Useful for headers/sidebars)
+ */
+.sticky-top-custom {
+    position: sticky;
+    top: var(--navbar-height);
+    z-index: var(--z-index-sticky);
+}
+
+.sticky-sidebar {
+    position: sticky;
+    top: calc(var(--navbar-height) + var(--spacing-lg));
+    height: fit-content;
+}
+
+/**
+ * ASPECT RATIO BOXES (Useful for images/cards)
+ */
+.aspect-ratio-1-1 {
+    aspect-ratio: 1 / 1;
+}
+
+.aspect-ratio-16-9 {
+    aspect-ratio: 16 / 9;
+}
+
+.aspect-ratio-4-3 {
+    aspect-ratio: 4 / 3;
+}
+
+.aspect-ratio-3-2 {
+    aspect-ratio: 3 / 2;
+}

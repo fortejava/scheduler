@@ -1,0 +1,149 @@
+/* ============================================================================
+   FULLCALENDAR EVENT STYLING
+   ============================================================================
+   Purpose: Event display, colors, hover states, and visibility
+   Last Updated: 2025-11-21 (Modular Restructure)
+   ============================================================================ */
+
+/* ============================================================================
+   EVENT BASE STYLING - ENHANCED VISIBILITY
+   ============================================================================
+   Fixed: Events now fully opaque and readable
+   ============================================================================ */
+
+.fc-event {
+    border-radius: 6px;
+    border: none;
+    padding: 6px 10px;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    transition: all 0.2s ease;
+    opacity: 1 !important;
+    color: white !important;
+}
+
+.fc-event:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+    filter: brightness(1.1);
+}
+
+/* ============================================================================
+   EVENT COLORS - STATUS-BASED
+   ============================================================================ */
+
+/* Event Colors - More Visible */
+.fc-event.event-paid {
+    background-color: #28a745 !important;
+}
+
+.fc-event.event-pending {
+    background-color: #ffc107 !important;
+    color: #333 !important;
+}
+
+.fc-event.event-overdue {
+    background-color: #dc3545 !important;
+}
+
+/* Default event styling - Make all events fully visible */
+.fc-event,
+.fc-h-event,
+.fc-v-event {
+    background-color: rgba(76, 175, 80, 0.95) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    border: none !important;
+}
+
+.fc-event-main {
+    color: white !important;
+}
+
+.fc-daygrid-event {
+    opacity: 1 !important;
+}
+
+/* ============================================================================
+   EVENT MIN-HEIGHT FIX - ENSURE TEXT IS ALWAYS VISIBLE
+   ============================================================================
+   Problem: Month and Week view events show as thin lines with no text
+   Cause: Many events compressed into small space = invisible text
+   Solution: Set minimum height for events to ensure text is readable
+   ============================================================================ */
+
+/* General: All dayGrid events need minimum height for text visibility */
+.fc-daygrid-event {
+    min-height: 20px;
+    line-height: 20px;
+    padding: 2px 5px;
+}
+
+/* Month view: Smaller but still readable */
+.fc-dayGridMonth-view .fc-daygrid-event {
+    min-height: 18px;
+    line-height: 18px;
+    font-size: 11px;
+    padding: 1px 4px;
+}
+
+/* Week view: Readable in narrow day columns */
+.fc-dayGridWeek-view .fc-daygrid-event {
+    min-height: 18px;
+    line-height: 18px;
+    font-size: 11px;
+    padding: 1px 4px;
+}
+
+/* Day view: Keep existing perfect settings (already has custom eventContent) */
+.fc-dayGridDay-view .fc-daygrid-event {
+    min-height: 24px;
+    line-height: 24px;
+    font-size: 13px;
+    padding: 3px 6px;
+}
+
+/* Event title: Must be visible with ellipsis for long text */
+.fc-daygrid-event .fc-event-title {
+    font-size: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+/* Ensure event content is visible */
+.fc-daygrid-event-harness {
+    margin-bottom: 2px;
+}
+
+/* ============================================================================
+   DAY VIEW: FULL INFORMATION DISPLAY
+   ============================================================================
+   Purpose: Show full customer names and exact amounts in day view
+   Reason: Day view has plenty of horizontal space
+   ============================================================================ */
+
+/* Day view events - allow full text display */
+.fc-dayGridDay-view .fc-event-title {
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* Day view events - ensure they have enough width */
+.fc-dayGridDay-view .fc-daygrid-event {
+    min-width: 100%;
+    padding: 6px 8px;
+}
+
+/* Day view events - better spacing */
+.fc-dayGridDay-view .fc-daygrid-event-harness {
+    margin-bottom: 3px;
+}
+
+/* ============================================================================
+   END OF EVENT STYLES
+   ============================================================================ */

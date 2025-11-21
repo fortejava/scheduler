@@ -29,13 +29,22 @@
           <Property Name="InvoiceDueDate" Type="date" Nullable="false" />
           <Property Name="InvoiceActive" Type="nchar" MaxLength="1" Nullable="false" />
         </EntityType>
+        <EntityType Name="Roles">
+          <Key>
+            <PropertyRef Name="RoleID" />
+          </Key>
+          <Property Name="RoleID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="RoleDescription" Type="nvarchar" MaxLength="255" />
+          <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="Sessions">
           <Key>
             <PropertyRef Name="SessionID" />
           </Key>
           <Property Name="SessionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserID" Type="int" Nullable="false" />
-          <Property Name="SessionToken" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="SessionToken" Type="nvarchar" MaxLength="150" Nullable="false" />
           <Property Name="SessionExpire" Type="date" Nullable="false" />
         </EntityType>
         <EntityType Name="Status">
@@ -55,13 +64,24 @@
           <Property Name="version" Type="int" />
           <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
+        <EntityType Name="SystemConfig">
+          <Key>
+            <PropertyRef Name="ConfigID" />
+          </Key>
+          <Property Name="ConfigID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ConfigKey" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ConfigValue" Type="nvarchar(max)" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Property Name="UpdatedAt" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="Users">
           <Key>
             <PropertyRef Name="UserID" />
           </Key>
           <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Username" Type="nvarchar" MaxLength="20" Nullable="false" />
-          <Property Name="Password" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="RoleID" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK_Invoices_Customers">
           <End Role="Customers" Type="Self.Customers" Multiplicity="1" />
@@ -99,12 +119,26 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Users_Roles">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="RoleID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="RoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="DBEngineStoreContainer">
           <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Invoices" EntityType="Self.Invoices" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Sessions" EntityType="Self.Sessions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Status" EntityType="Self.Status" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SystemConfig" EntityType="Self.SystemConfig" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Invoices_Customers" Association="Self.FK_Invoices_Customers">
             <End Role="Customers" EntitySet="Customers" />
@@ -117,6 +151,10 @@
           <AssociationSet Name="FK_Sessions_Users" Association="Self.FK_Sessions_Users">
             <End Role="Users" EntitySet="Users" />
             <End Role="Sessions" EntitySet="Sessions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_Roles" Association="Self.FK_Users_Roles">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Users" EntitySet="Users" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -156,7 +194,7 @@
           </Key>
           <Property Name="SessionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserID" Type="Int32" Nullable="false" />
-          <Property Name="SessionToken" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SessionToken" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="SessionExpire" Type="DateTime" Nullable="false" Precision="0" />
           <NavigationProperty Name="User" Relationship="Self.FK_Sessions_Users" FromRole="Sessions" ToRole="Users" />
         </EntityType>
@@ -183,9 +221,11 @@
             <PropertyRef Name="UserID" />
           </Key>
           <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Username" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Password" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Username" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Sessions" Relationship="Self.FK_Sessions_Users" FromRole="Users" ToRole="Sessions" />
+          <Property Name="RoleID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Role" Relationship="DBEngine.FK_Users_Roles" FromRole="User" ToRole="Role" />
         </EntityType>
         <Association Name="FK_Invoices_Customers">
           <End Role="Customers" Type="Self.Customer" Multiplicity="1" />
@@ -242,7 +282,45 @@
             <End Role="Users" EntitySet="Users" />
             <End Role="Sessions" EntitySet="Sessions" />
           </AssociationSet>
+          <EntitySet Name="Roles" EntityType="DBEngine.Role" />
+          <EntitySet Name="SystemConfigs" EntityType="DBEngine.SystemConfig" />
+          <AssociationSet Name="FK_Users_Roles" Association="DBEngine.FK_Users_Roles">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="RoleID" />
+          </Key>
+          <Property Name="RoleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RoleDescription" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Users" Relationship="DBEngine.FK_Users_Roles" FromRole="Role" ToRole="User" />
+        </EntityType>
+        <EntityType Name="SystemConfig">
+          <Key>
+            <PropertyRef Name="ConfigID" />
+          </Key>
+          <Property Name="ConfigID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ConfigKey" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ConfigValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedAt" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <Association Name="FK_Users_Roles">
+          <End Type="DBEngine.Role" Role="Role" Multiplicity="1" />
+          <End Type="DBEngine.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="RoleID" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="RoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -307,9 +385,31 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="DBEngine.User">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="Username" ColumnName="Username" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="DBEngine.Role">
+              <MappingFragment StoreEntitySet="Roles">
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="RoleDescription" ColumnName="RoleDescription" />
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SystemConfigs">
+            <EntityTypeMapping TypeName="DBEngine.SystemConfig">
+              <MappingFragment StoreEntitySet="SystemConfig">
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ConfigValue" ColumnName="ConfigValue" />
+                <ScalarProperty Name="ConfigKey" ColumnName="ConfigKey" />
+                <ScalarProperty Name="ConfigID" ColumnName="ConfigID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

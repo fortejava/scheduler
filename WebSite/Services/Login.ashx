@@ -1,13 +1,22 @@
-﻿<%@ WebHandler Language="C#" Class="Login" %>
+<%@ WebHandler Language="C#" Class="Login" %>
 
 using System;
 using System.Web;
 using Newtonsoft.Json;
 using DBEngine;
 
-public class Login : IHttpHandler {
+public class Login : BaseHandler {
 
-    public void ProcessRequest (HttpContext context)
+    /// <summary>
+    /// Login endpoint does not require authentication.
+    /// Uses Anonymous auth level to skip token validation in BaseHandler.
+    /// </summary>
+    protected override AuthLevel AuthorizationRequired
+    {
+        get { return AuthLevel.Anonymous; }
+    }
+
+    protected override object ExecuteOperation(HttpContext context)
     {
         /**
             username
@@ -22,48 +31,63 @@ public class Login : IHttpHandler {
                 Token: valorizzato se primo login, oppure vuoto se la login è stata basata sul token
         */
 
-
         string username = context.Request.Form["username"];
         string password = context.Request.Form["password"];
         string token = context.Request.Form["token"];
-        Response r = new Response("Ko",null);
 
-
-        // token string or "" (or null need to clarify con Botta)
+        // PASSWORD LOGIN PATH (token empty or null)
         if (!Helpers.IsNotEmpty(token))
         {
             string newToken;
-            if(LoginService.PasswordVerify(username, password, out newToken))
+            if (LoginService.PasswordVerify(username, password, out newToken))
             {
-                r.Code = "Ok";
-                r.Message = new
+                // Password valid - get user info from token to return username and role
+                SimpleTokenManager.TokenInfo tokenInfo;
+                if (SimpleTokenManager.ValidateToken(newToken, out tokenInfo))
                 {
-                    Token = newToken
+                    // Return token, username, and role for account display
+                    return new
+                    {
+                        Token = newToken,
+                        Username = tokenInfo.Username,
+                        Role = tokenInfo.Role
+                    };
+                }
+                else
+                {
+                    // This should never happen (token just created), but handle defensively
+                    throw new ServiceException("Errore durante la creazione della sessione");
+                }
+            }
+            else
+            {
+                // Password invalid - throw exception with Italian error message
+                throw new ServiceException("Nome utente o password non corretti");
+            }
+        }
+
+        // TOKEN VALIDATION PATH (autologin)
+        else
+        {
+            // OK - valid session; OUT - invalid session
+            SimpleTokenManager.TokenInfo tokenInfo;
+            if (SimpleTokenManager.ValidateToken(token, out tokenInfo))
+            {
+                // Token valid - return empty token (frontend already has it) + user info
+                return new
+                {
+                    Token = "",
+                    Username = tokenInfo.Username,
+                    Role = tokenInfo.Role
                 };
             }
             else
             {
-                r.Code = "Ko";
-                r.Message = null;
+                // Token invalid or expired - throw exception for "OUT" response
+                throw new SessionExpiredException("Invalid or expired token");
             }
         }
-        else
-        {
-            //OK - valid session; OUT - invalid session 
-            // condition ? true : false   
-            r.Code = SimpleTokenManager.ValidateToken(token) ? "Ok" : "OUT";
-            r.Message = new { Token = "" }; //o null
-        }
-        context.Response.ContentType = "application/json";
-        context.Response.Write(JsonConvert.SerializeObject(r));
     }
-
-    public bool IsReusable {
-        get {
-            return false;
-        }
-    }
-
 }
 
 //public sealed class LoginResponse {

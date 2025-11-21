@@ -1,0 +1,977 @@
+/**
+ * CUSTOMERS.CSS - Customer Management Styles
+ * Loginet Invoice Management System
+ * 
+ * Purpose: Customer-specific styles for list view, profile pages,
+ *          statistics, activity timelines, and invoice history
+ * Dependencies: Bootstrap 5.3+, variables.css
+ * Author: Loginet Team
+ * Last Updated: November 2025
+ */
+
+/* ============================================
+   TABLE OF CONTENTS
+   1. Customer List View
+   2. Customer Profile Page
+   3. Customer Stats Display
+   4. Activity Timeline
+   5. Invoice History
+   6. Customer Components
+   7. Responsive Adjustments
+============================================ */
+
+/* ============================================
+   1. CUSTOMER LIST VIEW
+============================================ */
+
+/* Customer Grid */
+.customer-grid-loginet {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--spacing-lg, 24px);
+}
+
+/* Customer Card */
+.customer-card-loginet {
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  padding: var(--spacing-lg, 24px);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.customer-card-loginet:hover {
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.15));
+  transform: translateY(-4px);
+}
+
+.customer-card-loginet::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--loginet-primary, #002C3D);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
+}
+
+.customer-card-loginet:hover::before {
+  transform: scaleY(1);
+}
+
+/* Customer Card Header */
+.customer-card-header-loginet {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 16px);
+  margin-bottom: var(--spacing-md, 16px);
+  padding-bottom: var(--spacing-md, 16px);
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+/* Customer Avatar */
+.customer-avatar-loginet {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--loginet-primary, #002C3D), var(--loginet-primary-light, #004D66));
+  color: var(--white, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.customer-avatar-image-loginet {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-color, #e5e7eb);
+}
+
+/* Customer Info */
+.customer-info-loginet {
+  flex: 1;
+  min-width: 0;
+}
+
+.customer-name-loginet {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--loginet-primary, #002C3D);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.customer-company-loginet {
+  font-size: 13px;
+  color: var(--text-muted, #6c757d);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Customer Card Body */
+.customer-card-body-loginet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm, 8px);
+}
+
+.customer-detail-item-loginet {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-primary, #1f2937);
+}
+
+.customer-detail-item-loginet i {
+  color: var(--text-muted, #6c757d);
+  width: 16px;
+  text-align: center;
+}
+
+/* Customer Card Footer */
+.customer-card-footer-loginet {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md, 16px);
+  margin-top: var(--spacing-md, 16px);
+  padding-top: var(--spacing-md, 16px);
+  border-top: 1px solid var(--border-color, #e5e7eb);
+}
+
+.customer-stat-loginet {
+  text-align: center;
+}
+
+.customer-stat-value-loginet {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--loginet-primary, #002C3D);
+}
+
+.customer-stat-label-loginet {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted, #6c757d);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+/* Customer Status Badge */
+.customer-status-badge-loginet {
+  position: absolute;
+  top: var(--spacing-md, 16px);
+  right: var(--spacing-md, 16px);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.customer-status-active-loginet {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.customer-status-inactive-loginet {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.customer-status-vip-loginet {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+/* Customer Table View */
+.customer-table-loginet {
+  width: 100%;
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.customer-table-loginet thead {
+  background: var(--loginet-primary, #002C3D);
+  color: var(--white, #ffffff);
+}
+
+.customer-table-loginet thead th {
+  padding: var(--spacing-md, 16px);
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.customer-table-loginet tbody tr {
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  transition: background 0.2s ease;
+}
+
+.customer-table-loginet tbody tr:hover {
+  background: var(--bg-secondary, #f8f9fa);
+}
+
+.customer-table-loginet tbody td {
+  padding: var(--spacing-md, 16px);
+  vertical-align: middle;
+}
+
+/* ============================================
+   2. CUSTOMER PROFILE PAGE
+============================================ */
+
+/* Profile Container */
+.customer-profile-loginet {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--spacing-lg, 24px);
+}
+
+/* Profile Sidebar */
+.customer-profile-sidebar-loginet {
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+  overflow: hidden;
+}
+
+/* Profile Header */
+.customer-profile-header-loginet {
+  padding: var(--spacing-xl, 32px);
+  background: linear-gradient(135deg, var(--loginet-primary, #002C3D), var(--loginet-primary-light, #004D66));
+  color: var(--white, #ffffff);
+  text-align: center;
+}
+
+.customer-profile-avatar-loginet {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin: 0 auto var(--spacing-md, 16px);
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: 700;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+}
+
+.customer-profile-avatar-image-loginet {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+}
+
+.customer-profile-name-loginet {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: var(--spacing-xs, 4px);
+}
+
+.customer-profile-company-loginet {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* Contact Information */
+.customer-contact-info-loginet {
+  padding: var(--spacing-lg, 24px);
+}
+
+.customer-contact-title-loginet {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--loginet-primary, #002C3D);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--spacing-md, 16px);
+}
+
+.customer-contact-item-loginet {
+  display: flex;
+  align-items: start;
+  gap: 12px;
+  padding: var(--spacing-sm, 8px) 0;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.customer-contact-item-loginet:last-child {
+  border-bottom: none;
+}
+
+.customer-contact-icon-loginet {
+  width: 20px;
+  text-align: center;
+  color: var(--loginet-primary, #002C3D);
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.customer-contact-content-loginet {
+  flex: 1;
+}
+
+.customer-contact-label-loginet {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted, #6c757d);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.customer-contact-value-loginet {
+  font-size: 14px;
+  color: var(--text-primary, #1f2937);
+  word-break: break-word;
+}
+
+/* Action Buttons */
+.customer-profile-actions-loginet {
+  padding: var(--spacing-lg, 24px);
+  border-top: 1px solid var(--border-color, #e5e7eb);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm, 8px);
+}
+
+.customer-action-btn-loginet {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: 2px solid var(--border-color, #e5e7eb);
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-base, 8px);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.customer-action-btn-loginet:hover {
+  border-color: var(--loginet-primary, #002C3D);
+  background: var(--loginet-primary, #002C3D);
+  color: var(--white, #ffffff);
+}
+
+.customer-action-btn-primary-loginet {
+  background: var(--loginet-secondary, #FF5912);
+  border-color: var(--loginet-secondary, #FF5912);
+  color: var(--white, #ffffff);
+}
+
+.customer-action-btn-primary-loginet:hover {
+  background: var(--loginet-secondary-dark, #E04D0F);
+  border-color: var(--loginet-secondary-dark, #E04D0F);
+}
+
+/* Profile Main Content */
+.customer-profile-content-loginet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg, 24px);
+}
+
+/* ============================================
+   3. CUSTOMER STATS DISPLAY
+============================================ */
+
+/* Stats Overview */
+.customer-stats-overview-loginet {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md, 16px);
+  margin-bottom: var(--spacing-lg, 24px);
+}
+
+.customer-stat-card-loginet {
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  padding: var(--spacing-lg, 24px);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+  text-align: center;
+}
+
+.customer-stat-icon-loginet {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto var(--spacing-md, 16px);
+  border-radius: var(--border-radius-base, 8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.customer-stat-icon-primary-loginet {
+  background: linear-gradient(135deg, var(--loginet-primary-light, #004D66), var(--loginet-primary, #002C3D));
+  color: var(--white, #ffffff);
+}
+
+.customer-stat-icon-success-loginet {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: var(--white, #ffffff);
+}
+
+.customer-stat-icon-warning-loginet {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: var(--white, #ffffff);
+}
+
+.customer-stat-icon-accent-loginet {
+  background: linear-gradient(135deg, var(--loginet-accent-light, #33BADC), var(--loginet-accent, #00A8CC));
+  color: var(--white, #ffffff);
+}
+
+.customer-stat-number-loginet {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--loginet-primary, #002C3D);
+  margin-bottom: var(--spacing-xs, 4px);
+}
+
+.customer-stat-description-loginet {
+  font-size: 13px;
+  color: var(--text-muted, #6c757d);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Stats Chart Section */
+.customer-stats-chart-loginet {
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  padding: var(--spacing-lg, 24px);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.customer-stats-chart-header-loginet {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg, 24px);
+  padding-bottom: var(--spacing-md, 16px);
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.customer-stats-chart-title-loginet {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--loginet-primary, #002C3D);
+}
+
+.customer-stats-chart-body-loginet {
+  min-height: 300px;
+}
+
+/* ============================================
+   4. ACTIVITY TIMELINE
+============================================ */
+
+/* Timeline Container */
+.customer-activity-timeline-loginet {
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  padding: var(--spacing-lg, 24px);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.customer-timeline-header-loginet {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg, 24px);
+}
+
+.customer-timeline-title-loginet {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--loginet-primary, #002C3D);
+}
+
+.customer-timeline-filter-loginet {
+  padding: 8px 16px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: var(--border-radius-base, 8px);
+  font-size: 13px;
+  background: var(--white, #ffffff);
+  cursor: pointer;
+}
+
+/* Timeline List */
+.customer-timeline-list-loginet {
+  position: relative;
+  padding-left: var(--spacing-xl, 32px);
+}
+
+.customer-timeline-list-loginet::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border-color, #e5e7eb);
+}
+
+/* Timeline Item */
+.customer-timeline-item-loginet {
+  position: relative;
+  padding-bottom: var(--spacing-lg, 24px);
+}
+
+.customer-timeline-item-loginet:last-child {
+  padding-bottom: 0;
+}
+
+.customer-timeline-marker-loginet {
+  position: absolute;
+  left: -26px;
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--white, #ffffff);
+  border: 3px solid var(--loginet-primary, #002C3D);
+  z-index: 1;
+}
+
+.customer-timeline-item-loginet.invoice-loginet .customer-timeline-marker-loginet {
+  border-color: var(--loginet-accent, #00A8CC);
+}
+
+.customer-timeline-item-loginet.payment-loginet .customer-timeline-marker-loginet {
+  border-color: #10b981;
+}
+
+.customer-timeline-item-loginet.note-loginet .customer-timeline-marker-loginet {
+  border-color: #f59e0b;
+}
+
+/* Timeline Content */
+.customer-timeline-content-loginet {
+  background: var(--bg-secondary, #f8f9fa);
+  padding: var(--spacing-md, 16px);
+  border-radius: var(--border-radius-base, 8px);
+  border-left: 3px solid var(--loginet-primary, #002C3D);
+}
+
+.customer-timeline-item-loginet.invoice-loginet .customer-timeline-content-loginet {
+  border-left-color: var(--loginet-accent, #00A8CC);
+}
+
+.customer-timeline-item-loginet.payment-loginet .customer-timeline-content-loginet {
+  border-left-color: #10b981;
+}
+
+.customer-timeline-item-loginet.note-loginet .customer-timeline-content-loginet {
+  border-left-color: #f59e0b;
+}
+
+.customer-timeline-header-item-loginet {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: var(--spacing-sm, 8px);
+}
+
+.customer-timeline-type-loginet {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--loginet-primary, #002C3D);
+}
+
+.customer-timeline-date-loginet {
+  font-size: 12px;
+  color: var(--text-muted, #6c757d);
+}
+
+.customer-timeline-description-loginet {
+  font-size: 14px;
+  color: var(--text-primary, #1f2937);
+  margin-bottom: var(--spacing-sm, 8px);
+  line-height: 1.6;
+}
+
+.customer-timeline-amount-loginet {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--loginet-secondary, #FF5912);
+}
+
+/* ============================================
+   5. INVOICE HISTORY
+============================================ */
+
+/* Invoice History Container */
+.customer-invoice-history-loginet {
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  padding: var(--spacing-lg, 24px);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.customer-invoice-header-loginet {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg, 24px);
+  padding-bottom: var(--spacing-md, 16px);
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.customer-invoice-title-loginet {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--loginet-primary, #002C3D);
+}
+
+/* Invoice Status Filter */
+.customer-invoice-filters-loginet {
+  display: flex;
+  gap: var(--spacing-sm, 8px);
+}
+
+.customer-invoice-filter-btn-loginet {
+  padding: 6px 14px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  background: var(--white, #ffffff);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.customer-invoice-filter-btn-loginet:hover,
+.customer-invoice-filter-btn-loginet.active {
+  background: var(--loginet-primary, #002C3D);
+  color: var(--white, #ffffff);
+  border-color: var(--loginet-primary, #002C3D);
+}
+
+/* Invoice List */
+.customer-invoice-list-loginet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md, 16px);
+}
+
+/* Invoice Item */
+.customer-invoice-item-loginet {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md, 16px);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: var(--border-radius-base, 8px);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.customer-invoice-item-loginet:hover {
+  border-color: var(--loginet-primary, #002C3D);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.customer-invoice-item-left-loginet {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 16px);
+  flex: 1;
+}
+
+.customer-invoice-icon-loginet {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius-base, 8px);
+  background: var(--bg-secondary, #f8f9fa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--loginet-primary, #002C3D);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.customer-invoice-details-loginet {
+  flex: 1;
+}
+
+.customer-invoice-number-loginet {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--loginet-primary, #002C3D);
+  margin-bottom: 4px;
+}
+
+.customer-invoice-date-loginet {
+  font-size: 13px;
+  color: var(--text-muted, #6c757d);
+}
+
+.customer-invoice-item-right-loginet {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md, 16px);
+}
+
+.customer-invoice-amount-loginet {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary, #1f2937);
+  text-align: right;
+}
+
+/* Export Button */
+.customer-invoice-export-loginet {
+  margin-top: var(--spacing-md, 16px);
+  padding: 12px 24px;
+  border: 2px dashed var(--border-color, #e5e7eb);
+  background: transparent;
+  border-radius: var(--border-radius-base, 8px);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--loginet-primary, #002C3D);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.customer-invoice-export-loginet:hover {
+  border-color: var(--loginet-primary, #002C3D);
+  background: var(--bg-secondary, #f8f9fa);
+}
+
+/* ============================================
+   6. CUSTOMER COMPONENTS
+============================================ */
+
+/* Customer Tag */
+.customer-tag-loginet {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background: var(--bg-secondary, #f8f9fa);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  margin-right: var(--spacing-xs, 4px);
+  margin-bottom: var(--spacing-xs, 4px);
+}
+
+/* Customer Notes */
+.customer-notes-loginet {
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  padding: var(--spacing-lg, 24px);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.customer-notes-title-loginet {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--loginet-primary, #002C3D);
+  margin-bottom: var(--spacing-md, 16px);
+}
+
+.customer-note-item-loginet {
+  padding: var(--spacing-md, 16px);
+  background: var(--bg-secondary, #f8f9fa);
+  border-radius: var(--border-radius-base, 8px);
+  margin-bottom: var(--spacing-md, 16px);
+}
+
+.customer-note-header-loginet {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm, 8px);
+}
+
+.customer-note-author-loginet {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+}
+
+.customer-note-date-loginet {
+  font-size: 12px;
+  color: var(--text-muted, #6c757d);
+}
+
+.customer-note-content-loginet {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-primary, #1f2937);
+}
+
+/* ============================================
+   7. RESPONSIVE ADJUSTMENTS
+============================================ */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .customer-profile-loginet {
+    grid-template-columns: 1fr;
+  }
+  
+  .customer-stats-overview-loginet {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile (< 768px) */
+@media (max-width: 768px) {
+  .customer-grid-loginet {
+    grid-template-columns: 1fr;
+  }
+  
+  .customer-card-footer-loginet {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-sm, 8px);
+  }
+  
+  .customer-stat-value-loginet {
+    font-size: 16px;
+  }
+  
+  .customer-stat-label-loginet {
+    font-size: 10px;
+  }
+  
+  .customer-profile-header-loginet {
+    padding: var(--spacing-lg, 24px);
+  }
+  
+  .customer-profile-avatar-loginet,
+  .customer-profile-avatar-image-loginet {
+    width: 80px;
+    height: 80px;
+    font-size: 32px;
+  }
+  
+  .customer-stats-overview-loginet {
+    grid-template-columns: 1fr;
+  }
+  
+  .customer-timeline-list-loginet {
+    padding-left: var(--spacing-lg, 24px);
+  }
+  
+  .customer-timeline-marker-loginet {
+    left: -20px;
+  }
+  
+  .customer-invoice-item-loginet {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md, 16px);
+  }
+  
+  .customer-invoice-item-left-loginet {
+    width: 100%;
+  }
+  
+  .customer-invoice-item-right-loginet {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .customer-invoice-filters-loginet {
+    flex-wrap: wrap;
+  }
+  
+  /* Table to cards */
+  .customer-table-loginet thead {
+    display: none;
+  }
+  
+  .customer-table-loginet,
+  .customer-table-loginet tbody,
+  .customer-table-loginet tr,
+  .customer-table-loginet td {
+    display: block;
+  }
+  
+  .customer-table-loginet tr {
+    margin-bottom: var(--spacing-md, 16px);
+    padding: var(--spacing-md, 16px);
+    border: 1px solid var(--border-color, #e5e7eb);
+    border-radius: var(--border-radius-base, 8px);
+  }
+  
+  .customer-table-loginet td {
+    padding: var(--spacing-sm, 8px) 0;
+    border-bottom: none;
+  }
+  
+  .customer-table-loginet td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+    color: var(--text-muted, #6c757d);
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+}
+
+/* Small Mobile (< 480px) */
+@media (max-width: 480px) {
+  .customer-card-footer-loginet {
+    grid-template-columns: 1fr;
+  }
+  
+  .customer-stat-loginet {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+  
+  .customer-timeline-item-loginet {
+    font-size: 13px;
+  }
+  
+  .customer-invoice-filter-btn-loginet {
+    flex: 1;
+    text-align: center;
+  }
+}

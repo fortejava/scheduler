@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurazione Iniziale - Scadenzario Fatture</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .setup-container {
+            max-width: 500px;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .setup-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+        }
+
+        .setup-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .setup-header i {
+            font-size: 60px;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .setup-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .setup-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+        }
+
+        .input-group-text {
+            border-radius: 8px 0 0 8px;
+            border: 2px solid #e0e0e0;
+            border-right: none;
+            background-color: #f8f9fa;
+        }
+
+        .input-group .form-control {
+            border-left: none;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .input-group:focus-within .input-group-text {
+            border-color: #667eea;
+        }
+
+        .btn-setup {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-setup:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-setup:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+        }
+
+        .password-requirements {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            padding-left: 20px;
+        }
+
+        .password-requirements li {
+            margin-bottom: 3px;
+        }
+
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+            border-width: 0.15em;
+        }
+
+        .setup-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: white;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <div class="setup-card">
+            <div class="setup-header">
+                <i class="bi bi-gear-fill"></i>
+                <h1>Configurazione Iniziale</h1>
+                <p>Crea il tuo account amministratore per iniziare</p>
+            </div>
+
+            <!-- Alert container -->
+            <div id="alert-container"></div>
+
+            <!-- Setup Form -->
+            <form id="setup-form">
+                <div class="mb-3">
+                    <label for="username" class="form-label">
+                        <i class="bi bi-person-fill"></i> Nome Utente Amministratore
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-person"></i>
+                        </span>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="username"
+                            name="username"
+                            placeholder="Inserisci il nome utente"
+                            required
+                            minlength="3"
+                            maxlength="100"
+                            autocomplete="off"
+                        >
+                    </div>
+                    <small class="text-muted">Minimo 3 caratteri, massimo 100</small>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">
+                        <i class="bi bi-lock-fill"></i> Password
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-key"></i>
+                        </span>
+                        <input
+                            type="password"
+                            class="form-control"
+                            id="password"
+                            name="password"
+                            placeholder="Inserisci la password"
+                            required
+                            minlength="8"
+                            autocomplete="new-password"
+                        >
+                    </div>
+                    <ul class="password-requirements">
+                        <li>Minimo 8 caratteri</li>
+                        <li>Scegli una password sicura</li>
+                    </ul>
+                </div>
+
+                <div class="mb-3">
+                    <label for="confirm-password" class="form-label">
+                        <i class="bi bi-lock-fill"></i> Conferma Password
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-key"></i>
+                        </span>
+                        <input
+                            type="password"
+                            class="form-control"
+                            id="confirm-password"
+                            name="confirm-password"
+                            placeholder="Conferma la password"
+                            required
+                            minlength="8"
+                            autocomplete="new-password"
+                        >
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-setup" id="submit-btn">
+                    <i class="bi bi-check-circle"></i> Completa Configurazione
+                </button>
+            </form>
+        </div>
+
+        <div class="setup-footer">
+            <p>
+                <i class="bi bi-shield-check"></i>
+                Questa configurazione può essere eseguita solo una volta
+            </p>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Setup Wizard JS -->
+    <script src="assets/js/setup-wizard.js"></script>
+</body>
+</html>

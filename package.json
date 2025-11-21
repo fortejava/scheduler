@@ -1,0 +1,80 @@
+{
+  "name": "loginet-invoice-scheduler",
+  "version": "2.0.0",
+  "description": "Loginet Invoice Management System - CSS Build Tools",
+  "private": true,
+  "scripts": {
+    "css:build": "postcss WebSite/assets/css/main.css -o WebSite/assets/css/dist/main.min.css --verbose",
+    "css:watch": "postcss WebSite/assets/css/main.css -o WebSite/assets/css/dist/main.min.css --watch --verbose",
+    "css:prod": "cross-env NODE_ENV=production postcss WebSite/assets/css/main.css -o WebSite/assets/css/dist/main.min.css --verbose",
+    "vendor:build": "npm run vendor:bootstrap && npm run vendor:tippy",
+    "vendor:bootstrap": "postcss WebSite/assets/css/vendor/bootstrap/bootstrap.min.css -o WebSite/assets/css/dist/vendor/bootstrap.min.css",
+    "vendor:tippy": "postcss WebSite/assets/css/vendor/tippy/tippy.css -o WebSite/assets/css/dist/vendor/tippy.min.css",
+    "build": "npm run css:build && npm run vendor:build",
+    "build:prod": "npm run css:prod && npm run vendor:build",
+    "clean": "rimraf WebSite/assets/css/dist"
+  },
+  "devDependencies": {
+    "postcss": "^8.4.32",
+    "postcss-cli": "^11.0.0",
+    "postcss-import": "^16.0.0",
+    "postcss-preset-env": "^9.3.0",
+    "cssnano": "^6.0.2",
+    "autoprefixer": "^10.4.16",
+    "cross-env": "^7.0.3",
+    "rimraf": "^5.0.5"
+  },
+  "postcss": {
+    "plugins": {
+      "postcss-import": {},
+      "postcss-preset-env": {
+        "stage": 3,
+        "features": {
+          "nesting-rules": true,
+          "custom-properties": true
+        }
+      },
+      "autoprefixer": {
+        "grid": "autoplace"
+      },
+      "cssnano": {
+        "preset": [
+          "default",
+          {
+            "discardComments": {
+              "removeAll": true
+            },
+            "normalizeWhitespace": true
+          }
+        ]
+      }
+    }
+  },
+  "browserslist": [
+    "last 2 versions",
+    "> 1%",
+    "not dead",
+    "Chrome >= 90",
+    "Firefox >= 88",
+    "Safari >= 14",
+    "Edge >= 90"
+  ],
+  "keywords": [
+    "invoice",
+    "management",
+    "scheduler",
+    "loginet",
+    "css",
+    "build"
+  ],
+  "author": "Loginet Development Team",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fortejava/scheduler"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}

@@ -2,52 +2,25 @@
 
 using System;
 using System.Web;
-using System.Collections.Generic;
 using DBEngine;
-using System.Diagnostics;
-using Newtonsoft.Json;
 
-public class InvoiceYears : IHttpHandler {
-
-    public void ProcessRequest (HttpContext context)
+/// <summary>
+/// Get list of years that have invoices (for dropdown/filter).
+/// Authorization: ValidToken (all authenticated users can view invoice years)
+/// </summary>
+public class InvoiceYears : BaseHandler
+{
+    protected override AuthLevel AuthorizationRequired
     {
-        var years = InvoicesService.GetDueDateYears() ?? new List<int>();
-        Response r = new Response("Ok", new { Years = years });
-        context.Response.ContentType = "application/json";
-        context.Response.Write(JsonConvert.SerializeObject(r));
+        get { return AuthLevel.ValidToken; }
     }
 
-    public bool IsReusable {
-        get {
-            return false;
-        }
-    }
+    protected override object ExecuteOperation(HttpContext context)
+    {
+        // Get distinct years from invoice due dates
+        var years = InvoicesService.GetDueDateYears();
 
+        // Wrap in object to match frontend expectation: { Years: [...] }
+        return new { Years = years };
+    }
 }
-
-
-//public void ProcessRequest (HttpContext context)
-//{
-//    var years = InvoicesService.GetDueDateYears() ?? new List<int>();
-//    Response r = new Response("Ok", new{ Years = years });
-//    context.Response.ContentType = "application/json";
-//    context.Response.Write(JsonConvert.SerializeObject(r));
-//}
-
-
-//string token = context.Request.Form["token"];
-//string username = context.Request.Form["username"];
-//username = "adminSuper";
-//token = "E4824FE97EB27C954C84A6745392F2F2AB5FE23F578B6588628078D843A69211925ea17c-cc23-4f12-aff8-fefc18bed2a8";
-//List<int> years;
-//if (SimpleTokenManager.ValidateToken2(token, username))
-//{
-//    years = InvoicesService.GetDueDateYears();
-//}
-//else
-//{
-//    years = new List<int>();
-//}
-//Response r = new Response("Ok", new { Years = years });
-//context.Response.ContentType = "application/json";
-//context.Response.Write(JsonConvert.SerializeObject(r));

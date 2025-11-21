@@ -1,0 +1,417 @@
+/**
+ * DELETED-INVOICES.CSS - Deleted Invoices Management Styles
+ * Loginet Invoice Management System
+ *
+ * Purpose: Styles specific to the deleted invoices view (soft-deleted invoices)
+ *          Includes table styling, restore/hard delete actions, and batch operations
+ * Dependencies: Bootstrap 5.3+, variables.css
+ * Author: Loginet Team
+ * Last Updated: November 2025
+ */
+
+/* ============================================
+   TABLE OF CONTENTS
+   1. Deleted Invoice List View
+   2. Deleted Invoice Table Styling
+   3. Action Buttons (Restore, Hard Delete)
+   4. Batch Operation Controls
+   5. Checkbox Selection Styling
+   6. Responsive Adjustments
+============================================ */
+
+/* ============================================
+   1. DELETED INVOICE LIST VIEW
+============================================ */
+
+/* View Container */
+.deleted-invoices-view-loginet {
+  padding: var(--spacing-xl, 32px);
+}
+
+/* View Header */
+.deleted-invoices-header-loginet {
+  margin-bottom: var(--spacing-lg, 24px);
+}
+
+.deleted-invoices-title-loginet {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--loginet-primary, #002C3D);
+  margin-bottom: var(--spacing-sm, 8px);
+}
+
+.deleted-invoices-description-loginet {
+  font-size: 15px;
+  color: var(--text-muted, #6c757d);
+  line-height: 1.6;
+}
+
+/* Filter Section */
+.deleted-invoice-filters-loginet {
+  display: flex;
+  gap: var(--spacing-md, 16px);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-lg, 24px);
+  padding: var(--spacing-lg, 24px);
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.deleted-invoice-filter-group-loginet {
+  flex: 1;
+  min-width: 200px;
+}
+
+.deleted-invoice-filter-label-loginet {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  margin-bottom: 6px;
+}
+
+.deleted-invoice-filter-select-loginet,
+.deleted-invoice-filter-input-loginet {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: var(--border-radius-base, 8px);
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.deleted-invoice-filter-select-loginet:focus,
+.deleted-invoice-filter-input-loginet:focus {
+  outline: none;
+  border-color: var(--loginet-primary, #002C3D);
+}
+
+/* Results Counter */
+.deleted-invoices-results-counter-loginet {
+  padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
+  background: var(--bg-secondary, #f8f9fa);
+  border-radius: var(--border-radius-base, 8px);
+  margin-bottom: var(--spacing-md, 16px);
+  font-size: 14px;
+  color: var(--text-muted, #6c757d);
+}
+
+.deleted-invoices-count-loginet {
+  font-weight: 700;
+  color: var(--loginet-primary, #002C3D);
+}
+
+/* ============================================
+   2. DELETED INVOICE TABLE STYLING
+============================================ */
+
+/* NOTE: Table styling moved to tables.css for centralization
+   Use classes: .invoice-table + .deleted-rows
+   See: WebSite/assets/css/3-components/tables.css (lines 83-231) */
+
+/* Checkbox Column */
+.deleted-invoice-checkbox-cell-loginet {
+  width: 40px;
+  text-align: center;
+}
+
+.deleted-invoice-checkbox-loginet {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--loginet-primary, #002C3D);
+}
+
+/* Invoice Number Link (disabled in deleted view) */
+.deleted-invoice-number-loginet {
+  color: #991b1b; /* Dark red */
+  font-weight: 600;
+  text-decoration: line-through; /* Strikethrough for deleted invoices */
+}
+
+/* Invoice Amount */
+.deleted-invoice-amount-loginet {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-primary, #1f2937);
+  opacity: 0.7; /* Slightly faded for deleted invoices */
+}
+
+/* Invoice Date */
+.deleted-invoice-date-loginet {
+  color: var(--text-muted, #6c757d);
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* ============================================
+   3. ACTION BUTTONS (RESTORE, HARD DELETE)
+============================================ */
+
+/* Action Buttons Container */
+.deleted-invoice-actions-loginet {
+  display: flex;
+  gap: var(--spacing-sm, 8px);
+  justify-content: flex-end;
+}
+
+/* Restore Button */
+.btn-restore-invoice-loginet {
+/*  padding: 6px 12px;*/
+  border: 1px solid #059669; /* Green border */
+  background: transparent;
+  border-radius: var(--border-radius-sm, 6px);
+  color: #059669; /* Green text */
+/*  font-size: 13px;
+  font-weight: 600;*/
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-restore-invoice-loginet:hover {
+  background: #059669;
+  color: var(--white, #ffffff);
+}
+
+.btn-restore-invoice-loginet i {
+  font-size: 14px;
+}
+
+/* Hard Delete Button */
+.btn-hard-delete-invoice-loginet {
+/*  padding: 6px 12px;*/
+/*  border: 1px solid #dc2626;*/ /* Red border */
+  background: transparent;
+/*  border-radius: var(--border-radius-sm, 6px);*/
+  color: #dc2626; /* Red text */
+/*  font-size: 13px;
+  font-weight: 600;*/
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-hard-delete-invoice-loginet:hover {
+  background: #dc2626;
+  color: var(--white, #ffffff);
+}
+
+.btn-hard-delete-invoice-loginet i {
+  font-size: 14px;
+}
+
+/* ============================================
+   4. BATCH OPERATION CONTROLS
+============================================ */
+
+/* Batch Actions Container */
+.deleted-invoice-batch-actions-loginet {
+  display: flex;
+  gap: var(--spacing-sm, 8px);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-md, 16px);
+  padding: var(--spacing-md, 16px);
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-lg, 12px);
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* Select All/Deselect All Buttons */
+.btn-select-all-deleted-loginet,
+.btn-deselect-all-deleted-loginet {
+  padding: 8px 16px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  background: var(--white, #ffffff);
+  border-radius: var(--border-radius-base, 8px);
+  color: var(--text-primary, #1f2937);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-select-all-deleted-loginet:hover {
+  border-color: var(--loginet-primary, #002C3D);
+  background: var(--loginet-primary, #002C3D);
+  color: var(--white, #ffffff);
+}
+
+.btn-deselect-all-deleted-loginet:hover {
+  border-color: #6b7280;
+  background: #6b7280;
+  color: var(--white, #ffffff);
+}
+
+/* Batch Delete Button */
+.btn-batch-delete-loginet {
+  padding: 8px 16px;
+  border: 2px solid #dc2626;
+  background: transparent;
+  border-radius: var(--border-radius-base, 8px);
+  color: #dc2626;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto; /* Push to right */
+}
+
+.btn-batch-delete-loginet:hover {
+  background: #dc2626;
+  color: var(--white, #ffffff);
+}
+
+.btn-batch-delete-loginet:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: #9ca3af;
+  color: #9ca3af;
+}
+
+.btn-batch-delete-loginet:disabled:hover {
+  background: transparent;
+  color: #9ca3af;
+}
+
+/* Delete All Button (EXTREME danger) */
+.btn-delete-all-loginet {
+  padding: 8px 16px;
+  border: 2px solid #991b1b; /* Darker red for extra emphasis */
+  background: transparent;
+  border-radius: var(--border-radius-base, 8px);
+  color: #991b1b;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-delete-all-loginet:hover {
+  background: #991b1b;
+  color: var(--white, #ffffff);
+  box-shadow: 0 0 0 4px rgba(153, 27, 27, 0.1); /* Red glow on hover */
+}
+
+/* Selection Counter Badge */
+.deleted-invoice-selection-badge-loginet {
+  padding: 8px 16px;
+  background: var(--loginet-primary, #002C3D);
+  color: var(--white, #ffffff);
+  border-radius: var(--border-radius-base, 8px);
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.deleted-invoice-selection-count-loginet {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* ============================================
+   5. CHECKBOX SELECTION STYLING
+============================================ */
+
+/* NOTE: Selected row styling moved to tables.css for centralization
+   See: WebSite/assets/css/3-components/tables.css (lines 128-135 desktop, 415-418 mobile) */
+
+/* Header Checkbox (Select All) */
+.deleted-invoice-header-checkbox-loginet {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--white, #ffffff);
+}
+
+/* ============================================
+   6. RESPONSIVE ADJUSTMENTS
+============================================ */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .deleted-invoice-filters-loginet {
+    flex-direction: column;
+  }
+
+  .deleted-invoice-filter-group-loginet {
+    width: 100%;
+  }
+
+  .deleted-invoice-batch-actions-loginet {
+    flex-direction: column;
+  }
+
+  .btn-batch-delete-loginet {
+    margin-left: 0;
+  }
+}
+
+/* Mobile (< 768px) */
+@media (max-width: 768px) {
+  .deleted-invoices-view-loginet {
+    padding: var(--spacing-md, 16px);
+  }
+
+  /* NOTE: Table mobile responsive moved to tables.css for centralization
+     See: WebSite/assets/css/3-components/tables.css (lines 359-419) */
+
+  .deleted-invoice-actions-loginet {
+    justify-content: flex-start;
+    margin-top: var(--spacing-sm, 8px);
+  }
+
+  /* Batch Actions */
+  .deleted-invoice-batch-actions-loginet {
+    flex-direction: column;
+  }
+
+  .btn-select-all-deleted-loginet,
+  .btn-deselect-all-deleted-loginet,
+  .btn-batch-delete-loginet,
+  .btn-delete-all-loginet {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn-batch-delete-loginet {
+    margin-left: 0;
+  }
+}
+
+/* Small Mobile (< 480px) */
+@media (max-width: 480px) {
+  .deleted-invoices-title-loginet {
+    font-size: 22px;
+  }
+
+  .deleted-invoice-filters-loginet {
+    padding: var(--spacing-md, 16px);
+  }
+
+  .deleted-invoice-actions-loginet {
+    flex-direction: column;
+  }
+
+  .btn-restore-invoice-loginet,
+  .btn-hard-delete-invoice-loginet {
+    width: 100%;
+    justify-content: center;
+  }
+}

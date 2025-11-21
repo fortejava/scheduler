@@ -1,0 +1,362 @@
+/**
+ * Autocomplete Customer - Styles
+ *
+ * Bootstrap 5 Compatible
+ * Mobile Responsive
+ * Accessibility Compliant
+ *
+ * @version 1.0.0
+ * @date 2025-11-10
+ */
+
+/* ========================================
+   AUTOCOMPLETE WRAPPER (Container)
+   ======================================== */
+
+.autocomplete-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.autocomplete-wrapper input {
+    padding-right: 75px; /* Make room for clear button + arrow/spinner */
+}
+
+/* ========================================
+   ICONS (Clear, Arrow, Spinner)
+   ======================================== */
+
+/* Dropdown Arrow */
+.autocomplete-wrapper .dropdown-arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6c757d;
+    font-size: 14px;
+    pointer-events: auto;
+    z-index: 10;
+    padding: 5px;
+    transition: color 0.2s ease;
+}
+
+.autocomplete-wrapper .dropdown-arrow:hover {
+    color: #0d6efd;
+}
+
+/* Clear Button (X) */
+.autocomplete-wrapper .clear-button {
+    position: absolute;
+    right: 40px; /* Before the dropdown arrow */
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6c757d;
+    font-size: 16px;
+    pointer-events: auto;
+    z-index: 10;
+    padding: 5px;
+    display: none; /* Hidden by default */
+    transition: color 0.2s ease;
+}
+
+.autocomplete-wrapper .clear-button:hover {
+    color: #dc3545;
+}
+
+.autocomplete-wrapper .clear-button.visible {
+    display: block;
+}
+
+/* Loading Spinner */
+.autocomplete-wrapper .loading-spinner {
+    position: absolute;
+    right: 42px; /* Between clear and arrow */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: none;
+}
+
+.autocomplete-wrapper .loading-spinner.visible {
+    display: block;
+}
+
+/* ========================================
+   DROPDOWN CONTAINER
+   ======================================== */
+
+.autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 0.375rem 0.375rem;
+    z-index: 1035; /* ✅ FIXED: Above sticky headers (1020) and fixed elements (1030), but BELOW modals (1040+) */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: -1px; /* Connect to input */
+}
+
+/* Smooth scrolling */
+.autocomplete-dropdown {
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbar (webkit browsers) */
+.autocomplete-dropdown::-webkit-scrollbar {
+    width: 8px;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* ========================================
+   DROPDOWN ITEMS
+   ======================================== */
+
+.autocomplete-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.15s ease;
+    user-select: none;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+/* Hover state */
+.autocomplete-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Active state (keyboard navigation) */
+.autocomplete-item.active {
+    background-color: #e7f3ff;
+}
+
+/* Focus state (accessibility) */
+.autocomplete-item:focus {
+    outline: 2px solid #0d6efd;
+    outline-offset: -2px;
+}
+
+/* ========================================
+   HIGHLIGHTED TEXT
+   ======================================== */
+
+.autocomplete-item mark {
+    background-color: #e7f3ff;
+    padding: 2px 0;
+    font-weight: bold;
+    color: #0d6efd;
+    border-radius: 2px;
+}
+
+/* ========================================
+   SPECIAL STATES
+   ======================================== */
+
+/* No Results Message */
+.no-results {
+    padding: 15px;
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Error Message */
+.autocomplete-error {
+    padding: 15px;
+    text-align: center;
+    color: #dc3545;
+}
+
+.autocomplete-error i {
+    margin-right: 8px;
+}
+
+/* Hidden utility class */
+.hidden {
+    display: none !important;
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+/* Focus state for input */
+.autocomplete-wrapper input:focus {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .autocomplete-item mark {
+        background-color: #ffff00;
+        color: #000000;
+        font-weight: bold;
+    }
+
+    .autocomplete-item.active {
+        background-color: #0d6efd;
+        color: #ffffff;
+    }
+
+    .autocomplete-item.active mark {
+        background-color: #ffffff;
+        color: #0d6efd;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .autocomplete-item {
+        transition: none;
+    }
+
+    .dropdown-arrow,
+    .clear-button {
+        transition: none;
+    }
+}
+
+/* ========================================
+   MOBILE RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Smaller dropdown on mobile */
+    .autocomplete-dropdown {
+        max-height: 250px;
+    }
+
+    /* Larger touch targets */
+    .autocomplete-item {
+        padding: 14px 16px;
+        min-height: 44px; /* iOS recommended minimum */
+    }
+
+    /* Larger icon touch areas */
+    .clear-button,
+    .dropdown-arrow {
+        padding: 10px;
+        font-size: 18px;
+    }
+
+    /* Adjust spacing for icons */
+    .autocomplete-wrapper input {
+        padding-right: 85px; /* More space for larger icons */
+    }
+
+    .autocomplete-wrapper .clear-button {
+        right: 45px;
+    }
+}
+
+@media (max-width: 576px) {
+    /* Even smaller dropdown on very small screens */
+    .autocomplete-dropdown {
+        max-height: 200px;
+    }
+
+    /* Prevent iOS zoom on input focus */
+    .autocomplete-wrapper input {
+        font-size: 16px; /* iOS won't zoom if >= 16px */
+    }
+}
+
+/* ========================================
+   INTEGRATION WITH BOOTSTRAP FORMS
+   ======================================== */
+
+/* When inside Bootstrap form groups */
+.form-group .autocomplete-wrapper,
+.mb-3 .autocomplete-wrapper {
+    width: 100%;
+}
+
+/* Bootstrap validation states */
+.was-validated .autocomplete-wrapper input:invalid,
+.autocomplete-wrapper input.is-invalid {
+    border-color: #dc3545;
+    padding-right: 75px; /* Keep space for icons */
+    background-image: none; /* Remove Bootstrap validation icon */
+}
+
+.was-validated .autocomplete-wrapper input:valid,
+.autocomplete-wrapper input.is-valid {
+    border-color: #198754;
+    padding-right: 75px; /* Keep space for icons */
+    background-image: none; /* Remove Bootstrap validation icon */
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+    .autocomplete-dropdown {
+        display: none !important;
+    }
+
+    .clear-button,
+    .dropdown-arrow,
+    .loading-spinner {
+        display: none !important;
+    }
+}
+
+/* ========================================
+   DARK MODE SUPPORT (Optional)
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+    .autocomplete-dropdown {
+        background-color: #2b3035;
+        border-color: #495057;
+        color: #dee2e6;
+    }
+
+    .autocomplete-item {
+        border-bottom-color: #495057;
+    }
+
+    .autocomplete-item:hover {
+        background-color: #343a40;
+    }
+
+    .autocomplete-item.active {
+        background-color: #0d6efd;
+        color: #ffffff;
+    }
+
+    .autocomplete-item mark {
+        background-color: #0d6efd;
+        color: #ffffff;
+    }
+
+    .no-results,
+    .autocomplete-error {
+        color: #dee2e6;
+    }
+}

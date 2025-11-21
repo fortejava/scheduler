@@ -11,43 +11,107 @@ using System.Web;
 /// </summary>
 public class CustomersService
 {
-    public static bool CreateOrUpdate(string newCustomerName, 
-                                        out List<string> ErrorMessages, 
-                                        int customerID = -1)
+    /// <summary>
+    /// Create or update a customer.
+    /// Throws ValidationException if validation fails.
+    /// </summary>
+    /// <param name="customer">Customer entity to save</param>
+    /// <returns>Saved customer entity with ID</returns>
+    /// <exception cref="ValidationException">Thrown when validation fails</exception>
+    public static Customer CreateOrUpdate(Customer customer)
     {
-        bool result = false;
-        ErrorMessages = new List<string>();
+        var errors = new List<string>();
 
-        if (Helpers.IsNotEmpty(newCustomerName))
+        using (var db = new schedulerEntities())
         {
-            using (var db = new schedulerEntities())
+            // Validate customer
+            ValidateCustomer(customer, db, errors);
+
+            // Throw if validation failed
+            if (errors.Count > 0)
             {
-                var customerToSave = (customerID != -1) ? db.Customers
-                    .SingleOrDefault(c => c.CustomerID == customerID) : new Customer();
-                if (customerToSave != null)
+                throw new ValidationException(errors);
+            }
+
+            // Determine if CREATE or UPDATE
+            Customer customerToSave;
+
+            if (customer.CustomerID == 0 || customer.CustomerID == -1)
+            {
+                // CREATE: New customer
+                customerToSave = new Customer
                 {
-                    if ( !db.Customers.Any(c=>c.CustomerName == newCustomerName)) 
-                    {
-                        customerToSave.CustomerName = newCustomerName;
-                        db.Customers.AddOrUpdate(customerToSave);
-                        result = (db.SaveChanges() == 1);
-                    }
-                    else
-                    {
-                        ErrorMessages.Add("CustomerName given is already present on DB");
-                    }
-                }
-                else
+                    CustomerName = customer.CustomerName
+                };
+            }
+            else
+            {
+                // UPDATE: Existing customer
+                customerToSave = db.Customers
+                    .FirstOrDefault(c => c.CustomerID == customer.CustomerID);
+
+                if (customerToSave == null)
                 {
-                    ErrorMessages.Add("CustomerID given is not present on DB");
+                    throw new ServiceException(string.Format("Cliente con ID {0} non trovato", customer.CustomerID));
                 }
+
+                // Update name
+                customerToSave.CustomerName = customer.CustomerName;
+            }
+
+            // Save to database
+            db.Customers.AddOrUpdate(customerToSave);
+            db.SaveChanges(); // Let exceptions bubble up
+
+            return customerToSave;
+        }
+    }
+
+    /// <summary>
+    /// Validate customer data.
+    /// Collects all validation errors.
+    /// </summary>
+    private static void ValidateCustomer(Customer customer, schedulerEntities db, List<string> errors)
+    {
+        // Validation 1: CustomerName required
+        if (string.IsNullOrWhiteSpace(customer.CustomerName))
+        {
+            errors.Add("CustomerName non può essere vuoto");
+            return; // Stop here if name missing
+        }
+
+        // Validation 2: Reject HTML/script tags (XSS prevention - SECOND GUARDRAIL)
+        // First guardrail: ASP.NET ValidateRequest (still enabled)
+        // Second guardrail: Our custom validation (provides user-friendly Italian errors)
+        // Third guardrail: Frontend escapeHtml() (already implemented in autocomplete-utils.js, invoices.js)
+        if (Helpers.ContainsHtmlTags(customer.CustomerName))
+        {
+            errors.Add("Nome cliente non può contenere caratteri HTML speciali: < > \" '");
+            return; // Stop validation, no need to check database
+        }
+
+        // Validation 3: CustomerID exists (if UPDATE)
+        if (customer.CustomerID > 0)
+        {
+            var existingCustomer = db.Customers
+                .FirstOrDefault(c => c.CustomerID == customer.CustomerID);
+
+            if (existingCustomer == null)
+            {
+                errors.Add(string.Format("Cliente con ID {0} non trovato", customer.CustomerID));
             }
         }
-        else
+
+        // Validation 4: CustomerName unique (check for duplicates)
+        // IMPORTANT: Exclude current customer if UPDATE
+        bool isDuplicate = db.Customers
+            .Any(c => c.CustomerName == customer.CustomerName
+                   && c.CustomerID != customer.CustomerID);
+
+        if (isDuplicate)
         {
-            ErrorMessages.Add("CustomerName given is null or empty");
+            errors.Add(string.Format("Nome cliente '{0}' già esistente", customer.CustomerName));
         }
-        return result;
     }
 
     public static List<Customer> GetAllCustomers(bool lazyLoading = false, 
@@ -157,7 +221,89 @@ public class CustomersService
         return customer;
     }
 
-    //TODO: Delete Customer (Cascade on Invoices!)
+    /// <summary>
+    /// HARD delete a customer (permanent removal).
+    /// STRICT VALIDATION: Validates that NO invoices (active or deleted) are associated.
+    /// Throws ServiceException if validation fails or invoices exist.
+    /// </summary>
+    /// <param name="customerId">Customer ID to delete</param>
+    /// <returns>Deleted customer entity</returns>
+    /// <exception cref="ServiceException">Thrown when validation fails or invoices exist</exception>
+    public static Customer Delete(int customerId)
+    {
+        // Validation 1: Check if customerId is valid
+        if (customerId <= 0)
+        {
+            throw new ServiceException("CustomerID non valido");
+        }
+
+        using (var db = new schedulerEntities())
+        {
+            // Validation 2: Check if customer exists
+            var customerToDelete = db.Customers
+                .SingleOrDefault(c => c.CustomerID == customerId);
+
+            if (customerToDelete == null)
+            {
+                throw new ServiceException(string.Format("Cliente con ID {0} non trovato", customerId));
+            }
+
+            // Validation 3: Check for ANY invoices (CRITICAL - STRICT VALIDATION)
+            // Count active invoices
+            int activeInvoiceCount = db.Invoices
+                .Count(i => i.CustomerID == customerId && i.InvoiceActive == "Y");
+
+            // Count soft-deleted invoices
+            int softDeletedInvoiceCount = db.Invoices
+                .Count(i => i.CustomerID == customerId && i.InvoiceActive == "N");
+
+            int totalInvoiceCount = activeInvoiceCount + softDeletedInvoiceCount;
+
+            // BLOCK if ANY invoices exist
+            if (totalInvoiceCount > 0)
+            {
+                // Build detailed error message based on invoice types
+                string errorMessage;
+
+                if (activeInvoiceCount > 0 && softDeletedInvoiceCount > 0)
+                {
+                    // Both types exist
+                    errorMessage = string.Format(
+                        "Impossibile eliminare il cliente: esistono {0} fatture attive e {1} fatture eliminate",
+                        activeInvoiceCount,
+                        softDeletedInvoiceCount
+                    );
+                }
+                else if (activeInvoiceCount > 0)
+                {
+                    // Only active invoices
+                    errorMessage = string.Format(
+                        "Impossibile eliminare il cliente: esistono {0} fatture attive associate",
+                        activeInvoiceCount
+                    );
+                }
+                else
+                {
+                    // Only soft-deleted invoices
+                    errorMessage = string.Format(
+                        "Impossibile eliminare il cliente: esistono {0} fatture eliminate (storiche). Eliminarle prima di procedere.",
+                        softDeletedInvoiceCount
+                    );
+                }
+
+                throw new ServiceException(errorMessage);
+            }
+
+            // No invoices exist - safe to HARD delete customer
+            db.Customers.Remove(customerToDelete);
+
+            // Save changes - let exceptions bubble up to BaseHandler
+            // If FK constraint violation occurs despite validation, DbUpdateException will be caught automatically
+            db.SaveChanges();
+
+            return customerToDelete;
+        }
+    }
 
 }
 

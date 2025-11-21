@@ -1,0 +1,284 @@
+# ==============================================================================
+# DOCKER COMPOSE - Loginet Full Stack Deployment
+# ==============================================================================
+#
+# Purpose: Deploy complete Loginet system with both application and database
+# Components:
+#   - webapp: ASP.NET Web Forms application (Windows container)
+#   - sqlserver: SQL Server 2022 (Linux container)
+#
+# Usage:
+#   Start:    docker-compose up -d
+#   Stop:     docker-compose down
+#   Logs:     docker-compose logs -f
+#   Rebuild:  docker-compose up -d --build
+#
+# Requirements:
+#   - Docker Desktop for Windows with WSL 2
+#   - Windows containers enabled for webapp
+#   - At least 8GB RAM allocated to Docker
+#
+# Documentation: See docs/07-deployment/DOCKER_COMPOSE_GUIDE.md
+# ==============================================================================
+
+version: '3.8'
+
+# ============================================
+# Services
+# ============================================
+services:
+
+  # ==========================================
+  # SQL Server 2022 (Linux Container)
+  # ==========================================
+  sqlserver:
+    # Official Microsoft SQL Server 2022 Linux image
+    image: mcr.microsoft.com/mssql/server:2022-latest
+
+    container_name: loginet-sqlserver
+
+    # Restart policy: always restart unless stopped manually
+    restart: unless-stopped
+
+    # Environment variables for SQL Server configuration
+    environment:
+      # Accept End User License Agreement (required)
+      ACCEPT_EULA: "Y"
+
+      # SA (System Administrator) password
+      # ⚠️ IMPORTANT: Change this in production!
+      # Password requirements:
+      # - At least 8 characters
+      # - Include uppercase, lowercase, numbers, and symbols
+      SA_PASSWORD: "Password123!"
+
+      # Enable SQL Server Agent (for scheduled jobs)
+      MSSQL_AGENT_ENABLED: "true"
+
+      # Product ID (Developer edition - free for dev/test)
+      # Options: Developer, Express, Standard, Enterprise
+      MSSQL_PID: "Developer"
+
+    # Port mapping: host:container
+    # Map host port 1433 to container port 1433 (SQL Server default)
+    ports:
+      - "1433:1433"
+
+    # Volume for data persistence
+    # Database files persist even when container is removed
+    volumes:
+      # SQL Server data directory
+      - sqlserver-data:/var/opt/mssql
+
+      # Database initialization scripts
+      # Scripts in this folder run when container first starts
+      - ./Database/docker-init:/docker-entrypoint-initdb.d
+
+    # Health check to verify SQL Server is ready
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Password123! -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+    # Network
+    networks:
+      - loginet-network
+
+  # ==========================================
+  # ASP.NET Web Application (Windows Container)
+  # ==========================================
+  webapp:
+    # Build from Dockerfile in current directory
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: loginet-webapp
+
+    # Restart policy
+    restart: unless-stopped
+
+    # Environment variables for application
+    environment:
+      # Database connection settings
+      # Use service name 'sqlserver' as hostname (Docker DNS)
+      DB_SERVER: "sqlserver"
+      DB_NAME: "scheduler"
+      DB_USER: "sa"
+      DB_PASSWORD: "Password123!"
+
+      # Application settings
+      ASPNETCORE_ENVIRONMENT: "Production"
+      TZ: "Europe/Rome"  # Timezone (Italy)
+
+    # Port mapping: host:container
+    # Access application at http://localhost:8080
+    ports:
+      - "8080:80"
+
+    # Dependencies: wait for SQL Server to be healthy before starting
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+
+    # Health check for web application
+    healthcheck:
+      test: ["CMD", "powershell", "-Command", "Invoke-WebRequest -Uri http://localhost/Services/HealthCheck.ashx -UseBasicParsing"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    # Network
+    networks:
+      - loginet-network
+
+    # Resource limits (optional but recommended)
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
+
+# ============================================
+# Networks
+# ============================================
+networks:
+  loginet-network:
+    driver: bridge
+    name: loginet-network
+
+# ============================================
+# Volumes (Data Persistence)
+# ============================================
+volumes:
+  # SQL Server data volume
+  # Database files stored here persist across container restarts
+  sqlserver-data:
+    name: loginet-sqlserver-data
+    driver: local
+
+# ==============================================================================
+# USAGE INSTRUCTIONS:
+# ==============================================================================
+#
+# 1. FIRST TIME SETUP:
+# ---------------------
+#
+# a) Switch Docker Desktop to Windows containers (for webapp):
+#    - Right-click Docker Desktop tray icon
+#    - Select "Switch to Windows containers..."
+#    - Wait for restart
+#
+# b) Start all services:
+#    docker-compose up -d
+#
+# c) Wait for database initialization (check logs):
+#    docker-compose logs -f sqlserver
+#
+# d) Verify services are healthy:
+#    docker-compose ps
+#
+# e) Initialize database (first time only):
+#    docker exec -it loginet-sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Password123! -i /docker-entrypoint-initdb.d/01-create-database.sql
+#
+# f) Access application:
+#    http://localhost:8080
+#
+#
+# 2. EVERYDAY OPERATIONS:
+# -----------------------
+#
+# Start services:
+#   docker-compose up -d
+#
+# Stop services (keep data):
+#   docker-compose down
+#
+# Stop services (remove data):
+#   docker-compose down -v
+#
+# View logs:
+#   docker-compose logs -f
+#   docker-compose logs -f webapp
+#   docker-compose logs -f sqlserver
+#
+# Rebuild after code changes:
+#   docker-compose up -d --build webapp
+#
+# Restart a service:
+#   docker-compose restart webapp
+#
+# Check service status:
+#   docker-compose ps
+#
+#
+# 3. DATABASE OPERATIONS:
+# -----------------------
+#
+# Connect to SQL Server:
+#   docker exec -it loginet-sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Password123!
+#
+# Run SQL script:
+#   docker exec -it loginet-sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Password123! -i /path/to/script.sql
+#
+# Backup database:
+#   docker exec loginet-sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Password123! -Q "BACKUP DATABASE scheduler TO DISK='/var/opt/mssql/backup/scheduler.bak'"
+#
+# Copy backup to host:
+#   docker cp loginet-sqlserver:/var/opt/mssql/backup/scheduler.bak ./scheduler.bak
+#
+#
+# 4. TROUBLESHOOTING:
+# -------------------
+#
+# Container won't start:
+#   docker-compose logs webapp
+#   docker-compose logs sqlserver
+#
+# Database connection fails:
+#   docker exec -it loginet-webapp powershell Test-NetConnection sqlserver -Port 1433
+#
+# Reset everything:
+#   docker-compose down -v
+#   docker-compose up -d --build
+#
+# Check container health:
+#   docker inspect loginet-webapp | grep -A 10 Health
+#   docker inspect loginet-sqlserver | grep -A 10 Health
+#
+# Access container shell:
+#   docker exec -it loginet-webapp powershell
+#   docker exec -it loginet-sqlserver bash
+#
+#
+# 5. PRODUCTION CONSIDERATIONS:
+# ------------------------------
+#
+# ⚠️ Security:
+#   - Change SA_PASSWORD to a strong password
+#   - Use Docker secrets for passwords
+#   - Enable HTTPS (add SSL certificate)
+#   - Use environment file (.env) for sensitive data
+#
+# ⚠️ Performance:
+#   - Increase memory limits for production load
+#   - Use named volumes for better performance
+#   - Configure SQL Server max memory
+#
+# ⚠️ Backup:
+#   - Schedule automated backups
+#   - Store backups outside containers
+#   - Test restore procedures
+#
+# ⚠️ Monitoring:
+#   - Add logging driver (e.g., fluentd, splunk)
+#   - Monitor container health
+#   - Set up alerts for failures
+#
+# ==============================================================================

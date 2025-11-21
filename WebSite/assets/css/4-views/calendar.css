@@ -1,0 +1,65 @@
+/**
+ * CALENDAR.CSS - FullCalendar Modular Imports
+ * Loginet Invoice Management System
+ *
+ * Purpose: Master import file for all FullCalendar customizations
+ * Version: 2.0.0 (Modular Restructure)
+ * Last Updated: 2025-11-21
+ *
+ * Architecture:
+ * This file imports all calendar-related CSS modules following
+ * a separation of concerns approach:
+ *
+ * - _base.css      : Foundational FullCalendar styling (toolbar, buttons, headers)
+ * - _events.css    : Event display, colors, and visibility
+ * - _popover.css   : Popover positioning, styling, and behavior fixes
+ *
+ * History:
+ * - 2025-11-21: Modular restructure - removed 1,072 lines of dead code
+ * - 2025-11-20: JavaScript popover positioning implementation
+ * - 2025-11-19: Initial FullCalendar customization
+ *
+ * Note: Old Loginet custom calendar classes (.calendar-container-loginet, etc.)
+ *       have been removed as they were unused. If needed, they can be restored
+ *       from Git history (commit before 2025-11-21).
+ */
+
+/* ============================================================================
+   FULLCALENDAR MODULE IMPORTS
+   ============================================================================ */
+
+/* Base FullCalendar customization - Toolbar, buttons, headers, days */
+@import 'calendar/_base.css';
+
+/* Event styling - Colors, visibility, hover states */
+@import 'calendar/_events.css';
+
+/* Popover fixes - Positioning, scrolling, responsive behavior */
+@import 'calendar/_popover.css';
+
+/* ============================================================================
+   END OF IMPORTS
+   ============================================================================ */
+
+/**
+ * USAGE NOTES:
+ *
+ * - This file is imported by main.css (do NOT load separately in Index.html)
+ * - All calendar styles are now modular for easier maintenance
+ * - To modify specific aspects:
+ *   - Toolbar/buttons → edit _base.css
+ *   - Event appearance → edit _events.css
+ *   - Popover behavior → edit _popover.css
+ *
+ * - Total CSS reduced from 1,240 lines to ~400 lines (excluding dead code)
+ * - Performance: Faster parsing, better maintainability
+ *
+ * DEPENDENCIES:
+ * - Bootstrap 5.3+ (loaded before main.css)
+ * - FullCalendar library (index.global.min.js)
+ * - Variables from 1-base/variables.css
+ *
+ * BROWSER SUPPORT:
+ * - Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
+ * - Mobile: iOS Safari 14+, Chrome Android 90+
+ */

@@ -3,33 +3,37 @@
 using System;
 using System.Web;
 using DBEngine;
-using System.Diagnostics;
-using Newtonsoft.Json;
 
-public class GetStatusByID : IHttpHandler {
-    
-    public void ProcessRequest (HttpContext context) {
-            string statusIdString = context.Request.Form["statusID"];
-            statusIdString = "1";
-            Response r = new Response("Ko", null);
-            int statusId = 0;
-            if (int.TryParse(statusIdString, out statusId))
-            {
-                Status statusesFound = StatusesService.GetStatusById(statusId);
-                if (statusesFound!= null)
-                {
-                    r.Code = "Ok";
-                    r.Message = statusesFound;
-                }
-            }
-            context.Response.ContentType = "application/json";
-            context.Response.Write(JsonConvert.SerializeObject(r));
+/// <summary>
+/// Get status by ID.
+/// Authorization: ValidToken (all authenticated users can view statuses)
+/// </summary>
+public class GetStatusByID : BaseHandler
+{
+    protected override AuthLevel AuthorizationRequired
+    {
+        get { return AuthLevel.ValidToken; }
     }
- 
-    public bool IsReusable {
-        get {
-            return false;
+
+    protected override object ExecuteOperation(HttpContext context)
+    {
+        // Parse status ID from request (PascalCase with uppercase "ID")
+        string statusIdString = context.Request.Form["StatusID"];
+        int statusId;
+
+        if (!int.TryParse(statusIdString, out statusId))
+        {
+            throw new ServiceException(string.Format("Formato StatusID non valido: '{0}'", statusIdString));
         }
-    }
 
+        // Get status by ID
+        Status status = StatusesService.GetStatusById(statusId);
+
+        if (status == null)
+        {
+            throw new ServiceException(string.Format("Stato con ID {0} non trovato", statusId));
+        }
+
+        return status;
+    }
 }

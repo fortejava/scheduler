@@ -2,32 +2,30 @@
 
 using System;
 using System.Web;
-using Newtonsoft.Json;
 using DBEngine;
-using System.Collections.Generic;
 
-public class FilterByNameCustomers : IHttpHandler {
+/// <summary>
+/// Filter customers by name (partial match).
+/// Authorization: ValidToken (all authenticated users can filter customers)
+/// </summary>
+public class FilterByNameCustomers : BaseHandler
+{
+    protected override AuthLevel AuthorizationRequired
+    {
+        get { return AuthLevel.ValidToken; }
+    }
 
-    public void ProcessRequest (HttpContext context) {
-        string customerName = context.Request.Form["customerName"];
-        customerName = "a";
-        Response r = new Response("Ko", null);
-        var customerFound = new List<Customer> ();
-        if(Helpers.IsNotEmpty(customerName))
+    protected override object ExecuteOperation(HttpContext context)
+    {
+        // Get filter parameter (PascalCase)
+        string customerName = context.Request.Form["CustomerName"];
+
+        if (!Helpers.IsNotEmpty(customerName))
         {
-            customerFound = CustomersService.FilterByName(customerName, false);
-            r.Code = (customerFound.Count > 0) ? "Ok" : "Ko";
-            r.Message = customerFound;
+            throw new ServiceException("Il parametro CustomerName è obbligatorio");
         }
 
-        context.Response.ContentType = "application/json";
-        context.Response.Write(JsonConvert.SerializeObject(r));
+        // Filter customers by name (LazyLoading = false for performance)
+        return CustomersService.FilterByName(customerName, false);
     }
-
-    public bool IsReusable {
-        get {
-            return false;
-        }
-    }
-
 }

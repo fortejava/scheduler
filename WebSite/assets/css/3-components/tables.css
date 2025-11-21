@@ -1,0 +1,447 @@
+/**
+ * TABLES.CSS - Table Components
+ * Loginet Invoice Management System
+ *
+ * Extends Bootstrap tables with Loginet styles
+ */
+
+/**
+ * ============================================================================
+ * INVOICE TABLE - HYBRID SOLUTION (SOLUTION C)
+ * ============================================================================
+ * Purpose: Centralized table styling for invoice views (active + deleted)
+ * Status: DEVTOOLS TESTING PHASE
+ * Version: 2.0 - Hybrid Approach (Addresses all 5 issues from testing)
+ * Created: 2025-11-18
+ *
+ * FIXES APPLIED:
+ * ✅ Issue 1: Font-weight stays 600 (increased specificity)
+ * ✅ Issue 2: Rounded corners work (wrapper + table approach)
+ * ✅ Issue 3: Red border lines visible (changed to #fecaca)
+ * ✅ Issue 4: Date column aligned (vertical-align: middle)
+ * ✅ Issue 5: Red background appears (higher specificity)
+ *
+ * Usage Pattern for DevTools Testing:
+ *   Wrapper div:        Add class "invoice-table-wrapper" to <div class="table-responsive">
+ *   Active Invoices:    <table class="table table-hover table-striped invoice-table">
+ *   Deleted Invoices:   <table class="table table-hover table-striped invoice-table deleted-rows">
+ *
+ * Bootstrap Specificity Notes:
+ *   - Bootstrap .table-dark uses: .table > thead.table-dark > tr > th (0-0-4-3)
+ *   - Our selectors MUST match or exceed this specificity
+ *   - Strategic use of !important for critical overrides only
+ * ============================================================================
+ */
+
+/* ============================================
+   WRAPPER STYLING - Border Radius Fix
+   ============================================
+   Applied to: <div class="table-responsive invoice-table-wrapper">
+   Purpose: Rounded corners (tables don't support border-radius directly)
+   Research: Stack Overflow - apply to wrapper with overflow:hidden
+*/
+.invoice-table-wrapper {
+  border-radius: var(--border-radius-lg, 12px);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* ============================================
+   TABLE CONTAINER STYLING
+   ============================================ */
+.invoice-table {
+  width: 100%;
+  background: var(--white, #ffffff);
+  /* border-radius moved to wrapper */
+}
+
+/* ============================================
+   HEADER STYLING - High Specificity
+   ============================================
+   Specificity Match: Bootstrap uses .table > thead.table-dark > tr > th
+   Our approach: Match specificity + !important for critical properties
+*/
+
+/* Header Background */
+.table.invoice-table thead.table-dark {
+  background: var(--loginet-primary, #002C3D) !important;
+  color: var(--white, #ffffff);
+}
+
+/* Header Cell Styling - CRITICAL FIX: Font-weight Issue */
+.table.invoice-table thead.table-dark th {
+  /* padding: REMOVED - Bootstrap default (.5rem) is sufficient */
+  font-weight: 600 !important;         /* FIX: Stays 600 even without inline styles */
+  font-size: 0.9rem !important;        /* FIX: Stays 0.9rem even without inline styles */
+  text-transform: uppercase;
+  /* letter-spacing: REMOVED - User explicitly requested removal */
+  border: none;
+  vertical-align: middle;              /* FIX: Date column alignment */
+}
+
+/* ============================================
+   BODY ROW STYLING - Red Border Lines
+   ============================================
+   CHANGE: Using #fecaca (red) for BOTH tables
+   User requirement: Red lines visible in BOTH Elenco Fatture AND Fatture Eliminate
+*/
+.invoice-table tbody tr {
+  border-bottom: 1px solid #fecaca;    /* FIX: Changed from #e5e7eb to #fecaca (RED) */
+  transition: background 0.2s ease;
+}
+
+.invoice-table tbody tr:hover {
+  background: var(--bg-secondary, #f8f9fa);
+}
+
+.invoice-table tbody tr:last-child {
+  border-bottom: 1px solid #fecaca;    /* FIX: Keep border on last row too */
+}
+
+/* ============================================
+   BODY CELL STYLING
+   ============================================ */
+.invoice-table tbody td {
+  /* padding: REMOVED - Bootstrap default (.5rem = 8px) is sufficient */
+  /* vertical-align: REMOVED - Handled by higher-specificity rule at line 229 */
+}
+
+/* ============================================
+   DELETED INVOICE VARIANT - Red Background
+   ============================================
+   FIX: Higher specificity to override Bootstrap .table-striped
+   Bootstrap uses: .table-striped > tbody > tr:nth-of-type(odd) > * (0-0-4-2)
+   Our selector must be equal or higher
+*/
+
+/* Red background rows - Higher specificity */
+.table-striped.invoice-table.deleted-rows > tbody > tr {
+  background: #fef2f2 !important;      /* FIX: !important to override striped */
+  border-bottom: 1px solid #fecaca;
+}
+
+.table-striped.invoice-table.deleted-rows > tbody > tr:hover {
+  background: #fee2e2 !important;      /* FIX: Darker red on hover */
+}
+
+/* Selected row styling (checkbox checked) */
+.table-striped.invoice-table.deleted-rows > tbody > tr.selected-loginet {
+  background: #fecaca !important;      /* FIX: Even darker for selected */
+  border-left: 4px solid #dc2626;
+}
+
+.table-striped.invoice-table.deleted-rows > tbody > tr.selected-loginet:hover {
+  background: #fca5a5 !important;      /* FIX: Darkest on hover when selected */
+}
+
+/* Ensure striped rows don't override in deleted view */
+.table-striped.invoice-table.deleted-rows > tbody > tr:nth-of-type(odd) > * {
+  background-color: transparent;       /* Remove striped effect, use row background instead */
+}
+
+/* ============================================
+   BUTTON SIZE OVERRIDES FOR TABLE ACTIONS
+   ============================================
+   FIX: Global button styles (font-size: 1.5rem) make rows too tall
+   User tested values: 1.3rem font-size, 3px 6px padding
+   Applied ONLY to buttons inside invoice tables
+*/
+.invoice-table .btn,
+.invoice-table .btn-sm,
+.invoice-table-wrapper .btn,
+.invoice-table-wrapper .btn-sm {
+  font-size: 1.3rem !important;        /* User tested: better than 1.5rem */
+  padding: 3px 6px !important;         /* User tested: better than 6px 12px */
+  font-weight: 600;                    /* Preserve bold */
+  line-height: 1.2;                    /* Tighter line height */
+}
+
+/* Icon buttons (view, edit, delete icons) */
+.invoice-table .btn i,
+.invoice-table-wrapper .btn i {
+  font-size: 1.1rem;                   /* Slightly smaller icons */
+}
+
+/* ============================================
+   BOOTSTRAP BORDER OVERRIDE
+   ============================================
+   FIX: Bootstrap's border-style: solid creates black line at table end
+   Override to use only our red bottom borders
+*/
+.invoice-table tbody tr,
+.invoice-table tbody td,
+.invoice-table thead tr,
+.invoice-table thead th {
+  border-style: none;                  /* Remove Bootstrap's border-style: solid */
+}
+
+/* Re-apply our controlled borders */
+.invoice-table tbody tr {
+  border-bottom: 1px solid #fecaca !important;  /* Red border */
+}
+
+/* ============================================
+   ENHANCED VERTICAL ALIGNMENT
+   ============================================
+   FIX: Some cells have text going up without align-middle class
+   Force vertical centering on all table cells
+*/
+.table.invoice-table tbody td {
+  vertical-align: middle !important;   /* Force alignment for all cells */
+}
+
+/**
+ * BOOTSTRAP TABLE-DARK COLOR OVERRIDE
+ * Multi-tiered approach to ensure Bootstrap's .table-dark class uses Loginet colors
+ * Addresses CSS specificity challenges with Bootstrap 5.3
+ */
+
+/* Tier 1: CSS Custom Properties (Bootstrap 5.3+ standard method) */
+.table-dark {
+    --bs-table-bg: #002C3D;
+    --bs-table-color: #ffffff;
+    --bs-table-border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Tier 2: Direct Selector Override (Higher Specificity + !important) */
+.table > thead.table-dark {
+    background-color: #002C3D !important;
+}
+
+.table > thead.table-dark > tr > th {
+    background-color: #002C3D !important;
+    color: white !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Tier 3: Sticky Header Support (Ensure color persists when sticky) */
+.table > thead.table-dark.sticky-top {
+    background-color: #002C3D !important;
+}
+
+.table > thead.table-dark.sticky-top > tr > th {
+    background-color: #002C3D !important;
+    color: white !important;
+}
+
+/**
+ * SORTABLE TABLE HEADERS
+ * Prevents sort buttons/icons from wrapping to second row
+ * Applied to table headers with sorting functionality
+ *
+ * Issue Fixed: Sort icons were wrapping to second row when invoice/order numbers were long
+ * Solution: Flexbox wrapper inside <th> keeps text + icon inline without breaking table layout
+ * Implementation: Wrapper div with display: flex inside table cells (preserves table-cell display)
+ * Pattern: Industry best practice - Stack Overflow recommended approach
+ * Date: 2025-11-15 (Updated with Option A - Wrapper + Flexbox)
+ */
+
+/* Base sortable header styling - table cell preserved */
+.sortable {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease;
+    /* Note: display: table-cell is preserved (not overridden) */
+    /* Flexbox applied to .sortable-content wrapper instead */
+}
+
+/* Sortable content wrapper - flexbox container inside table cell */
+.sortable-content {
+    display: flex;
+    align-items: center;
+    /* justify-content: REMOVED - User requested: eliminates excessive space between text and icon */
+    gap: 6px;
+}
+
+/* Hover state - subtle highlight */
+.sortable:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Sort icon styling - flex item */
+.sortable-content i {
+    flex-shrink: 0;
+    flex-basis: auto;
+    font-size: 1.0rem;
+    opacity: 0.7;
+    transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+/* Sort icon hover state */
+.sortable:hover .sortable-content i {
+    opacity: 1;
+}
+
+/* Active sort indicator (ascending) */
+.sortable-content i.bi-arrow-up {
+    opacity: 1;
+    color: #3498db !important;
+    font-weight: bold;
+}
+
+/* Active sort indicator (descending) */
+.sortable-content i.bi-arrow-down {
+    opacity: 1;
+    color: #3498db !important;
+    font-weight: bold;
+}
+
+/**
+ * STRIPED TABLE
+ */
+.table-loginet.table-striped tbody tr:nth-child(even) {
+    background-color: var(--color-gray-50);
+}
+
+/**
+ * TABLE ACTIONS
+ */
+.table-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.table-action-btn {
+    padding: 0.25rem 0.5rem;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.table-action-btn:hover {
+    background-color: var(--color-gray-100);
+    color: var(--loginet-secondary);
+}
+
+/**
+ * STATUS BADGES IN TABLES
+ */
+.table-status {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+}
+
+.table-status.paid {
+    background-color: var(--color-success-light);
+    color: var(--color-success-dark);
+}
+
+.table-status.pending {
+    background-color: var(--color-warning-light);
+    color: var(--color-warning-dark);
+}
+
+.table-status.overdue {
+    background-color: var(--color-danger-light);
+    color: var(--color-danger-dark);
+}
+
+/**
+ * RESPONSIVE TABLE
+ */
+.table-responsive-loginet {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/**
+ * MOBILE RESPONSIVE - CARD LAYOUT
+ * Converts table to card-style layout on mobile devices
+ * Applied to: .invoice-table (both active and deleted invoices)
+ */
+@media (max-width: 768px) {
+    /* Hide table headers on mobile */
+    .invoice-table thead {
+        display: none;
+    }
+
+    /* Convert table elements to block for card layout */
+    .invoice-table,
+    .invoice-table tbody,
+    .invoice-table tbody tr,
+    .invoice-table tbody td {
+        display: block;
+        width: 100%;
+    }
+
+    /* Card styling for each row */
+    .invoice-table tbody tr {
+        margin-bottom: 16px;
+        padding: 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        background: white;
+    }
+
+    .invoice-table tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    /* Cell styling */
+    .invoice-table tbody td {
+        padding: 8px 0;
+        border-bottom: none;
+        text-align: left !important;
+    }
+
+    /* Add label before each cell content */
+    .invoice-table tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        display: block;
+        margin-bottom: 4px;
+        color: #6c757d;
+        font-size: 12px;
+        text-transform: uppercase;
+    }
+
+    /* Hide label for checkbox cells */
+    .invoice-table tbody td.deleted-invoice-checkbox-cell-loginet::before {
+        display: none;
+    }
+
+    /* DELETED INVOICES VARIANT - Red cards on mobile */
+    .invoice-table.deleted-rows tbody tr {
+        background: #fef2f2;
+        border-color: #fecaca;
+    }
+
+    .invoice-table.deleted-rows tbody tr:hover {
+        background: #fee2e2;
+    }
+
+    .invoice-table.deleted-rows tbody tr.selected-loginet {
+        background: #fecaca;
+        border-left: 4px solid #dc2626;
+    }
+}
+
+/**
+ * DATATABLES INTEGRATION
+ */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: var(--loginet-secondary);
+    color: white;
+    border-color: var(--loginet-secondary);
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.5rem 1rem;
+}

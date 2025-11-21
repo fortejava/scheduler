@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(findstr:*)",
+      "Bash(test:*)",
+      "WebSearch",
+      "WebFetch(domain:fullcalendar.io)",
+      "Bash(copy \"WebSite\\App_Code\\UserService.cs\" \"WebSite\\App_Code\\UserService_BACKUP_C#5_FIX.cs\")",
+      "Bash(cp:*)",
+      "Bash(\"C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/MSBuild.exe\" \"C:/Users/Drako/Desktop/Z-Experiment-Scheduler/scheduler/Spider.sln\" //p:Configuration=Debug //t:Build //v:minimal //nologo)",
+      "Bash(nul)",
+      "Bash(\"C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/MSBuild.exe\" \"Spider.sln\" /p:Configuration=Debug /t:Build /v:minimal /nologo)",
+      "Bash(\"C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/MSBuild.exe\" Spider.sln //p:Configuration=Debug //t:Build //v:minimal //nologo)",
+      "Bash(\"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe\" Spider.sln /p:Configuration=Debug /t:Build /v:minimal /nologo)",
+      "Bash(\"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe\" Spider.sln //p:Configuration=Debug //t:Build //v:minimal //nologo)",
+      "Bash(copy \"WebSite\\Services\\Login.ashx\" \"WebSite\\Services\\Login.ashx.backup\")",
+      "Bash(\"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe\" \"C:\\Users\\Drako\\Desktop\\Z-Experiment-Scheduler\\scheduler\\Spider.sln\" /p:Configuration=Debug /t:Build /v:minimal)",
+      "Bash(copy \"WebSite\\assets\\js\\invoices.js\" \"WebSite\\assets\\js\\invoices.js.backup_table_layout_20251114\")",
+      "WebFetch(domain:atomiks.github.io)",
+      "WebFetch(domain:unpkg.com)",
+      "Bash(curl:*)",
+      "Bash(dir /B WebSiteassetsbootstrap-icons)",
+      "Bash(grep:*)",
+      "Bash(\"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe\" Spider.sln /p:Configuration=Debug /t:Build /v:minimal)",
+      "Bash(find:*)",
+      "Bash(copy:*)",
+      "Bash(\"PHASE_2_TESTING_GUIDE.md\" 2)",
+      "Bash(\"PHASE_2_IMPLEMENTATION_COMPLETE_SUMMARY.md\" 2)",
+      "Bash(\"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe\" Spider.sln //t:Clean //p:Configuration=Debug)",
+      "Bash(\"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe\" Spider.sln //t:Rebuild //p:Configuration=Debug //v:normal)",
+      "Bash(\"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe\" Spider.sln //t:Rebuild //p:Configuration=Debug //v:minimal)",
+      "Bash(dir:*)",
+      "WebFetch(domain:developer.chrome.com)",
+      "Bash(done)",
+      "Bash(sqlcmd:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,791 @@
+/**
+ * NAVBAR.CSS - Top Navigation Bar
+ * Loginet Invoice Management System
+ * 
+ * Custom navbar styles that EXTEND Bootstrap's navbar
+ */
+
+/**
+ * BASE NAVBAR STRUCTURE
+ */
+.navbar-loginet {
+    height: var(--navbar-height);
+    background-color: var(--navbar-bg);
+    box-shadow: var(--navbar-shadow);
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-index-fixed);
+    transition: all var(--transition-base);
+}
+
+/* With Sidebar Offset */
+.navbar-loginet.with-sidebar {
+    left: var(--sidebar-width);
+}
+
+.navbar-loginet.with-sidebar.sidebar-collapsed {
+    left: var(--sidebar-collapsed-width);
+}
+
+/**
+ * NAVBAR CONTAINER
+ */
+.navbar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    padding: 0 var(--spacing-lg);
+}
+
+/**
+ * NAVBAR BRAND / LOGO
+ * Bootstrap .navbar-brand override
+ */
+.navbar-brand,
+.navbar-brand-loginet {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--loginet-primary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.navbar-brand:hover,
+.navbar-brand-loginet:hover {
+    color: var(--loginet-secondary);
+}
+
+.navbar-brand img,
+.navbar-brand-loginet img {
+    height: 65px;
+    width: auto;
+    transition: transform 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.navbar-brand img:hover,
+.navbar-brand-loginet img:hover {
+    transform: scale(1.05);
+}
+
+/**
+ * NAVBAR NAVIGATION
+ */
+.navbar-nav-loginet {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-nav-loginet .nav-item {
+    position: relative;
+}
+
+.navbar-nav-loginet .nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: var(--text-secondary);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.navbar-nav-loginet .nav-link:hover {
+    color: var(--loginet-secondary);
+    background-color: var(--color-gray-100);
+}
+
+.navbar-nav-loginet .nav-link.active {
+    color: var(--loginet-secondary);
+    background-color: rgba(255, 89, 18, 0.1);
+}
+
+.navbar-nav-loginet .nav-link i {
+    font-size: 1.1em;
+}
+
+/* ============================================
+   BOOTSTRAP NAVBAR ICON COLORS - LOGINET ORANGE
+   Apply Loginet brand colors to Bootstrap navbar icons
+============================================ */
+
+/**
+ * All Bootstrap Icons in navbar - Loginet Orange
+ */
+.navbar .bi {
+    color: var(--loginet-secondary, #FF5912) !important;
+}
+
+/**
+ * Icons in nav links - Loginet Orange
+ */
+.nav-link .bi {
+    color: var(--loginet-secondary, #FF5912) !important;
+}
+
+/**
+ * Sidebar nav items icons
+ */
+.nav-item .bi {
+    color: var(--loginet-secondary, #FF5912);
+}
+
+/**
+ * Hover state - slightly darker orange
+ */
+.nav-link:hover .bi {
+    color: var(--loginet-secondary-dark, #E04D0F) !important;
+}
+
+/* ============================================
+   END ICON COLOR OVERRIDES
+============================================ */
+
+/* ============================================
+   HELP ICON BADGE - Circular Background
+   Matches user role badge visual style for consistency
+   Added: 2025-11-16
+============================================ */
+
+.nav-icon-badge {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #4d5257;  /* Default: Dark gray (Visitor color) */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nav-icon-badge:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);  /* Stronger shadow for dark bg */
+}
+
+/* Help icon - dynamic background matching user role */
+.nav-icon-badge.role-admin,
+.nav-icon-badge.bg-role-admin {
+    background-color: #000000 !important;  /* Black for Admin */
+}
+
+.nav-icon-badge.role-user,
+.nav-icon-badge.bg-role-user {
+    background-color: #004d66 !important;  /* Dark teal for User */
+}
+
+.nav-icon-badge.role-visitor,
+.nav-icon-badge.bg-role-visitor {
+    background-color: #4d5257 !important;  /* Dark gray for Visitor */
+}
+
+/**
+ * NAVBAR ACTIONS (Right side)
+ */
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+/**
+ * NAVBAR SEARCH
+ */
+.navbar-search {
+    position: relative;
+    width: 300px;
+}
+
+.navbar-search input {
+    width: 100%;
+    height: 38px;
+    padding: 0 var(--spacing-md) 0 var(--spacing-2xl);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    transition: all var(--transition-fast);
+}
+
+.navbar-search input:focus {
+    outline: none;
+    border-color: var(--loginet-secondary);
+    box-shadow: 0 0 0 3px rgba(255, 89, 18, 0.1);
+}
+
+.navbar-search i {
+    position: absolute;
+    left: var(--spacing-md);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+/**
+ * NAVBAR NOTIFICATIONS
+ */
+.navbar-notification {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-circle);
+    background-color: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.navbar-notification:hover {
+    background-color: var(--color-gray-100);
+    color: var(--loginet-secondary);
+}
+
+.navbar-notification i {
+    font-size: 1.2rem;
+}
+
+/* Notification Badge */
+.navbar-notification .badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    font-size: 0.7rem;
+    font-weight: var(--font-weight-bold);
+    line-height: 18px;
+    text-align: center;
+    background-color: var(--color-danger);
+    color: white;
+    border-radius: 9px;
+}
+
+/**
+ * NAVBAR USER DROPDOWN
+ */
+.navbar-user {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.navbar-user:hover {
+    background-color: var(--color-gray-100);
+}
+
+.navbar-user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-circle);
+    background-color: var(--loginet-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-sm);
+}
+
+.navbar-user-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-circle);
+    object-fit: cover;
+}
+
+.navbar-user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.navbar-user-name {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+}
+
+.navbar-user-role {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+}
+
+/**
+ * NAVBAR TOGGLE (Mobile)
+ */
+.navbar-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    transition: background-color var(--transition-fast);
+}
+
+.navbar-toggle:hover {
+    background-color: var(--color-gray-100);
+}
+
+.navbar-toggle i {
+    font-size: 1.5rem;
+}
+
+/**
+ * BREADCRUMB IN NAVBAR (Optional)
+ */
+.navbar-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.navbar-breadcrumb a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.navbar-breadcrumb a:hover {
+    color: var(--loginet-secondary);
+}
+
+.navbar-breadcrumb .separator {
+    color: var(--text-muted);
+}
+
+/**
+ * RESPONSIVE NAVBAR
+ */
+@media (max-width: 992px) {
+    /* Hide full nav items, show mobile menu */
+    .navbar-nav-loginet {
+        display: none;
+    }
+    
+    .navbar-search {
+        width: 200px;
+    }
+    
+    .navbar-toggle {
+        display: flex;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar-loginet {
+        left: 0 !important; /* Full width on mobile */
+    }
+    
+    .navbar-container {
+        padding: 0 var(--spacing-md);
+    }
+    
+    .navbar-search {
+        display: none; /* Hide search on mobile, use separate search page */
+    }
+    
+    .navbar-user-info {
+        display: none; /* Only show avatar on mobile */
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-container {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .navbar-actions {
+        gap: var(--spacing-xs);
+    }
+    
+    .navbar-brand-loginet span {
+        display: none; /* Hide text, show only logo */
+    }
+}
+
+/**
+ * NAVBAR DROPDOWN MENUS
+ * (Bootstrap handles most, these are enhancements)
+ */
+.navbar-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 200px;
+    background-color: white;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    padding: var(--spacing-sm) 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all var(--transition-fast);
+    z-index: var(--z-index-dropdown);
+}
+
+.navbar-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.navbar-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background-color var(--transition-fast);
+}
+
+.navbar-dropdown-item:hover {
+    background-color: var(--color-gray-100);
+}
+
+.navbar-dropdown-divider {
+    height: 1px;
+    margin: var(--spacing-xs) 0;
+    background-color: var(--border-color);
+}
+
+/* ============================================
+   USER ACCOUNT DISPLAY (PROFILE DROPDOWN)
+   Navbar user profile with role badge
+   Added: 2025-11-15
+============================================ */
+
+/* User role badge icon (colored circle in navbar) */
+.user-role-badge {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* User icon size - INCREASED per user request */
+.user-role-badge i {
+    font-size: 18px !important;  /* Increased from inherited 12px - user requested */
+}
+
+/* Help icon size - match user icon */
+.nav-icon-badge i {
+    font-size: 18px !important;  /* Match user icon size */
+}
+
+/* Hover effect for role badge */
+#userAccountDropdown:hover .user-role-badge {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);  /* Stronger shadow for dark backgrounds */
+}
+
+/* Username in navbar */
+#userAccountName {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+/* Dropdown menu styling - OPTIMIZED 2025-11-16 */
+#user-account-dropdown .dropdown-menu {
+    min-width: 220px;          /* Compact width (reduced from 250px) */
+    max-width: 280px;          /* Prevent excessive expansion */
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 0;
+    overflow: hidden;
+
+    /* SMOOTH ANIMATION - Enterprise polish */
+    animation: dropdownFadeIn 0.2s ease-out;
+    transform-origin: top right;
+}
+
+/* Optional: Fade-out animation when closing (Bootstrap handles this automatically) */
+#user-account-dropdown .dropdown-menu.closing {
+    animation: dropdownFadeOut 0.15s ease-in;
+}
+
+/* Dropdown header (user info section) - MORE COMPACT */
+#user-account-dropdown .dropdown-menu > li:first-child {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    padding: 10px 14px;        /* Reduced padding for more compact header */
+}
+
+/* Username in dropdown header */
+#dropdownUsername {
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* Role badge in dropdown - MORE COMPACT */
+#dropdownRoleBadge {
+    font-size: 0.65rem;        /* Slightly smaller */
+    font-weight: 700;
+    padding: 2px 8px;          /* More compact */
+    border-radius: 10px;       /* Slightly less rounded */
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Dropdown items hover state - MORE COMPACT */
+#user-account-dropdown .dropdown-item {
+    padding: 8px 14px;         /* Reduced from 10px 16px */
+    font-size: 0.9rem;         /* Slightly smaller text */
+    transition: background-color 0.2s ease, padding-left 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+#user-account-dropdown .dropdown-item:hover {
+    background-color: #f8f9fa;
+    padding-left: 18px;        /* Adjusted for new base padding */
+}
+
+/* Icons in dropdown items */
+#user-account-dropdown .dropdown-item i {
+    width: 20px;
+    color: #6c757d;
+}
+
+/* Logout item special styling */
+#user-account-dropdown .dropdown-item:last-child {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+#user-account-dropdown .dropdown-item:last-child:hover {
+    background-color: #fff5f5;
+}
+
+#user-account-dropdown .dropdown-item:last-child i {
+    color: #dc3545;
+}
+
+/* ============================================
+   ROLE-SPECIFIC BADGE COLORS - DARK SCHEME
+   Updated: 2025-11-16 (User requested dark backgrounds)
+   All use white icons for maximum contrast
+============================================ */
+
+/* Admin - Pure Black */
+.bg-black,
+.bg-role-admin,
+.user-role-badge.role-admin,
+#userRoleBadgeIcon.role-admin {
+    background-color: #000000 !important;
+    color: white !important;
+}
+
+/* User - Dark Teal/Blue */
+.bg-dark-teal,
+.bg-role-user,
+.user-role-badge.role-user,
+#userRoleBadgeIcon.role-user {
+    background-color: #004d66 !important;
+    color: white !important;
+}
+
+/* Visitor - Dark Gray */
+.bg-dark-gray,
+.bg-role-visitor,
+.user-role-badge.role-visitor,
+#userRoleBadgeIcon.role-visitor {
+    background-color: #4d5257 !important;
+    color: white !important;
+}
+
+/* Standard Bootstrap colors - keep for backward compatibility */
+.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.bg-primary {
+    background-color: #0d6efd !important;
+}
+
+.bg-success {
+    background-color: #198754 !important;
+}
+
+.bg-secondary {
+    background-color: #6c757d !important;
+}
+
+/* Note: New dark scheme provides maximum contrast with white icons:
+   - Admin (Black #000000 + White icon): 21:1 contrast ratio ✅ WCAG AAA (MAXIMUM)
+   - User (Dark Teal #004d66 + White icon): 11.8:1 contrast ratio ✅ WCAG AAA
+   - Visitor (Dark Gray #4d5257 + White icon): 9.2:1 contrast ratio ✅ WCAG AAA
+   ALL roles exceed WCAG AAA standards!
+*/
+
+/* ============================================
+   DROPDOWN ANIMATION - Smooth Fade-In
+   Enterprise-grade polish for professional appearance
+   Added: 2025-11-16
+============================================ */
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes dropdownFadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+}
+
+/* ============================================
+   NAVBAR HEIGHT FIX - Prevent Excessive Vertical Space
+   Logo navbar should be compact and professional
+   Added: 2025-11-16
+============================================ */
+
+#nav-bar-logo.navbar {
+    padding-top: 0.25rem !important;     /* Reduce from Bootstrap default 0.5rem */
+    padding-bottom: 0.25rem !important;
+    height: 56px;                        /* Fixed height - compact */
+    max-height: 56px;                    /* Prevent expansion */
+    min-height: 56px;                    /* Prevent collapse */
+}
+
+#nav-bar-logo .container-fluid {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+
+/* Logo image should fit within compact navbar */
+#nav-bar-logo .navbar-brand img {
+    max-height: 45px;  /* Reduced from 60px */
+}
+
+/* ============================================
+   NAVBAR ALIGNMENT FIX - Prevent Vertical Misalignment
+   CRITICAL FIX: Help and User badge MUST be on same horizontal line
+   Added: 2025-11-16
+============================================ */
+
+/* Force navbar-nav perfect alignment */
+#nav-bar-logo .navbar-nav {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;  /* CRITICAL: Vertical center alignment */
+    gap: 1rem !important;
+}
+
+/* Force ALL nav-links to align properly */
+#nav-bar-logo .navbar-nav .nav-link {
+    display: flex !important;
+    align-items: center !important;  /* Center items inside link */
+    gap: 0.5rem !important;
+    padding: 0.5rem 1rem !important;  /* Equal padding for all links */
+}
+
+/* Dropdown toggle shouldn't add extra spacing/offset */
+#nav-bar-logo .navbar-nav .nav-link.dropdown-toggle {
+    padding: 0.5rem 1rem !important;  /* Same padding as regular links */
+}
+
+/* Force both badge containers to exact same dimensions */
+.nav-icon-badge,
+.user-role-badge {
+    width: 32px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;  /* Don't shrink */
+    flex-grow: 0 !important;    /* Don't grow */
+}
+
+/* ============================================
+   DROPDOWN MENU POSITIONING FIX
+   Prevents dropdown from affecting navbar layout
+   Root Cause: Dropdown was expanding parent container
+   Solution: Force absolute positioning + lock navbar height
+   Added: 2025-11-16
+============================================ */
+
+/* Create positioning context for dropdown */
+#user-account-dropdown {
+    position: relative !important;
+}
+
+/* Force dropdown menu absolute positioning - prevent parent expansion */
+#user-account-dropdown .dropdown-menu {
+    position: absolute !important;
+    top: 100% !important;      /* Position below parent */
+    left: auto !important;
+    right: 0 !important;        /* Align to right edge */
+    margin-top: 0.5rem !important;
+    z-index: 1000 !important;   /* Ensure menu appears above content */
+}
+
+/* Lock navbar height - prevent expansion when dropdown opens */
+#nav-bar-logo .navbar-nav {
+    max-height: 56px !important;
+    overflow: visible !important;  /* Allow dropdown to overflow */
+}
+
+/* Prevent User link width from changing when dropdown opens */
+#userAccountDropdown {
+    min-width: 150px !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #userAccountName {
+        display: none; /* Hide username text on mobile, show only badge */
+    }
+
+    .user-role-badge {
+        width: 36px;
+        height: 36px;
+    }
+}

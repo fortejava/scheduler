@@ -2,32 +2,30 @@
 
 using System;
 using System.Web;
-using Newtonsoft.Json;
 using DBEngine;
-using System.Collections.Generic;
 
-public class StartWithCustomerName : IHttpHandler {
-    
-    public void ProcessRequest (HttpContext context) {
-        string customerName = context.Request.Form["customerName"];
-        customerName = "a";
-        Response r = new Response("Ko", null);
-        var customerFound = new List<Customer> ();
-        if(Helpers.IsNotEmpty(customerName))
+/// <summary>
+/// Get customers whose name starts with specified prefix.
+/// Authorization: ValidToken (all authenticated users can search customers)
+/// </summary>
+public class StartWithCustomerName : BaseHandler
+{
+    protected override AuthLevel AuthorizationRequired
+    {
+        get { return AuthLevel.ValidToken; }
+    }
+
+    protected override object ExecuteOperation(HttpContext context)
+    {
+        // Get search prefix parameter (PascalCase)
+        string customerName = context.Request.Form["CustomerName"];
+
+        if (!Helpers.IsNotEmpty(customerName))
         {
-            customerFound = CustomersService.StartWith(customerName, false);
-            r.Code = (customerFound.Count > 0) ? "Ok" : "Ko";
-            r.Message = customerFound;
+            throw new ServiceException("Il parametro CustomerName è obbligatorio");
         }
 
-        context.Response.ContentType = "application/json";
-        context.Response.Write(JsonConvert.SerializeObject(r));
+        // Get customers starting with prefix (LazyLoading = false for performance)
+        return CustomersService.StartWith(customerName, false);
     }
- 
-    public bool IsReusable {
-        get {
-            return false;
-        }
-    }
-
 }

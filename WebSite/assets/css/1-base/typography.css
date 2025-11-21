@@ -1,0 +1,306 @@
+/**
+ * TYPOGRAPHY.CSS - Text Styles
+ * Loginet Invoice Management System
+ * 
+ * Extends Bootstrap typography with Loginet-specific styles
+ */
+
+/**
+ * BASE TEXT STYLES
+ */
+body {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-normal);
+    color: var(--text-primary);
+}
+
+/**
+ * HEADINGS (Extend Bootstrap h1-h6)
+ */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: var(--font-family-heading);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+    color: var(--loginet-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+h1, .h1 { font-size: var(--font-size-4xl); }
+h2, .h2 { font-size: var(--font-size-3xl); }
+h3, .h3 { font-size: var(--font-size-2xl); }
+h4, .h4 { font-size: var(--font-size-xl); }
+h5, .h5 { font-size: var(--font-size-lg); }
+h6, .h6 { font-size: var(--font-size-base); }
+
+/**
+ * PAGE TITLE (Special heading for page headers)
+ */
+.page-title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--loginet-primary);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--loginet-secondary);
+}
+
+/**
+ * SECTION TITLE
+ */
+.section-title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--loginet-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+/**
+ * TEXT UTILITIES (Complement Bootstrap)
+ */
+
+/* Brand Colors */
+.text-brand-primary { color: var(--loginet-primary) !important; }
+.text-brand-secondary { color: var(--loginet-secondary) !important; }
+.text-brand-accent { color: var(--loginet-accent) !important; }
+
+/* Text Sizes (Extend Bootstrap) */
+.text-2xs { font-size: 0.625rem; } /* 10px */
+.text-xs { font-size: var(--font-size-xs); }
+.text-sm { font-size: var(--font-size-sm); }
+.text-base { font-size: var(--font-size-base); }
+.text-lg { font-size: var(--font-size-lg); }
+.text-xl { font-size: var(--font-size-xl); }
+.text-2xl { font-size: var(--font-size-2xl); }
+
+/* Font Weights */
+.text-light { font-weight: var(--font-weight-light); }
+.text-normal { font-weight: var(--font-weight-normal); }
+.text-medium { font-weight: var(--font-weight-medium); }
+.text-semibold { font-weight: var(--font-weight-semibold); }
+.text-bold { font-weight: var(--font-weight-bold); }
+
+/* Line Heights */
+.leading-tight { line-height: var(--line-height-tight); }
+.leading-normal { line-height: var(--line-height-normal); }
+.leading-relaxed { line-height: var(--line-height-relaxed); }
+
+/**
+ * PARAGRAPH STYLES
+ */
+p {
+    margin-bottom: var(--spacing-md);
+}
+
+.lead {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-light);
+    line-height: var(--line-height-relaxed);
+}
+
+.text-intro {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
+}
+
+/**
+ * LINK STYLES
+ */
+a {
+    color: var(--loginet-secondary);
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: var(--loginet-secondary-dark);
+    text-decoration: underline;
+}
+
+a:focus-visible {
+    outline: 2px solid var(--loginet-secondary);
+    outline-offset: 2px;
+}
+
+/* Link Variants */
+.link-primary {
+    color: var(--loginet-primary);
+}
+
+.link-primary:hover {
+    color: var(--loginet-primary-light);
+}
+
+.link-unstyled {
+    color: inherit;
+    text-decoration: none;
+}
+
+.link-unstyled:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
+/**
+ * LIST STYLES
+ */
+ul, ol {
+    margin-bottom: var(--spacing-md);
+}
+
+li {
+    margin-bottom: var(--spacing-xs);
+}
+
+/* Custom List Styling */
+.list-styled {
+    list-style: none;
+    padding-left: 0;
+}
+
+.list-styled li {
+    padding-left: var(--spacing-lg);
+    position: relative;
+}
+
+.list-styled li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--loginet-secondary);
+    font-weight: var(--font-weight-bold);
+}
+
+/**
+ * LABEL & BADGE TEXT
+ */
+.label {
+    display: inline-block;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-gray-200);
+    color: var(--text-primary);
+}
+
+/* Status Labels */
+.label-success {
+    background-color: var(--color-success-light);
+    color: var(--color-success-dark);
+}
+
+.label-warning {
+    background-color: var(--color-warning-light);
+    color: var(--color-warning-dark);
+}
+
+.label-danger {
+    background-color: var(--color-danger-light);
+    color: var(--color-danger-dark);
+}
+
+.label-info {
+    background-color: var(--color-info-light);
+    color: var(--color-info-dark);
+}
+
+/**
+ * CODE & PRE
+ */
+code {
+    font-family: var(--font-family-mono);
+    font-size: 0.9em;
+    background-color: var(--color-gray-100);
+    padding: 0.125rem 0.25rem;
+    border-radius: var(--radius-sm);
+    color: var(--loginet-primary);
+}
+
+pre {
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-sm);
+    background-color: var(--color-gray-900);
+    color: var(--color-gray-100);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+}
+
+pre code {
+    background: none;
+    padding: 0;
+    color: inherit;
+}
+
+/**
+ * BLOCKQUOTE
+ */
+blockquote {
+    margin: var(--spacing-lg) 0;
+    padding-left: var(--spacing-lg);
+    border-left: 4px solid var(--loginet-secondary);
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+/**
+ * TEXT TRUNCATION
+ */
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.text-truncate-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/**
+ * TEXT EMPHASIS
+ */
+.text-uppercase { text-transform: uppercase; }
+.text-lowercase { text-transform: lowercase; }
+.text-capitalize { text-transform: capitalize; }
+
+.text-italic { font-style: italic; }
+.text-underline { text-decoration: underline; }
+
+/**
+ * RESPONSIVE TYPOGRAPHY
+ */
+@media (max-width: 768px) {
+    h1, .h1 { font-size: var(--font-size-3xl); }
+    h2, .h2 { font-size: var(--font-size-2xl); }
+    h3, .h3 { font-size: var(--font-size-xl); }
+    
+    .page-title {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .section-title {
+        font-size: var(--font-size-xl);
+    }
+}
+
+@media (max-width: 480px) {
+    html {
+        font-size: 14px; /* Slightly smaller base on mobile */
+    }
+    
+    h1, .h1 { font-size: var(--font-size-2xl); }
+    h2, .h2 { font-size: var(--font-size-xl); }
+}

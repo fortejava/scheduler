@@ -3,33 +3,37 @@
 using System;
 using System.Web;
 using DBEngine;
-using System.Diagnostics;
 
-public class GetInvoiceByID_DTO : IHttpHandler {
-    
-    public void ProcessRequest (HttpContext context) 
+/// <summary>
+/// Get invoice by ID with DTO (includes status code).
+/// Authorization: ValidToken (all authenticated users can view invoices)
+/// </summary>
+public class GetInvoiceByID_DTO : BaseHandler
+{
+    protected override AuthLevel AuthorizationRequired
     {
-        Response r = new Response("Ko", null);
+        get { return AuthLevel.ValidToken; }
+    }
+
+    protected override object ExecuteOperation(HttpContext context)
+    {
+        // Parse invoice ID from request
         string invoiceIdString = context.Request.Form["InvoiceID"];
         int invoiceId;
-        //invoiceIdString = "1";
-        if(int.TryParse(invoiceIdString, out invoiceId))
-        {
-            InvoiceDTO invoicesFound = InvoicesService.GetByIdDTO(invoiceId);
-            if (invoicesFound!=null)
-            {
-                r.Code = "Ok";
-                r.Message = invoicesFound;
-            }
-        }
-        context.Response.ContentType = "application/json";
-        context.Response.Write(Helpers.JsonSerialize(r));
-    }
- 
-    public bool IsReusable {
-        get {
-            return false;
-        }
-    }
 
+        if (!int.TryParse(invoiceIdString, out invoiceId))
+        {
+            throw new ServiceException(string.Format("Formato InvoiceID non valido: '{0}'", invoiceIdString));
+        }
+
+        // Get invoice by ID with DTO
+        InvoiceDTO invoice = InvoicesService.GetByIdDTO(invoiceId);
+
+        if (invoice == null)
+        {
+            throw new ServiceException(string.Format("Fattura con ID {0} non trovata", invoiceId));
+        }
+
+        return invoice;
+    }
 }

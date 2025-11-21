@@ -1,0 +1,951 @@
+/**
+ * ANIMATIONS.CSS - Animation Utilities
+ * Loginet Invoice Management System
+ * 
+ * Purpose: Animation keyframes, utility classes, loading states,
+ *          and page transitions with performance optimization
+ * Dependencies: Bootstrap 5.3+, variables.css
+ * Author: Loginet Team
+ * Last Updated: November 2025
+ */
+
+/* ============================================
+   TABLE OF CONTENTS
+   1. Animation Keyframes
+   2. Fade Animations
+   3. Slide Animations
+   4. Special Effects
+   5. Loading Animations
+   6. Page Transitions
+   7. Animation Utilities
+   8. Reduced Motion Support
+============================================ */
+
+/* ============================================
+   1. ANIMATION KEYFRAMES
+============================================ */
+
+/* Fade Keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide Keyframes */
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutUp {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes slideOutDown {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+/* Scale Keyframes */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Bounce Keyframes */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Pulse Keyframes */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 168, 204, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 10px rgba(0, 168, 204, 0);
+  }
+}
+
+/* Shake Keyframes */
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes shakeY {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateY(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateY(5px);
+  }
+}
+
+/* Rotate Keyframes */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotateIn {
+  from {
+    opacity: 0;
+    transform: rotate(-180deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0);
+  }
+}
+
+/* Flip Keyframes */
+@keyframes flipInX {
+  from {
+    opacity: 0;
+    transform: perspective(400px) rotateX(-90deg);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(400px) rotateX(0);
+  }
+}
+
+@keyframes flipInY {
+  from {
+    opacity: 0;
+    transform: perspective(400px) rotateY(-90deg);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(400px) rotateY(0);
+  }
+}
+
+/* ============================================
+   2. FADE ANIMATIONS
+============================================ */
+
+/* Fade In */
+.animate-fade-in-loginet {
+  animation: fadeIn 0.5s ease-out;
+  will-change: opacity;
+}
+
+.animate-fade-out-loginet {
+  animation: fadeOut 0.5s ease-out;
+  will-change: opacity;
+}
+
+/* Fade In with Direction */
+.animate-fade-in-up-loginet {
+  animation: fadeInUp 0.6s ease-out;
+  will-change: transform, opacity;
+}
+
+.animate-fade-in-down-loginet {
+  animation: fadeInDown 0.6s ease-out;
+  will-change: transform, opacity;
+}
+
+.animate-fade-in-left-loginet {
+  animation: fadeInLeft 0.6s ease-out;
+  will-change: transform, opacity;
+}
+
+.animate-fade-in-right-loginet {
+  animation: fadeInRight 0.6s ease-out;
+  will-change: transform, opacity;
+}
+
+/* ============================================
+   3. SLIDE ANIMATIONS
+============================================ */
+
+/* Slide In */
+.animate-slide-in-up-loginet {
+  animation: slideInUp 0.5s ease-out;
+  will-change: transform;
+}
+
+.animate-slide-in-down-loginet {
+  animation: slideInDown 0.5s ease-out;
+  will-change: transform;
+}
+
+.animate-slide-in-left-loginet {
+  animation: slideInLeft 0.5s ease-out;
+  will-change: transform;
+}
+
+.animate-slide-in-right-loginet {
+  animation: slideInRight 0.5s ease-out;
+  will-change: transform;
+}
+
+/* Slide Out */
+.animate-slide-out-up-loginet {
+  animation: slideOutUp 0.5s ease-out;
+  will-change: transform;
+}
+
+.animate-slide-out-down-loginet {
+  animation: slideOutDown 0.5s ease-out;
+  will-change: transform;
+}
+
+/* ============================================
+   4. SPECIAL EFFECTS
+============================================ */
+
+/* Scale and Zoom */
+.animate-scale-in-loginet {
+  animation: scaleIn 0.4s ease-out;
+  will-change: transform, opacity;
+}
+
+.animate-scale-out-loginet {
+  animation: scaleOut 0.4s ease-out;
+  will-change: transform, opacity;
+}
+
+.animate-zoom-in-loginet {
+  animation: zoomIn 0.5s ease-out;
+  will-change: transform, opacity;
+}
+
+/* Bounce Effects */
+.animate-bounce-loginet {
+  animation: bounce 1s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-bounce-in-loginet {
+  animation: bounceIn 0.8s ease-out;
+  will-change: transform, opacity;
+}
+
+.animate-bounce-once-loginet {
+  animation: bounce 0.5s ease-in-out;
+  will-change: transform;
+}
+
+/* Pulse Effects */
+.animate-pulse-loginet {
+  animation: pulse 2s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-pulse-glow-loginet {
+  animation: pulseGlow 2s ease-in-out infinite;
+  will-change: box-shadow;
+}
+
+.animate-pulse-once-loginet {
+  animation: pulse 0.5s ease-in-out;
+  will-change: transform;
+}
+
+/* Shake Effects */
+.animate-shake-loginet {
+  animation: shake 0.5s ease-in-out;
+  will-change: transform;
+}
+
+.animate-shake-y-loginet {
+  animation: shakeY 0.5s ease-in-out;
+  will-change: transform;
+}
+
+/* Rotate Effects */
+.animate-rotate-loginet {
+  animation: rotate 2s linear infinite;
+  will-change: transform;
+}
+
+.animate-rotate-in-loginet {
+  animation: rotateIn 0.6s ease-out;
+  will-change: transform, opacity;
+}
+
+/* Flip Effects */
+.animate-flip-x-loginet {
+  animation: flipInX 0.6s ease-out;
+  will-change: transform, opacity;
+}
+
+.animate-flip-y-loginet {
+  animation: flipInY 0.6s ease-out;
+  will-change: transform, opacity;
+}
+
+/* ============================================
+   5. LOADING ANIMATIONS
+============================================ */
+
+/* Spinner */
+.spinner-loginet {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border-color, #e5e7eb);
+  border-top-color: var(--loginet-primary, #002C3D);
+  border-radius: 50%;
+  animation: rotate 0.8s linear infinite;
+  will-change: transform;
+}
+
+.spinner-sm-loginet {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+}
+
+.spinner-lg-loginet {
+  width: 60px;
+  height: 60px;
+  border-width: 5px;
+}
+
+.spinner-secondary-loginet {
+  border-top-color: var(--loginet-secondary, #FF5912);
+}
+
+.spinner-accent-loginet {
+  border-top-color: var(--loginet-accent, #00A8CC);
+}
+
+/* Loading Dots */
+@keyframes loadingDots {
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.loading-dots-loginet {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.loading-dots-loginet span {
+  width: 8px;
+  height: 8px;
+  background: var(--loginet-primary, #002C3D);
+  border-radius: 50%;
+  animation: loadingDots 1.4s infinite ease-in-out;
+  will-change: transform, opacity;
+}
+
+.loading-dots-loginet span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dots-loginet span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+/* Loading Bar */
+@keyframes loadingBar {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.loading-bar-loginet {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  background: var(--border-color, #e5e7eb);
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.loading-bar-loginet::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: var(--loginet-primary, #002C3D);
+  animation: loadingBar 1.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Skeleton Loaders */
+@keyframes skeleton {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.skeleton-loginet {
+  background: linear-gradient(90deg, 
+    var(--border-color, #e5e7eb) 0%, 
+    var(--bg-secondary, #f8f9fa) 20%, 
+    var(--border-color, #e5e7eb) 40%, 
+    var(--border-color, #e5e7eb) 100%
+  );
+  background-size: 200px 100%;
+  animation: skeleton 1.2s ease-in-out infinite;
+  will-change: background-position;
+  border-radius: var(--border-radius-base, 8px);
+}
+
+.skeleton-text-loginet {
+  height: 16px;
+  margin-bottom: 8px;
+}
+
+.skeleton-title-loginet {
+  height: 24px;
+  width: 60%;
+  margin-bottom: 12px;
+}
+
+.skeleton-avatar-loginet {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.skeleton-button-loginet {
+  height: 40px;
+  width: 120px;
+}
+
+/* Pulse Loading */
+@keyframes pulseLoading {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.loading-pulse-loginet {
+  animation: pulseLoading 1.5s ease-in-out infinite;
+  will-change: opacity;
+}
+
+/* ============================================
+   6. PAGE TRANSITIONS
+============================================ */
+
+/* Page Enter */
+.page-enter-loginet {
+  animation: fadeInUp 0.6s ease-out;
+  will-change: transform, opacity;
+}
+
+.page-enter-fast-loginet {
+  animation: fadeInUp 0.3s ease-out;
+  will-change: transform, opacity;
+}
+
+.page-enter-slow-loginet {
+  animation: fadeInUp 1s ease-out;
+  will-change: transform, opacity;
+}
+
+/* Page Exit */
+.page-exit-loginet {
+  animation: fadeOut 0.3s ease-out;
+  will-change: opacity;
+}
+
+/* Modal Transitions */
+.modal-enter-loginet {
+  animation: scaleIn 0.3s ease-out;
+  will-change: transform, opacity;
+}
+
+.modal-exit-loginet {
+  animation: scaleOut 0.3s ease-out;
+  will-change: transform, opacity;
+}
+
+/* Drawer Transitions */
+.drawer-enter-left-loginet {
+  animation: slideInLeft 0.3s ease-out;
+  will-change: transform;
+}
+
+.drawer-enter-right-loginet {
+  animation: slideInRight 0.3s ease-out;
+  will-change: transform;
+}
+
+/* Smooth Scroll */
+.smooth-scroll-loginet {
+  scroll-behavior: smooth;
+}
+
+/* Scroll Reveal */
+.scroll-reveal-loginet {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.scroll-reveal-loginet.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================
+   7. ANIMATION UTILITIES
+============================================ */
+
+/* Duration Classes */
+.duration-fast-loginet {
+  animation-duration: 0.3s !important;
+}
+
+.duration-normal-loginet {
+  animation-duration: 0.5s !important;
+}
+
+.duration-slow-loginet {
+  animation-duration: 0.8s !important;
+}
+
+.duration-slower-loginet {
+  animation-duration: 1.2s !important;
+}
+
+/* Delay Classes */
+.delay-100-loginet {
+  animation-delay: 0.1s !important;
+}
+
+.delay-200-loginet {
+  animation-delay: 0.2s !important;
+}
+
+.delay-300-loginet {
+  animation-delay: 0.3s !important;
+}
+
+.delay-500-loginet {
+  animation-delay: 0.5s !important;
+}
+
+.delay-1000-loginet {
+  animation-delay: 1s !important;
+}
+
+/* Timing Functions */
+.ease-in-loginet {
+  animation-timing-function: ease-in !important;
+}
+
+.ease-out-loginet {
+  animation-timing-function: ease-out !important;
+}
+
+.ease-in-out-loginet {
+  animation-timing-function: ease-in-out !important;
+}
+
+.linear-loginet {
+  animation-timing-function: linear !important;
+}
+
+/* Iteration Count */
+.animate-once-loginet {
+  animation-iteration-count: 1 !important;
+}
+
+.animate-infinite-loginet {
+  animation-iteration-count: infinite !important;
+}
+
+/* Animation State */
+.animation-paused-loginet {
+  animation-play-state: paused !important;
+}
+
+.animation-running-loginet {
+  animation-play-state: running !important;
+}
+
+/* Fill Mode */
+.animate-fill-both-loginet {
+  animation-fill-mode: both !important;
+}
+
+.animate-fill-forwards-loginet {
+  animation-fill-mode: forwards !important;
+}
+
+.animate-fill-backwards-loginet {
+  animation-fill-mode: backwards !important;
+}
+
+/* Hover Animations */
+.hover-grow-loginet {
+  transition: transform 0.3s ease;
+}
+
+.hover-grow-loginet:hover {
+  transform: scale(1.05);
+}
+
+.hover-lift-loginet {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift-loginet:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.hover-glow-loginet {
+  transition: box-shadow 0.3s ease;
+}
+
+.hover-glow-loginet:hover {
+  box-shadow: 0 0 20px rgba(0, 168, 204, 0.4);
+}
+
+/* Focus Animations */
+.focus-ring-loginet:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 44, 61, 0.2);
+  transition: box-shadow 0.2s ease;
+}
+
+/* ============================================
+   8. REDUCED MOTION SUPPORT
+============================================ */
+
+/* Respect User Preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .smooth-scroll-loginet {
+    scroll-behavior: auto;
+  }
+  
+  .scroll-reveal-loginet {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Accessibility - Disable Animations */
+.no-animations-loginet * {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Performance Optimization */
+.gpu-accelerate-loginet {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* ============================================
+   STAGGERED ANIMATIONS
+============================================ */
+
+/* For lists or grids that animate in sequence */
+.stagger-loginet > *:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.stagger-loginet > *:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.stagger-loginet > *:nth-child(3) {
+  animation-delay: 0.15s;
+}
+
+.stagger-loginet > *:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+.stagger-loginet > *:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+.stagger-loginet > *:nth-child(6) {
+  animation-delay: 0.3s;
+}
+
+.stagger-loginet > *:nth-child(7) {
+  animation-delay: 0.35s;
+}
+
+.stagger-loginet > *:nth-child(8) {
+  animation-delay: 0.4s;
+}
+
+.stagger-loginet > *:nth-child(9) {
+  animation-delay: 0.45s;
+}
+
+.stagger-loginet > *:nth-child(10) {
+  animation-delay: 0.5s;
+}
+
+/* ============================================
+   NOTIFICATION ANIMATIONS
+============================================ */
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOutToTop {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+
+.notification-enter-loginet {
+  animation: slideInFromTop 0.3s ease-out;
+}
+
+.notification-exit-loginet {
+  animation: slideOutToTop 0.3s ease-out;
+}
+
+/* ============================================
+   VIEW TRANSITION ANIMATIONS
+   Smooth transitions when switching between views
+============================================ */
+
+/**
+ * View Fade-In Animation
+ * Applied when view becomes visible
+ */
+@keyframes viewFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/**
+ * Apply animation to visible views
+ */
+.view.view-visible {
+  animation: viewFadeIn 0.3s ease-in-out forwards;
+}
+
+/**
+ * Instant hide for better UX
+ * No animation when hiding views
+ */
+.view.view-hidden {
+  animation: none;
+}

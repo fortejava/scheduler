@@ -1,0 +1,99 @@
+/**
+ * ================================================
+ * APPLICATION FOOTER
+ * ================================================
+ * Professional footer for Loginet Invoice Management System
+ * Single-line, centered design with branding and support link
+ */
+
+.app-footer {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-top: 2px solid #E5692C; /* Loginet brand color */
+    padding: 20px 0;
+    margin-top: 40px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #6c757d;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    padding: 0 20px;
+}
+
+.footer-copyright {
+    color: #495057;
+}
+
+.footer-copyright strong {
+    color: #E5692C; /* Loginet brand color */
+    font-weight: 600;
+}
+
+.footer-separator {
+    color: #dee2e6;
+    font-weight: 300;
+}
+
+.footer-version {
+    color: #6c757d;
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+.footer-link {
+    color: #E5692C;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.footer-link:hover {
+    color: #ff8547;
+    text-decoration: underline;
+}
+
+.footer-link i {
+    margin-right: 5px;
+}
+
+/**
+ * MOBILE RESPONSIVE
+ */
+@media (max-width: 768px) {
+    .app-footer {
+        font-size: 0.85rem;
+        padding: 15px 10px;
+        margin-top: 30px;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .footer-separator {
+        display: none; /* Hide separators on mobile for cleaner stack */
+    }
+}
+
+@media (max-width: 480px) {
+    .app-footer {
+        font-size: 0.8rem;
+        padding: 12px 10px;
+    }
+}
+
+/**
+ * PRINT STYLES
+ */
+@media print {
+    .app-footer {
+        display: none; /* Hide footer when printing invoices */
+    }
+}

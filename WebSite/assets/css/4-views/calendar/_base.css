@@ -1,0 +1,147 @@
+/* ============================================================================
+   FULLCALENDAR BASE CUSTOMIZATION
+   ============================================================================
+   Purpose: Foundational FullCalendar styling (toolbar, buttons, headers, days)
+   Last Updated: 2025-11-21 (Modular Restructure)
+   ============================================================================ */
+
+/* ============================================================================
+   CALENDAR CONTAINER
+   ============================================================================ */
+
+#calendar {
+    min-height: 600px;
+}
+
+/* ============================================================================
+   TOOLBAR CUSTOMIZATION
+   ============================================================================ */
+
+/**
+ * FullCalendar Toolbar
+ */
+.fc .fc-toolbar {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.fc .fc-toolbar-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #212529;
+}
+
+/* ============================================================================
+   BUTTONS - ORANGE THEME
+   ============================================================================ */
+
+/**
+ * Calendar Buttons - Orange theme
+ */
+.fc .fc-button-primary,
+.fc .fc-prevYear-button,
+.fc .fc-nextYear-button {
+    background-color: #E5692C !important;
+    border-color: #E5692C !important;
+    color: white !important;
+    border-radius: 6px !important;
+    padding: 8px 16px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    margin: 0 2px !important;
+}
+
+.fc .fc-button-primary:hover,
+.fc .fc-prevYear-button:hover,
+.fc .fc-nextYear-button:hover {
+    background-color: #d45a1f !important;
+    border-color: #d45a1f !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(229, 105, 44, 0.3) !important;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active,
+.fc .fc-prevYear-button:not(:disabled):active,
+.fc .fc-nextYear-button:not(:disabled):active {
+    background-color: #d45a1f !important;
+    border-color: #d45a1f !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2) !important;
+}
+
+.fc .fc-button-primary:focus,
+.fc .fc-prevYear-button:focus,
+.fc .fc-nextYear-button:focus {
+    box-shadow: 0 0 0 3px rgba(229, 105, 44, 0.3) !important;
+}
+
+/* Year navigation buttons - slightly smaller for << >> */
+.fc .fc-prevYear-button,
+.fc .fc-nextYear-button {
+    font-size: 14px !important;
+    padding: 8px 12px !important;
+    font-weight: 700 !important;
+}
+
+/* ============================================================================
+   DAY HEADERS
+   ============================================================================ */
+
+/**
+ * Day Headers
+ */
+.fc-col-header-cell {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #212529;
+    padding: 12px 0;
+    border: 1px solid #dee2e6;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+/* ============================================================================
+   CALENDAR DAYS
+   ============================================================================ */
+
+/**
+ * Calendar Days
+ */
+.fc .fc-daygrid-day {
+    transition: background-color 0.2s ease;
+}
+
+.fc .fc-daygrid-day:hover {
+    background-color: rgba(229, 105, 44, 0.05);
+}
+
+/**
+ * Today Highlight - Orange theme
+ */
+.fc .fc-day-today {
+    background-color: rgba(229, 105, 44, 0.1) !important;
+}
+
+.fc .fc-day-today .fc-daygrid-day-number {
+    background-color: #E5692C;
+    color: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+/* Day numbers in month view - better visibility */
+.fc-daygrid-day-number {
+    font-weight: 500;
+}
+
+/* ============================================================================
+   END OF BASE STYLES
+   ============================================================================ */

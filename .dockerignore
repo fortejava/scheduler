@@ -1,0 +1,127 @@
+# ==============================================================================
+# .dockerignore - Exclude files from Docker build context
+# ==============================================================================
+#
+# Purpose: Reduce Docker build context size and build time
+# Impact: Faster builds, smaller images, better security
+#
+# Documentation: See docs/07-deployment/DOCKER_DEPLOYMENT_GUIDE.md
+# ==============================================================================
+
+# ============================================
+# Version Control
+# ============================================
+.git/
+.gitignore
+.gitattributes
+.github/
+
+# ============================================
+# Build Artifacts (Not Needed in Container)
+# ============================================
+**/obj/
+**/bin/Debug/
+**/bin/Release/
+**/.vs/
+**/.vscode/
+*.user
+*.suo
+*.cache
+
+# ============================================
+# Precompiled Web (Generated, Not Source)
+# ============================================
+PrecompiledWeb/
+
+# ============================================
+# Database Files (Will Use External DB)
+# ============================================
+Database/Archive/
+Database/Test/
+Database/Utilities/
+*.bak
+*.mdf
+*.ldf
+
+# ============================================
+# Documentation (Not Needed in Runtime)
+# ============================================
+docs/
+*.md
+README*
+LICENSE*
+CHANGELOG*
+
+# ============================================
+# Node.js / Frontend Build Tools
+# ============================================
+node_modules/
+npm-debug.log
+package-lock.json
+*.log
+
+# ============================================
+# Temporary Files
+# ============================================
+*.tmp
+*.temp
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# ============================================
+# Test Data & Backups
+# ============================================
+**/*_BACKUP*
+**/*_OLD*
+**/*.backup
+nul
+
+# ============================================
+# Scripts (Deployment, Not Runtime)
+# ============================================
+scripts/
+
+# ============================================
+# CI/CD Configuration (Not Needed in Image)
+# ============================================
+.github/workflows/
+azure-pipelines.yml
+.gitlab-ci.yml
+
+# ============================================
+# Docker Files (Avoid Recursion)
+# ============================================
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# ============================================
+# Environment Files (Security)
+# ============================================
+.env
+.env.*
+*.config.local
+
+# ============================================
+# IDE Specific
+# ============================================
+.idea/
+*.iml
+.vs/
+.vscode/
+
+# ==============================================================================
+# WHAT WILL BE INCLUDED (Not Ignored):
+# ==============================================================================
+# ✅ WebSite/ folder (application files)
+# ✅ WebSite/Bin/ (compiled DLLs including DBEngine.dll)
+# ✅ WebSite/App_Code/ (service classes)
+# ✅ WebSite/Services/ (HTTP handlers)
+# ✅ WebSite/assets/ (CSS, JS, images)
+# ✅ WebSite/Web.config
+# ✅ DB.sql (master database schema)
+# ✅ Database/Seeds/ (seed data scripts)
+# ✅ Database/docker-init/ (Docker initialization scripts)
+# ==============================================================================

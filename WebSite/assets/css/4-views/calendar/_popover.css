@@ -1,0 +1,189 @@
+/* ============================================================================
+   FULLCALENDAR POPOVER FIXES
+   ============================================================================
+   Purpose: Popover positioning, styling, and behavior fixes
+   Date: 2025-11-19
+   Last Updated: 2025-11-21 (Modular Restructure)
+
+   History:
+   - 2025-11-19: Initial popover scrolling fix
+   - 2025-11-20: JavaScript positioning implementation
+   - 2025-11-21: Moved from ROOT calendar.css to modular structure
+   ============================================================================ */
+
+/* ============================================================================
+   POPOVER POSITIONING - JAVASCRIPT-ENHANCED SOLUTION
+   ============================================================================
+   CSS provides base styling, JavaScript handles intelligent positioning
+   - Popover positioned by JavaScript based on available space
+   - Automatically opens above/below based on viewport space
+   - Handles edge cases (corners, scrolled page)
+
+   CSS Anchor Positioning was tested but incompatible with FullCalendar
+   See: ANCHOR_POSITIONING_BACKUP_BEFORE.md for details
+   ============================================================================ */
+
+/* Base popover styling - JavaScript will handle positioning */
+.fc .fc-more-popover {
+    /* Position - FIXED for viewport-relative positioning (JavaScript calculates viewport coords) */
+    position: fixed !important;
+
+    /* Dimensions - Use SAFE viewport units */
+    max-height: 80svh !important;      /* Small Viewport Height = safest */
+    min-height: 200px !important;
+    max-width: min(400px, 90vw) !important;  /* Responsive max width */
+
+    /* Styling */
+    background-color: #ffffff !important;  /* Fix transparent background on "today" */
+    border-radius: 8px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid #ddd !important;
+
+    /* Z-index */
+    z-index: 9999 !important;
+
+    /* Hide initially - JavaScript will show after repositioning (prevents flash) */
+    opacity: 0 !important;
+    transition: opacity 0.15s ease !important;
+
+    /* Margin for spacing */
+    margin: 0 !important;  /* No margin needed with fixed positioning */
+
+    /* Prevent FullCalendar from repositioning */
+    inset: unset !important;  /* Reset any inset positioning */
+}
+
+/* Popover header - Fixed at top while scrolling */
+.fc .fc-more-popover .fc-popover-header {
+    position: sticky !important;
+    top: 0 !important;
+    background-color: #fff !important;
+    border-bottom: 2px solid #002c3d !important;
+    z-index: 10 !important;
+    padding: 10px 12px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    color: #002c3d !important;
+}
+
+/* Popover body - Scrollable with dynamic max-height */
+.fc .fc-more-popover .fc-popover-body {
+    max-height: calc(80svh - 60px) !important; /* Viewport height - header (using svh) */
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 8px !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+/* Custom scrollbar styling (Webkit browsers: Chrome, Edge, Safari) */
+.fc .fc-more-popover .fc-popover-body::-webkit-scrollbar {
+    width: 10px !important;
+}
+
+.fc .fc-more-popover .fc-popover-body::-webkit-scrollbar-track {
+    background: #f1f1f1 !important;
+    border-radius: 5px !important;
+    margin: 4px 0 !important;
+}
+
+.fc .fc-more-popover .fc-popover-body::-webkit-scrollbar-thumb {
+    background: #002c3d !important;
+    border-radius: 5px !important;
+    border: 2px solid #f1f1f1 !important;
+}
+
+.fc .fc-more-popover .fc-popover-body::-webkit-scrollbar-thumb:hover {
+    background: #001a24 !important;
+}
+
+/* Events inside popover - Better spacing and readability */
+.fc .fc-more-popover .fc-daygrid-event {
+    min-height: 28px !important;
+    line-height: 28px !important;
+    padding: 4px 8px !important;
+    margin-bottom: 3px !important;
+    font-size: 13px !important;
+    border-radius: 4px !important;
+}
+
+/* Popover event titles */
+.fc .fc-more-popover .fc-event-title {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    display: block !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* Popover event main content wrapper */
+.fc .fc-more-popover .fc-event-main {
+    padding: 2px 0 !important;
+}
+
+/* Close button styling */
+.fc .fc-more-popover .fc-popover-close {
+    cursor: pointer !important;
+    font-size: 18px !important;
+    opacity: 0.6 !important;
+    transition: opacity 0.2s ease !important;
+}
+
+.fc .fc-more-popover .fc-popover-close:hover {
+    opacity: 1 !important;
+}
+
+/* ============================================================================
+   POPOVER RESPONSIVE ADJUSTMENTS
+   ============================================================================
+   Use viewport-relative heights that adapt to screen size (svh units)
+   ============================================================================ */
+
+/* Tablet: 70% small viewport height */
+@media (max-width: 768px) {
+    .fc .fc-more-popover {
+        max-height: 70svh !important;
+    }
+
+    .fc .fc-more-popover .fc-popover-body {
+        max-height: calc(70svh - 60px) !important;
+    }
+}
+
+/* Mobile: 60% small viewport height */
+@media (max-width: 480px) {
+    .fc .fc-more-popover {
+        max-height: 60svh !important;
+    }
+
+    .fc .fc-more-popover .fc-popover-body {
+        max-height: calc(60svh - 60px) !important;
+    }
+
+    /* Day view: Allow text wrapping on very small screens */
+    .fc-dayGridDay-view .fc-event-title {
+        white-space: normal !important;
+    }
+}
+
+/* ============================================================================
+   MORE LINK STYLING
+   ============================================================================ */
+
+/* More link styling */
+.fc-more-link {
+    font-weight: 600;
+    color: #002c3d;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.fc-more-link:hover {
+    color: #e67e22;  /* Loginet secondary color */
+    text-decoration: underline;
+}
+
+/* ============================================================================
+   END OF POPOVER STYLES
+   ============================================================================ */

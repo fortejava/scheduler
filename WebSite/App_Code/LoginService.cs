@@ -13,26 +13,27 @@ public class LoginService
 {
     public static bool PasswordVerify (string username, string password, out string newToken)
     {
-        bool result = false;
         User user = null;
         newToken = null;
 
-        if (Helpers.AreNotEmpty(username,password))
+        if (Helpers.AreNotEmpty(username, password))
         {
-            using(var db = new schedulerEntities())
+            using (var db = new schedulerEntities())
             {
-                // TODO: replace with hashed password verification
+                // Query by username only (cannot query hashed passwords)
                 user = db.Users
-                        .Where(p => p.Username == username && p.Password == password)
+                        .Where(p => p.Username == username)
                         .FirstOrDefault();
-                if (user != null)
+
+                // Verify password with BCrypt
+                if (user != null && PasswordHasher.VerifyPassword(password, user.Password))
                 {
                     DateTime expiredAt = DateTime.UtcNow.AddHours(24);
                     newToken = SimpleTokenManager.CreateToken(user.UserID, user.Username, expiredAt);
                 }
             }
         }
-        return newToken !=null;
+        return newToken != null;
     }
 
 

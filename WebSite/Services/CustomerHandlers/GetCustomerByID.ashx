@@ -2,31 +2,38 @@
 
 using System;
 using System.Web;
-using Newtonsoft.Json;
 using DBEngine;
 
-public class GetCustomerByID : IHttpHandler {
+/// <summary>
+/// Get customer by ID.
+/// Authorization: ValidToken (all authenticated users can view customers)
+/// </summary>
+public class GetCustomerByID : BaseHandler
+{
+    protected override AuthLevel AuthorizationRequired
+    {
+        get { return AuthLevel.ValidToken; }
+    }
 
-    public void ProcessRequest (HttpContext context) {
-        string customerIdString = context.Request.Form["customerID"];
+    protected override object ExecuteOperation(HttpContext context)
+    {
+        // Parse customer ID from request (PascalCase with uppercase "ID")
+        string customerIdString = context.Request.Form["CustomerID"];
         int customerId;
-        customerIdString = "1";
-        Response r = new Response("Ko", null);
-        Customer customerFound = null;
-        if(int.TryParse(customerIdString, out customerId))
+
+        if (!int.TryParse(customerIdString, out customerId))
         {
-            customerFound = CustomersService.GetById(customerId, false);
-            r.Code = (customerFound != null) ? "Ok" : "Ko";
-            r.Message = customerFound;
+            throw new ServiceException(string.Format("Formato CustomerID non valido: '{0}'", customerIdString));
         }
-        context.Response.ContentType = "application/json";
-        context.Response.Write(JsonConvert.SerializeObject(r));
-    }
 
-    public bool IsReusable {
-        get {
-            return false;
+        // Get customer by ID (LazyLoading = false for performance)
+        Customer customer = CustomersService.GetById(customerId, false);
+
+        if (customer == null)
+        {
+            throw new ServiceException(string.Format("Cliente con ID {0} non trovato", customerId));
         }
-    }
 
+        return customer;
+    }
 }

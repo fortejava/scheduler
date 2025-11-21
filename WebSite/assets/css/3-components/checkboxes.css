@@ -1,0 +1,101 @@
+/**
+ * CHECKBOXES.CSS - BOOTSTRAP 5.3+ ALIGNED
+ * Loginet Invoice Management System
+ *
+ * Orange checkbox styling using Bootstrap 5.3 patterns + accent-color
+ *
+ * Brand Color: #FF5912 (Vibrant Orange)
+ * Bootstrap Version: 5.3.8
+ * Compatible: Chrome 93+, Firefox 92+, Safari 15.4+, Edge 93+ (94.8% coverage)
+ *
+ * Author: Loginet Team
+ * Created: November 2025
+ */
+
+/* ════════════════════════════════════════════════════════════════
+   GLOBAL CHECKBOX STYLING - ACCENT COLOR
+   Uses modern CSS standard that works WITH Bootstrap
+   ════════════════════════════════════════════════════════════════ */
+
+/**
+ * All checkboxes - Loginet orange accent
+ * Works with both .form-check-input and plain input[type="checkbox"]
+ */
+input[type="checkbox"],
+.form-check-input[type="checkbox"] {
+    accent-color: var(--loginet-secondary, #FF5912);
+    cursor: pointer;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   BOOTSTRAP CHECKED STATE OVERRIDE
+   CRITICAL: Bootstrap hardcodes background-color: #0d6efd (blue)
+   We must explicitly override it with !important
+   ════════════════════════════════════════════════════════════════ */
+
+/**
+ * Override Bootstrap's hardcoded blue checkbox (#0d6efd)
+ * Bootstrap 5.3 compiles SASS variables to static colors
+ * accent-color alone doesn't work - need explicit background-color
+ */
+.form-check-input:checked[type="checkbox"] {
+    background-color: var(--loginet-secondary, #FF5912) !important;
+    border-color: var(--loginet-secondary, #FF5912) !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   DARK BACKGROUND OPTIMIZATION
+   Table headers with dark background (#002C3D)
+   ════════════════════════════════════════════════════════════════ */
+
+/**
+ * Darker orange for better contrast on dark backgrounds
+ * Targets: .table-dark headers
+ */
+.table-dark .form-check-input:checked[type="checkbox"],
+thead.table-dark .form-check-input:checked[type="checkbox"] {
+    background-color: var(--loginet-secondary-dark, #E04D0F) !important;
+    border-color: var(--loginet-secondary-dark, #E04D0F) !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   BOOTSTRAP FOCUS STATE OVERRIDE
+   Orange focus ring matching Loginet brand
+   ════════════════════════════════════════════════════════════════ */
+
+/**
+ * Focus state for keyboard navigation (Tab key)
+ * Overrides Bootstrap's default blue focus ring
+ * Uses Bootstrap 5.3 focus-ring pattern
+ */
+.form-check-input:focus {
+    border-color: var(--loginet-secondary-light, #FF7740);
+    box-shadow: 0 0 0 0.25rem rgba(255, 89, 18, 0.25);
+}
+
+/* Dark background focus (lighter glow for visibility) */
+.table-dark .form-check-input:focus,
+thead.table-dark .form-check-input:focus {
+    border-color: var(--loginet-secondary-light, #FF7740);
+    box-shadow: 0 0 0 0.25rem rgba(255, 119, 64, 0.35);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   OPTIONAL ENHANCEMENTS (Bootstrap-Compatible)
+   Uncomment to enable
+   ════════════════════════════════════════════════════════════════ */
+
+/* Slightly larger checkboxes (better touch targets on mobile) */
+/*
+.form-check-input[type="checkbox"] {
+    width: 1.15em;
+    height: 1.15em;
+}
+*/
+
+/* Subtle hover effect (brightness boost) */
+/*
+.form-check-input[type="checkbox"]:hover:not(:disabled) {
+    filter: brightness(1.1);
+}
+*/

@@ -2,45 +2,64 @@
 
 using System;
 using System.Web;
-using Newtonsoft.Json;
-using System.Collections.Generic;
+using DBEngine;
 
-public class CreateOrUpdateCustomer : IHttpHandler {
+/// <summary>
+/// Create or update customer handler using BaseHandler pattern.
+/// Replaces CreateOrUpdateCustomer.ashx with cleaner, more maintainable code.
+/// Authorization: AdminOrUser (Admin and User can create/update customers, Visitor cannot)
+/// </summary>
+public class CreateOrUpdateCustomer: BaseHandler
+{
+    // AdminOrUser: Only Admin and User can create/update customers (Visitor forbidden)
+    protected override AuthLevel AuthorizationRequired
+    {
+        get { return AuthLevel.AdminOrUser; }
+    }
 
-    public void ProcessRequest (HttpContext context) {
+    protected override object ExecuteOperation(HttpContext context)
+    {
+        // Get parameters from request
         string customerIdString = context.Request.Form["CustomerID"];
-        string newCustomerName = context.Request.Form["CustomerName"];
-        int customerId;
-        //customerIdString = "2";
-        //newCustomerName = "Cesare2";
-        Response r = new Response("Ko", null);
-        List<string> ErrorMessages;
+        string customerName = null;
 
-        if(int.TryParse(customerIdString, out customerId))
+        // Try to get CustomerName from request
+        // ASP.NET ValidateRequest (first guardrail) will throw HttpRequestValidationException if HTML detected
+        try
         {
-            r.Code = CustomersService.CreateOrUpdate(newCustomerName, out ErrorMessages, customerId) ? "Ok" : "Ko";
+            customerName = context.Request.Form["CustomerName"];
         }
-        else
+        catch (System.Web.HttpRequestValidationException)
         {
-            r.Code = CustomersService.CreateOrUpdate(newCustomerName, out ErrorMessages) ? "Ok" : "Ko";
-        }
-
-        if(ErrorMessages.Count > 0)
-        {
-            r.Message = new
-            {
-                ErrorMessages = ErrorMessages
-            };
+            // ASP.NET caught dangerous input (first guardrail worked)
+            // Provide user-friendly Italian error message (second guardrail - better UX)
+            throw new ValidationException("Nome cliente non può contenere caratteri HTML speciali: < > \" '");
         }
 
-        context.Response.ContentType = "application/json";
-        context.Response.Write(JsonConvert.SerializeObject(r));
+        // Parse CustomerID (0 or -1 = CREATE, >0 = UPDATE)
+        int customerId = 0;
+        if (!string.IsNullOrEmpty(customerIdString))
+        {
+            int.TryParse(customerIdString, out customerId);
+        }
+
+        // Build Customer entity
+        var customer = new Customer
+        {
+            CustomerID = customerId,
+            CustomerName = customerName
+        };
+
+        // Call service (throws ValidationException if validation fails)
+        // Service validation (third guardrail) checks for HTML tags that might have bypassed ASP.NET
+        Customer savedCustomer = CustomersService.CreateOrUpdate(customer);
+
+        // Return success data (matches old handler response structure)
+        return new
+        {
+            CustomerID = savedCustomer.CustomerID,
+            CustomerName = savedCustomer.CustomerName,
+            IsNew = (customerId == 0 || customerId == -1)
+        };
     }
-
-    public bool IsReusable {
-        get {
-            return false;
-        }
-    }
-
 }

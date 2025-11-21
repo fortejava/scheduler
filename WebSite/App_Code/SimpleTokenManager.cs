@@ -12,6 +12,15 @@ using System.Text;
 public class SimpleTokenManager
 
 {
+    /// <summary>
+    /// Token information including user ID, username, and role.
+    /// </summary>
+    public class TokenInfo
+    {
+        public int UserId { get; set; }
+        public string Username { get; set; }
+        public string Role { get; set; }
+    }
     public static string CreateToken(int userId, string username, DateTime expiredAt)
     {
 
@@ -80,6 +89,49 @@ public class SimpleTokenManager
 
         return valid;
 
+    }
+
+    /// <summary>
+    /// Validate token and return token information including role.
+    /// </summary>
+    /// <param name="token">Token to validate</param>
+    /// <param name="tokenInfo">Output parameter containing user ID, username, and role</param>
+    /// <returns>True if token is valid and not expired, false otherwise</returns>
+    public static bool ValidateToken(string token, out TokenInfo tokenInfo)
+    {
+        tokenInfo = null;
+
+        if (string.IsNullOrEmpty(token))
+        {
+            return false;
+        }
+
+        using (var db = new schedulerEntities())
+        {
+            // Query session with user and role information
+            var session = db.Sessions
+                .Where(s => s.SessionToken == token && s.SessionExpire > DateTime.UtcNow)
+                .Select(s => new
+                {
+                    UserId = s.UserID,
+                    Username = s.User.Username,
+                    RoleName = s.User.Role.RoleName
+                })
+                .FirstOrDefault();
+
+            if (session != null)
+            {
+                tokenInfo = new TokenInfo
+                {
+                    UserId = session.UserId,
+                    Username = session.Username,
+                    Role = session.RoleName
+                };
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

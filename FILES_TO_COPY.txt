@@ -1,0 +1,26 @@
+BACKUP FIRST:
+=============
+WebSite/Index.html
+WebSite/assets/js/engine.js
+WebSite/assets/css/main.css
+
+REPLACE (3):
+===========
+WebSite/Index.html
+WebSite/assets/js/engine.js
+WebSite/assets/css/main.css
+
+ADD NEW (10):
+============
+WebSite/assets/js/api.js
+WebSite/assets/js/auth.js
+WebSite/assets/js/autocomplete-utils.js
+WebSite/assets/js/config.js
+WebSite/assets/js/customers.js
+WebSite/assets/js/invoices.js
+WebSite/assets/js/main.js
+WebSite/assets/js/ui.js
+WebSite/assets/js/utils.js
+WebSite/assets/css/3-components/autocomplete.css
+
+TOTAL: 13 FILES (3 replace + 10 new)

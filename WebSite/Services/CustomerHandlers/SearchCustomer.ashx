@@ -2,42 +2,33 @@
 
 using System;
 using System.Web;
-using Newtonsoft.Json;
 using DBEngine;
-using System.Collections.Generic;
 
-public class SearchCustomer : IHttpHandler {
-
-    public void ProcessRequest (HttpContext context) {
-        string customerName = context.Request.Form["customerName"];
-        customerName = "";
-        //customerName = "a";
-        Response r = new Response("Ko", null);
-        var customersFound = new List<Customer> ();
-        if(Helpers.IsNotEmpty(customerName))
-        {
-            customersFound = CustomersService.FilterByName(customerName, false);
-            r.Code = (customersFound.Count > 0) ? "Ok" : "Ko";
-            r.Message = customersFound;
-        }
-        else if(customerName == "")
-        {
-            customersFound = CustomersService.GetAllCustomers(false);
-            if (customersFound.Count > 0)
-            {
-                r.Code = "Ok";
-                r.Message = customersFound;
-            }
-        }
-
-        context.Response.ContentType = "application/json";
-        context.Response.Write(JsonConvert.SerializeObject(r));
+/// <summary>
+/// Search customers by name or return all customers.
+/// Authorization: ValidToken (all authenticated users can search customers)
+/// </summary>
+public class SearchCustomer : BaseHandler
+{
+    protected override AuthLevel AuthorizationRequired
+    {
+        get { return AuthLevel.ValidToken; }
     }
 
-    public bool IsReusable {
-        get {
-            return false;
+    protected override object ExecuteOperation(HttpContext context)
+    {
+        // Get search parameter (optional, PascalCase)
+        string customerName = context.Request.Form["CustomerName"];
+
+        // If customerName provided and not empty: filter by name
+        // If customerName empty or null: return all customers
+        if (Helpers.IsNotEmpty(customerName))
+        {
+            return CustomersService.FilterByName(customerName, false);
+        }
+        else
+        {
+            return CustomersService.GetAllCustomers(false);
         }
     }
-
 }

@@ -1,0 +1,789 @@
+/**
+ * PRINT.CSS - Print Styles
+ * Loginet Invoice Management System
+ * 
+ * Purpose: Print-optimized styles for invoices, reports, and documents
+ * Dependencies: None (standalone for print media)
+ * Author: Loginet Team
+ * Last Updated: November 2025
+ */
+
+/* ============================================
+   TABLE OF CONTENTS
+   1. Print Reset & Base Styles
+   2. Hide Non-Printable Elements
+   3. Invoice Print Layout
+   4. Report Print Layout
+   5. Page Break Controls
+   6. Print-Specific Utilities
+   7. Table Print Optimization
+============================================ */
+
+/* ============================================
+   1. PRINT RESET & BASE STYLES
+============================================ */
+
+@media print {
+  /* Reset for print */
+  * {
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Page setup */
+  @page {
+    margin: 2cm;
+    size: A4 portrait;
+  }
+
+  @page :first {
+    margin-top: 1cm;
+  }
+
+  /* Body setup */
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 12pt;
+    line-height: 1.5;
+    color: #000;
+    background: #fff;
+  }
+
+  /* Typography for print */
+  h1 {
+    font-size: 24pt;
+    margin-bottom: 12pt;
+    page-break-after: avoid;
+  }
+
+  h2 {
+    font-size: 18pt;
+    margin-top: 12pt;
+    margin-bottom: 6pt;
+    page-break-after: avoid;
+  }
+
+  h3 {
+    font-size: 14pt;
+    margin-top: 12pt;
+    margin-bottom: 6pt;
+    page-break-after: avoid;
+  }
+
+  h4, h5, h6 {
+    font-size: 12pt;
+    margin-top: 6pt;
+    margin-bottom: 6pt;
+    page-break-after: avoid;
+  }
+
+  /* Paragraph spacing */
+  p {
+    margin: 0 0 6pt 0;
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Links */
+  a {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  /* Show URLs after links */
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 10pt;
+    color: #666;
+  }
+
+  /* Don't show URLs for anchors or javascript */
+  a[href^="#"]:after,
+  a[href^="javascript:"]:after {
+    content: "";
+  }
+
+  /* Abbreviations */
+  abbr[title]:after {
+    content: " (" attr(title) ")";
+  }
+
+  /* Images */
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  /* Code blocks */
+  pre,
+  blockquote {
+    border: 1px solid #999;
+    page-break-inside: avoid;
+    padding: 6pt;
+    margin: 6pt 0;
+  }
+}
+
+/* ============================================
+   2. HIDE NON-PRINTABLE ELEMENTS
+============================================ */
+
+@media print {
+  /* Hide navigation and UI elements */
+  .navbar,
+  .sidebar,
+  .sidebar-loginet,
+  .navbar-loginet,
+  nav,
+  header.site-header,
+  footer.site-footer,
+  .breadcrumb,
+  .pagination,
+  .btn-group,
+  .dropdown,
+  .modal-backdrop,
+  .offcanvas,
+  .toast,
+  .alert-dismissible .btn-close {
+    display: none !important;
+  }
+
+  /* Hide buttons and form controls */
+  button:not(.print-visible-loginet),
+  .btn:not(.print-visible-loginet),
+  .form-control,
+  input,
+  select,
+  textarea,
+  .input-group {
+    display: none !important;
+  }
+
+  /* Hide action toolbars */
+  .toolbar-loginet,
+  .actions-toolbar-loginet,
+  .action-buttons-loginet,
+  .quick-actions-loginet {
+    display: none !important;
+  }
+
+  /* Hide interactive elements */
+  .tooltip,
+  .popover,
+  .collapse,
+  .accordion-button {
+    display: none !important;
+  }
+
+  /* Hide badges and status that aren't needed */
+  .badge.no-print,
+  .status-badge.no-print {
+    display: none !important;
+  }
+
+  /* Hide charts (unless marked for print) */
+  canvas:not(.print-visible-loginet),
+  .chart-container-loginet:not(.print-visible-loginet) canvas {
+    display: none !important;
+  }
+
+  /* Hide tabs navigation, show all content */
+  .nav-tabs,
+  .nav-pills {
+    display: none !important;
+  }
+
+  .tab-content > .tab-pane {
+    display: block !important;
+    opacity: 1 !important;
+  }
+}
+
+/* ============================================
+   3. INVOICE PRINT LAYOUT
+============================================ */
+
+@media print {
+  /* Invoice container */
+  .invoice-container-loginet,
+  .invoice-detail-loginet {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+  }
+
+  /* Invoice header */
+  .invoice-header-loginet {
+    margin-bottom: 20pt;
+    padding-bottom: 10pt;
+    border-bottom: 2pt solid #000;
+    page-break-after: avoid;
+  }
+
+  /* Company logo for print */
+  .invoice-logo-loginet {
+    max-width: 150pt;
+    height: auto;
+    margin-bottom: 10pt;
+  }
+
+  /* Invoice title */
+  .invoice-title-loginet {
+    font-size: 24pt;
+    font-weight: bold;
+    margin: 10pt 0;
+  }
+
+  /* Invoice info grid */
+  .invoice-info-grid-loginet {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20pt;
+    margin-bottom: 20pt;
+    page-break-inside: avoid;
+  }
+
+  /* Invoice addresses */
+  .invoice-address-loginet {
+    margin-bottom: 10pt;
+  }
+
+  .invoice-address-loginet h4 {
+    font-size: 12pt;
+    font-weight: bold;
+    margin-bottom: 6pt;
+  }
+
+  /* Invoice metadata */
+  .invoice-meta-loginet {
+    font-size: 10pt;
+    line-height: 1.6;
+  }
+
+  /* Invoice line items table */
+  .invoice-table-loginet {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20pt 0;
+  }
+
+  .invoice-table-loginet thead {
+    border-bottom: 2pt solid #000;
+  }
+
+  .invoice-table-loginet th {
+    font-weight: bold;
+    text-align: left;
+    padding: 6pt;
+    font-size: 10pt;
+  }
+
+  .invoice-table-loginet td {
+    padding: 6pt;
+    border-bottom: 1pt solid #ccc;
+    font-size: 10pt;
+  }
+
+  .invoice-table-loginet tbody tr:last-child td {
+    border-bottom: 2pt solid #000;
+  }
+
+  /* Numeric columns alignment */
+  .invoice-table-loginet .text-end,
+  .invoice-table-loginet .text-right {
+    text-align: right;
+  }
+
+  /* Invoice totals section */
+  .invoice-totals-loginet {
+    margin-top: 20pt;
+    margin-left: auto;
+    width: 50%;
+    max-width: 300pt;
+    page-break-inside: avoid;
+  }
+
+  .invoice-totals-loginet table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .invoice-totals-loginet td {
+    padding: 4pt 6pt;
+    font-size: 10pt;
+  }
+
+  .invoice-totals-loginet .total-row {
+    font-weight: bold;
+    font-size: 12pt;
+    border-top: 2pt solid #000;
+    padding-top: 6pt;
+  }
+
+  /* Invoice footer */
+  .invoice-footer-loginet {
+    margin-top: 30pt;
+    padding-top: 10pt;
+    border-top: 1pt solid #ccc;
+    font-size: 9pt;
+    page-break-inside: avoid;
+  }
+
+  /* Invoice notes */
+  .invoice-notes-loginet {
+    margin-top: 20pt;
+    padding: 10pt;
+    border: 1pt solid #ccc;
+    background: #f9f9f9 !important;
+    page-break-inside: avoid;
+  }
+
+  /* Payment terms */
+  .payment-terms-loginet {
+    margin-top: 10pt;
+    font-size: 9pt;
+    color: #666;
+  }
+
+  /* Status badges in print */
+  .invoice-status-loginet {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 10pt;
+  }
+
+  .invoice-status-loginet.paid {
+    color: #28a745;
+  }
+
+  .invoice-status-loginet.pending {
+    color: #ffc107;
+  }
+
+  .invoice-status-loginet.overdue {
+    color: #dc3545;
+  }
+}
+
+/* ============================================
+   4. REPORT PRINT LAYOUT
+============================================ */
+
+@media print {
+  /* Report container */
+  .report-container-loginet {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Report header */
+  .report-header-loginet {
+    margin-bottom: 20pt;
+    padding-bottom: 10pt;
+    border-bottom: 2pt solid #000;
+    page-break-after: avoid;
+  }
+
+  .report-title-loginet {
+    font-size: 20pt;
+    font-weight: bold;
+    margin-bottom: 6pt;
+  }
+
+  .report-subtitle-loginet {
+    font-size: 12pt;
+    color: #666;
+    margin-bottom: 10pt;
+  }
+
+  .report-date-loginet {
+    font-size: 10pt;
+    color: #666;
+  }
+
+  /* Report sections */
+  .report-section-loginet {
+    margin-bottom: 20pt;
+    page-break-inside: avoid;
+  }
+
+  .report-section-title-loginet {
+    font-size: 14pt;
+    font-weight: bold;
+    margin-bottom: 10pt;
+    border-bottom: 1pt solid #ccc;
+    padding-bottom: 4pt;
+  }
+
+  /* Report tables */
+  .report-table-loginet {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10pt 0;
+    font-size: 10pt;
+  }
+
+  .report-table-loginet thead {
+    background: #f0f0f0 !important;
+    border-bottom: 2pt solid #000;
+  }
+
+  .report-table-loginet th {
+    font-weight: bold;
+    text-align: left;
+    padding: 6pt;
+  }
+
+  .report-table-loginet td {
+    padding: 4pt 6pt;
+    border-bottom: 1pt solid #ddd;
+  }
+
+  /* Report summary boxes */
+  .report-summary-loginet {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10pt;
+    margin: 20pt 0;
+    page-break-inside: avoid;
+  }
+
+  .report-summary-item-loginet {
+    border: 1pt solid #ccc;
+    padding: 10pt;
+    text-align: center;
+  }
+
+  .report-summary-label-loginet {
+    font-size: 10pt;
+    color: #666;
+    margin-bottom: 4pt;
+  }
+
+  .report-summary-value-loginet {
+    font-size: 18pt;
+    font-weight: bold;
+  }
+
+  /* Report footer */
+  .report-footer-loginet {
+    margin-top: 30pt;
+    padding-top: 10pt;
+    border-top: 1pt solid #ccc;
+    font-size: 9pt;
+    text-align: center;
+    color: #666;
+  }
+}
+
+/* ============================================
+   5. PAGE BREAK CONTROLS
+============================================ */
+
+@media print {
+  /* Always break before */
+  .page-break-before-loginet,
+  .print-page-break-before {
+    page-break-before: always;
+  }
+
+  /* Always break after */
+  .page-break-after-loginet,
+  .print-page-break-after {
+    page-break-after: always;
+  }
+
+  /* Avoid break inside */
+  .page-break-avoid-loginet,
+  .print-no-break {
+    page-break-inside: avoid;
+  }
+
+  /* Specific elements that should avoid breaks */
+  .card-loginet,
+  .customer-card-loginet,
+  .stat-card-loginet,
+  .widget-loginet,
+  tr,
+  li,
+  figure,
+  .list-group-item {
+    page-break-inside: avoid;
+  }
+
+  /* Headers should not be orphaned */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Keep header with next content */
+  h1 + *,
+  h2 + *,
+  h3 + *,
+  h4 + *,
+  h5 + *,
+  h6 + * {
+    page-break-before: avoid;
+  }
+}
+
+/* ============================================
+   6. PRINT-SPECIFIC UTILITIES
+============================================ */
+
+@media print {
+  /* Force show in print */
+  .print-visible-loginet,
+  .print-only {
+    display: block !important;
+  }
+
+  .print-visible-inline-loginet {
+    display: inline !important;
+  }
+
+  .print-visible-inline-block-loginet {
+    display: inline-block !important;
+  }
+
+  /* Hide in print */
+  .print-hidden-loginet,
+  .no-print,
+  .d-print-none {
+    display: none !important;
+  }
+
+  /* Full width in print */
+  .print-full-width-loginet {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Remove margins in print */
+  .print-no-margin-loginet {
+    margin: 0 !important;
+  }
+
+  /* Remove padding in print */
+  .print-no-padding-loginet {
+    padding: 0 !important;
+  }
+
+  /* Text alignment */
+  .print-text-left-loginet {
+    text-align: left !important;
+  }
+
+  .print-text-center-loginet {
+    text-align: center !important;
+  }
+
+  .print-text-right-loginet {
+    text-align: right !important;
+  }
+
+  /* Print-specific spacing */
+  .print-mt-1-loginet { margin-top: 6pt !important; }
+  .print-mt-2-loginet { margin-top: 12pt !important; }
+  .print-mt-3-loginet { margin-top: 18pt !important; }
+  .print-mt-4-loginet { margin-top: 24pt !important; }
+
+  .print-mb-1-loginet { margin-bottom: 6pt !important; }
+  .print-mb-2-loginet { margin-bottom: 12pt !important; }
+  .print-mb-3-loginet { margin-bottom: 18pt !important; }
+  .print-mb-4-loginet { margin-bottom: 24pt !important; }
+
+  /* Print borders */
+  .print-border-loginet {
+    border: 1pt solid #000 !important;
+  }
+
+  .print-border-top-loginet {
+    border-top: 1pt solid #000 !important;
+  }
+
+  .print-border-bottom-loginet {
+    border-bottom: 1pt solid #000 !important;
+  }
+
+  /* Print backgrounds (when needed) */
+  .print-bg-gray-loginet {
+    background: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Print text colors */
+  .print-text-black-loginet {
+    color: #000 !important;
+  }
+
+  .print-text-gray-loginet {
+    color: #666 !important;
+  }
+
+  /* Font sizes for print */
+  .print-text-sm-loginet { font-size: 9pt !important; }
+  .print-text-base-loginet { font-size: 10pt !important; }
+  .print-text-lg-loginet { font-size: 12pt !important; }
+  .print-text-xl-loginet { font-size: 14pt !important; }
+}
+
+/* ============================================
+   7. TABLE PRINT OPTIMIZATION
+============================================ */
+
+@media print {
+  /* General table optimization */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 10pt;
+  }
+
+  /* Table headers */
+  thead {
+    display: table-header-group;
+    font-weight: bold;
+  }
+
+  /* Repeat header on each page */
+  thead tr {
+    page-break-inside: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Table footer */
+  tfoot {
+    display: table-footer-group;
+  }
+
+  /* Table rows */
+  tbody tr {
+    page-break-inside: avoid;
+  }
+
+  /* Table cells */
+  th, td {
+    padding: 4pt 6pt;
+    border: 1pt solid #ddd;
+  }
+
+  /* Bootstrap table styles for print */
+  .table {
+    border-collapse: collapse;
+  }
+
+  .table thead th {
+    border-bottom: 2pt solid #000;
+  }
+
+  .table tbody + tbody {
+    border-top: 2pt solid #000;
+  }
+
+  /* Remove striped backgrounds */
+  .table-striped tbody tr {
+    background: transparent !important;
+  }
+
+  /* Remove hover effects */
+  .table-hover tbody tr:hover {
+    background: transparent !important;
+  }
+
+  /* Customer table print */
+  .customer-table-loginet,
+  .invoice-list-table-loginet {
+    font-size: 9pt;
+  }
+
+  .customer-table-loginet thead,
+  .invoice-list-table-loginet thead {
+    background: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Compact table for print */
+  .table-compact-print-loginet th,
+  .table-compact-print-loginet td {
+    padding: 2pt 4pt;
+    font-size: 9pt;
+  }
+}
+
+/* ============================================
+   SPECIAL PRINT FEATURES
+============================================ */
+
+@media print {
+  /* QR codes and barcodes - maintain quality */
+  .qr-code-loginet,
+  .barcode-loginet {
+    image-rendering: pixelated;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Signatures */
+  .signature-line-loginet {
+    border-top: 1pt solid #000;
+    margin-top: 40pt;
+    padding-top: 6pt;
+    width: 200pt;
+  }
+
+  /* Watermark for draft/copy */
+  .watermark-loginet {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-size: 72pt;
+    color: rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* Page numbers (if needed via CSS) */
+  .page-number-loginet::after {
+    content: counter(page);
+  }
+
+  /* Print timestamp */
+  .print-date-loginet::after {
+    content: " (Printed: " attr(data-date) ")";
+    font-size: 8pt;
+    color: #666;
+  }
+}
+
+/**
+ * END OF PRINT.CSS
+ * 
+ * Usage Examples:
+ * 
+ * 1. Hide element in print:
+ *    <button class="btn no-print">Edit</button>
+ * 
+ * 2. Show only in print:
+ *    <div class="print-only">This appears only when printing</div>
+ * 
+ * 3. Force page break:
+ *    <div class="page-break-before-loginet">New page content</div>
+ * 
+ * 4. Prevent break inside:
+ *    <div class="page-break-avoid-loginet">Keep together</div>
+ * 
+ * 5. Invoice print:
+ *    <div class="invoice-container-loginet">
+ *      <div class="invoice-header-loginet">...</div>
+ *      <table class="invoice-table-loginet">...</table>
+ *    </div>
+ */

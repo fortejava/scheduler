@@ -1,0 +1,223 @@
+# ==============================================================================
+# DOCKER COMPOSE - Loginet App-Only Deployment
+# ==============================================================================
+#
+# Purpose: Deploy only the ASP.NET application (requires external SQL Server)
+# Use Case:
+#   - Production with Azure SQL Database
+#   - Production with on-premise SQL Server
+#   - Scenarios where database is managed separately
+#
+# Benefits:
+#   - Lighter deployment (single container)
+#   - Database managed independently
+#   - Better for production environments
+#   - Easier to scale application separately
+#
+# Requirements:
+#   - External SQL Server (Azure SQL, on-premise, or another container)
+#   - Database 'scheduler' must already exist
+#   - Network connectivity from container to SQL Server
+#
+# Usage:
+#   docker-compose -f docker-compose.app-only.yml up -d
+#
+# Documentation: See docs/07-deployment/DOCKER_DEPLOYMENT_GUIDE.md (Level 1)
+# ==============================================================================
+
+version: '3.8'
+
+# ============================================
+# Services
+# ============================================
+services:
+
+  # ==========================================
+  # ASP.NET Web Application (Windows Container)
+  # ==========================================
+  webapp:
+    # Build from Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: loginet-webapp
+
+    # Restart policy
+    restart: unless-stopped
+
+    # Environment variables for database connection
+    # ⚠️ CUSTOMIZE THESE FOR YOUR SQL SERVER
+    environment:
+      # SQL Server connection
+      # Options:
+      # - localhost (if SQL Server is on host machine)
+      # - host.docker.internal (Docker Desktop - access host from container)
+      # - your-server.database.windows.net (Azure SQL)
+      # - 192.168.1.100 (IP address of SQL Server)
+      DB_SERVER: "${DB_SERVER:-host.docker.internal}"
+      DB_NAME: "${DB_NAME:-scheduler}"
+      DB_USER: "${DB_USER:-sa}"
+      DB_PASSWORD: "${DB_PASSWORD:-Password123!}"
+
+      # Application settings
+      ASPNETCORE_ENVIRONMENT: "Production"
+      TZ: "${TZ:-Europe/Rome}"
+
+    # Port mapping: host:container
+    # Access application at http://localhost:8080
+    ports:
+      - "${APP_PORT:-8080}:80"
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "powershell", "-Command", "Invoke-WebRequest -Uri http://localhost -UseBasicParsing"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    # Resource limits (optional)
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
+
+# ==============================================================================
+# USAGE INSTRUCTIONS:
+# ==============================================================================
+#
+# OPTION 1: Use Environment Variables (Recommended)
+# --------------------------------------------------
+#
+# Create a .env file in the same directory:
+#
+#   DB_SERVER=your-sql-server.database.windows.net
+#   DB_NAME=scheduler
+#   DB_USER=your-username
+#   DB_PASSWORD=YourStrongPassword!
+#   APP_PORT=8080
+#   TZ=Europe/Rome
+#
+# Then run:
+#   docker-compose -f docker-compose.app-only.yml up -d
+#
+#
+# OPTION 2: Specify Variables on Command Line
+# --------------------------------------------
+#
+#   docker-compose -f docker-compose.app-only.yml up -d \
+#     -e DB_SERVER=myserver.database.windows.net \
+#     -e DB_PASSWORD=MySecurePassword
+#
+#
+# OPTION 3: Connect to SQL Server on Host Machine (Windows)
+# ----------------------------------------------------------
+#
+# 1. Ensure SQL Server allows remote connections:
+#    - SQL Server Configuration Manager
+#    - Enable TCP/IP protocol
+#    - Restart SQL Server service
+#
+# 2. Allow port 1433 in Windows Firewall
+#
+# 3. Use special hostname to access host from container:
+#    DB_SERVER=host.docker.internal
+#
+# 4. Run:
+#    docker-compose -f docker-compose.app-only.yml up -d
+#
+#
+# OPTION 4: Connect to Azure SQL Database
+# ----------------------------------------
+#
+# 1. Get connection string from Azure Portal
+#
+# 2. Create .env file:
+#    DB_SERVER=yourserver.database.windows.net
+#    DB_NAME=scheduler
+#    DB_USER=yourusername@yourserver
+#    DB_PASSWORD=YourAzurePassword!
+#
+# 3. Ensure Azure SQL firewall allows Docker host IP
+#
+# 4. Run:
+#    docker-compose -f docker-compose.app-only.yml up -d
+#
+#
+# TESTING DATABASE CONNECTIVITY:
+# -------------------------------
+#
+# Test connection from container:
+#   docker exec -it loginet-webapp powershell
+#   Test-NetConnection -ComputerName host.docker.internal -Port 1433
+#   Test-NetConnection -ComputerName yourserver.database.windows.net -Port 1433
+#
+#
+# COMMON SCENARIOS:
+# -----------------
+#
+# Scenario 1: Development (SQL Server on localhost)
+#   DB_SERVER=host.docker.internal
+#   DB_PASSWORD=Password123!
+#
+# Scenario 2: Production (Azure SQL)
+#   DB_SERVER=prod-server.database.windows.net
+#   DB_USER=produser@prod-server
+#   DB_PASSWORD=<use Azure Key Vault>
+#
+# Scenario 3: Production (On-Premise SQL Server)
+#   DB_SERVER=10.0.1.50
+#   DB_USER=sa
+#   DB_PASSWORD=<use Docker secrets>
+#
+#
+# TROUBLESHOOTING:
+# ----------------
+#
+# "Cannot connect to SQL Server":
+#   - Verify DB_SERVER is correct
+#   - Test connectivity: docker exec loginet-webapp powershell Test-NetConnection DB_SERVER -Port 1433
+#   - Check SQL Server allows remote connections
+#   - Check firewall allows port 1433
+#   - Verify credentials (DB_USER, DB_PASSWORD)
+#
+# "Login failed for user":
+#   - Check DB_USER and DB_PASSWORD
+#   - Verify user has access to 'scheduler' database
+#   - For Azure SQL, use format: username@servername
+#
+# "Database 'scheduler' does not exist":
+#   - Create database on SQL Server first
+#   - Run DB.sql script to create schema
+#   - Run seed scripts for initial data
+#
+# ==============================================================================
+#
+# SECURITY BEST PRACTICES:
+# ------------------------
+#
+# 1. Never commit .env file with passwords to Git
+#    Add .env to .gitignore
+#
+# 2. Use strong passwords (16+ characters, mixed case, numbers, symbols)
+#
+# 3. For production, use secrets management:
+#    - Docker secrets
+#    - Azure Key Vault
+#    - AWS Secrets Manager
+#    - HashiCorp Vault
+#
+# 4. Limit network access:
+#    - SQL Server firewall: allow only Docker host IP
+#    - Azure SQL: configure firewall rules
+#
+# 5. Use least privilege:
+#    - Create dedicated database user (not 'sa')
+#    - Grant only necessary permissions
+#
+# ==============================================================================

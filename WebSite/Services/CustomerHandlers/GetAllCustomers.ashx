@@ -3,27 +3,21 @@
 using System;
 using System.Web;
 using DBEngine;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 
-public class GetAllCustomers : IHttpHandler {
-
-    public void ProcessRequest (HttpContext context) {
-        Response r = new Response("Ko", null);
-        List<Customer> customersFound = CustomersService.GetAllCustomers(false);
-        if (customersFound.Count > 0)
-        {
-            r.Code = "Ok";
-            r.Message = customersFound;
-        }
-        context.Response.ContentType = "application/json";
-        context.Response.Write(JsonConvert.SerializeObject(r));
+/// <summary>
+/// Get all active customers from database.
+/// Authorization: ValidToken (all authenticated users can view customers)
+/// </summary>
+public class GetAllCustomers : BaseHandler
+{
+    protected override AuthLevel AuthorizationRequired
+    {
+        get { return AuthLevel.ValidToken; }
     }
 
-    public bool IsReusable {
-        get {
-            return false;
-        }
+    protected override object ExecuteOperation(HttpContext context)
+    {
+        // Get all active customers (LazyLoading = false for performance)
+        return CustomersService.GetAllCustomers(false);
     }
-
 }
